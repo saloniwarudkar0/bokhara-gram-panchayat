@@ -24,7 +24,7 @@ const schemes = [
     description:
       "ग्रामीण कुटुंबांना नियमानुसार अकुशल मजुरीचे रोजगार उपलब्ध करून देणारी योजना.",
     image:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=85",
+      "https://tse2.mm.bing.net/th/id/OIP.foTpbcubm6t9HtXPI87WAwHaDD?r=0&pid=Api&h=220&P=0",
     alt: "ग्रामीण शेती आणि परिसर",
     icon: Sprout,
     accent: "#547b51",
@@ -47,7 +47,7 @@ const schemes = [
     description:
       "पात्र ग्रामीण कुटुंबांना पक्के घर बांधण्यासाठी नियमानुसार आर्थिक सहाय्य.",
     image:
-      "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1000&q=85",
+      "https://tse2.mm.bing.net/th/id/OIP.8zU_YrMasVprQvvIh-Gz6gHaDy?r=0&pid=Api&h=220&P=0",
     alt: "घर आणि ग्रामीण परिसर",
     icon: House,
     accent: "#bd8048",
@@ -69,7 +69,7 @@ const schemes = [
     description:
       "ग्रामीण घरांना सुरक्षित आणि पुरेसे नळाद्वारे पाणी उपलब्ध करून देण्याच्या उद्देशाने राबवले जाणारे अभियान.",
     image:
-      "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=1000&q=85",
+      "https://tse4.mm.bing.net/th/id/OIP.nyLp3JA1DLtIpmH1kUwxwQHaEK?r=0&pid=Api&h=220&P=0",
     alt: "स्वच्छ पाणी",
     icon: Droplets,
     accent: "#547b91",
@@ -89,7 +89,7 @@ const schemes = [
     description:
       "राज्य शासन, जिल्हा परिषद आणि संबंधित विभागांच्या विकास योजनांची माहिती.",
     image:
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+      "https://tse2.mm.bing.net/th/id/OIP.huxyYWbwmmRxsWel3e6eQgHaER?r=0&pid=Api&h=220&P=0",
     alt: "निसर्ग आणि परिसर",
     icon: Landmark,
     accent: "#88745b",
@@ -738,7 +738,7 @@ export default function Schemes() {
       <section className="sp-hero">
         <div className="sp-container">
           <div className="sp-eyebrow">
-            ग्रामपंचायत बोखारा · जनकल्याण
+            ग्रामपंचायत बोकार · जनकल्याण
           </div>
           <h1>शासकीय योजना आणि लाभार्थी माहिती</h1>
           <p>
