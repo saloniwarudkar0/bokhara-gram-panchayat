@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Bell,
@@ -11,113 +12,305 @@ import {
   FileCheck2,
   CalendarClock,
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
 
-const announcements = [
-  {
-    category: "ग्रामसभा",
-    title: "ग्रामसभा बैठकीची सूचना",
-    description:
-      "ग्रामसभा बैठकीची तारीख, वेळ आणि ठिकाण यांची माहिती येथे प्रसिद्ध केली जाईल.",
-    date: "25",
-    month: "OCT",
-    year: 2026,
-    type: "meeting",
-    status: "आगामी बैठक",
+const content = {
+  mr: {
+    official: "ग्रामपंचायत बोखारा · अधिकृत माहिती",
+    title: "घोषणा आणि परिपत्रके",
+    hero:
+      "ग्रामसभा बैठका, कार्यालयीन आदेश, महत्त्वाच्या मुदती आणि नागरिकांसाठी आवश्यक कागदपत्रांची माहिती एकाच ठिकाणी.",
+    home: "मुख्यपृष्ठ",
+    latest: "नवीन घोषणा आणि सूचना",
+    latestDesc: "ग्रामपंचायतीच्या सूचना आणि महत्त्वाच्या अपडेट्स पाहा.",
+    search: "सूचना शोधा...",
+    filters: ["सर्व", "ग्रामसभा", "परिपत्रक", "महत्त्वाची मुदत"],
+    noResults: "या शोधासाठी कोणतीही सूचना सापडली नाही.",
+    calendarTitle: "ग्रामसभा आणि गाव कार्यक्रम दिनदर्शिका",
+    calendarDesc: "महिन्यानुसार तारीख निवडून कार्यक्रमांची माहिती पाहा.",
+    prevMonth: "मागील महिना",
+    nextMonth: "पुढील महिना",
+    legend: "चिन्ह असलेल्या तारखेला सूचना / कार्यक्रम आहे",
+    selectDate: "कार्यक्रमाची तारीख निवडा",
+    noEvent: "या तारखेसाठी कार्यक्रमाची नोंद उपलब्ध नाही.",
+    selectDateHint: "दिनदर्शिकेतील तारीख निवडा. उपलब्ध कार्यक्रम येथे दिसतील.",
+    download: "डाउनलोड विभाग",
+    documentsDesc: "नागरिकांसाठी आवश्यक कागदपत्रे.",
+    downloadTitle: "डाउनलोड",
+    noteTitle: "टीप:",
+    note:
+      "सध्या दाखवलेली माहिती नमुना स्वरूपात आहे. अधिकृत तारखा, सूचना आणि PDF फाइल्स ग्रामपंचायतीकडून पुष्टी झाल्यानंतरच प्रकाशित कराव्यात.",
+    footerTitle: "सूचना आणि कार्यक्रमांबाबत अधिक माहिती हवी आहे?",
+    footerDesc:
+      "अधिकृत सूचना, बैठकीचे वेळापत्रक आणि कागदपत्रांसाठी ग्रामपंचायत बोखारा कार्यालयाशी संपर्क साधा.",
+    downloadAlert:
+      "या कागदपत्राची PDF ग्रामपंचायत कार्यालयाकडून उपलब्ध झाल्यावर येथे डाउनलोड लिंक जोडता येईल.",
+    months: [
+      "जानेवारी", "फेब्रुवारी", "मार्च", "एप्रिल", "मे", "जून",
+      "जुलै", "ऑगस्ट", "सप्टेंबर", "ऑक्टोबर", "नोव्हेंबर", "डिसेंबर",
+    ],
+    weekdays: ["रवि", "सोम", "मंगळ", "बुध", "गुरु", "शुक्र", "शनि"],
+    announcements: [
+      {
+        category: "ग्रामसभा",
+        title: "ग्रामसभा बैठकीची सूचना",
+        description:
+          "ग्रामसभा बैठकीची तारीख, वेळ आणि ठिकाण यांची माहिती येथे प्रसिद्ध केली जाईल.",
+        date: "25",
+        month: "OCT",
+        year: 2026,
+        status: "आगामी बैठक",
+      },
+      {
+        category: "परिपत्रक",
+        title: "कार्यालयीन परिपत्रके आणि आदेश",
+        description:
+          "ग्रामपंचायतीकडून प्रसिद्ध करण्यात आलेली अधिकृत परिपत्रके व आदेश.",
+        date: "20",
+        month: "OCT",
+        year: 2026,
+        status: "माहितीसाठी",
+      },
+      {
+        category: "महत्त्वाची मुदत",
+        title: "घरपट्टी व पाणीपट्टी भरणा",
+        description:
+          "कर भरण्याच्या अंतिम मुदतीबाबतची अधिकृत माहिती ग्रामपंचायत कार्यालयाकडून उपलब्ध करून दिली जाईल.",
+        date: "30",
+        month: "OCT",
+        year: 2026,
+        status: "मुदत तपासा",
+      },
+    ],
+    documents: [
+      {
+        title: "ग्रामसभा सूचना",
+        subtitle: "बैठकीसंबंधी सूचना व तपशील",
+        format: "PDF",
+      },
+      {
+        title: "कार्यालयीन परिपत्रक",
+        subtitle: "अधिकृत आदेश व परिपत्रके",
+        format: "PDF",
+      },
+      {
+        title: "अर्ज व आवश्यक फॉर्म",
+        subtitle: "नागरिकांसाठी अर्ज नमुने",
+        format: "PDF",
+      },
+    ],
   },
-  {
-    category: "परिपत्रक",
-    title: "कार्यालयीन परिपत्रके आणि आदेश",
-    description:
-      "ग्रामपंचायतीकडून प्रसिद्ध करण्यात आलेली अधिकृत परिपत्रके व आदेश.",
-    date: "20",
-    month: "OCT",
-    year: 2026,
-    type: "circular",
-    status: "माहितीसाठी",
-  },
-  {
-    category: "महत्त्वाची मुदत",
-    title: "घरपट्टी व पाणीपट्टी भरणा",
-    description:
-      "कर भरण्याच्या अंतिम मुदतीबाबतची अधिकृत माहिती ग्रामपंचायत कार्यालयाकडून उपलब्ध करून दिली जाईल.",
-    date: "30",
-    month: "OCT",
-    year: 2026,
-    type: "deadline",
-    status: "मुदत तपासा",
-  },
-];
 
-const documents = [
-  {
-    title: "ग्रामसभा सूचना",
-    subtitle: "बैठकीसंबंधी सूचना व तपशील",
-    format: "PDF",
+  hi: {
+    official: "ग्राम पंचायत बोखारा · आधिकारिक जानकारी",
+    title: "घोषणाएँ और परिपत्र",
+    hero:
+      "ग्रामसभा की बैठकें, कार्यालयीन आदेश, महत्वपूर्ण समय-सीमाएँ और नागरिकों के लिए आवश्यक दस्तावेजों की जानकारी एक ही जगह।",
+    home: "मुखपृष्ठ",
+    latest: "नई घोषणाएँ और सूचनाएँ",
+    latestDesc: "ग्राम पंचायत की सूचनाएँ और महत्वपूर्ण अपडेट देखें।",
+    search: "सूचनाएँ खोजें...",
+    filters: ["सभी", "ग्रामसभा", "परिपत्र", "महत्वपूर्ण समय-सीमा"],
+    noResults: "आपकी खोज के लिए कोई सूचना नहीं मिली।",
+    calendarTitle: "ग्रामसभा और गाँव के कार्यक्रमों का कैलेंडर",
+    calendarDesc: "महीने के अनुसार तारीख चुनकर कार्यक्रमों की जानकारी देखें।",
+    prevMonth: "पिछला महीना",
+    nextMonth: "अगला महीना",
+    legend: "चिह्नित तारीख पर सूचना / कार्यक्रम है",
+    selectDate: "कार्यक्रम की तारीख चुनें",
+    noEvent: "इस तारीख के लिए कोई कार्यक्रम दर्ज नहीं है।",
+    selectDateHint: "कैलेंडर में तारीख चुनें। उपलब्ध कार्यक्रम यहाँ दिखाई देंगे।",
+    download: "डाउनलोड अनुभाग",
+    documentsDesc: "नागरिकों के लिए आवश्यक दस्तावेज।",
+    downloadTitle: "डाउनलोड",
+    noteTitle: "नोट:",
+    note:
+      "अभी दिखाई गई जानकारी उदाहरण के लिए है। आधिकारिक तारीखें, सूचनाएँ और PDF फाइलें ग्राम पंचायत से पुष्टि होने के बाद ही प्रकाशित करें।",
+    footerTitle: "सूचनाओं और कार्यक्रमों के बारे में अधिक जानकारी चाहिए?",
+    footerDesc:
+      "आधिकारिक सूचनाओं, बैठक के समय और दस्तावेजों के लिए ग्राम पंचायत बोखारा कार्यालय से संपर्क करें।",
+    downloadAlert:
+      "ग्राम पंचायत कार्यालय से इस दस्तावेज़ की PDF उपलब्ध होने पर यहाँ डाउनलोड लिंक जोड़ा जा सकता है।",
+    months: [
+      "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
+      "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर",
+    ],
+    weekdays: ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"],
+    announcements: [
+      {
+        category: "ग्रामसभा",
+        title: "ग्रामसभा बैठक की सूचना",
+        description:
+          "ग्रामसभा बैठक की तारीख, समय और स्थान की जानकारी यहाँ प्रकाशित की जाएगी।",
+        date: "25",
+        month: "OCT",
+        year: 2026,
+        status: "आगामी बैठक",
+      },
+      {
+        category: "परिपत्र",
+        title: "कार्यालयीन परिपत्र और आदेश",
+        description:
+          "ग्राम पंचायत द्वारा जारी आधिकारिक परिपत्र और आदेश।",
+        date: "20",
+        month: "OCT",
+        year: 2026,
+        status: "जानकारी हेतु",
+      },
+      {
+        category: "महत्वपूर्ण समय-सीमा",
+        title: "घर कर और जल कर भुगतान",
+        description:
+          "कर भुगतान की अंतिम तारीख की आधिकारिक जानकारी ग्राम पंचायत कार्यालय से उपलब्ध कराई जाएगी।",
+        date: "30",
+        month: "OCT",
+        year: 2026,
+        status: "समय-सीमा देखें",
+      },
+    ],
+    documents: [
+      {
+        title: "ग्रामसभा सूचना",
+        subtitle: "बैठक की सूचना और विवरण",
+        format: "PDF",
+      },
+      {
+        title: "कार्यालयीन परिपत्र",
+        subtitle: "आधिकारिक आदेश और परिपत्र",
+        format: "PDF",
+      },
+      {
+        title: "आवेदन और आवश्यक फॉर्म",
+        subtitle: "नागरिकों के लिए आवेदन नमूने",
+        format: "PDF",
+      },
+    ],
   },
-  {
-    title: "कार्यालयीन परिपत्रक",
-    subtitle: "अधिकृत आदेश व परिपत्रके",
-    format: "PDF",
-  },
-  {
-    title: "अर्ज व आवश्यक फॉर्म",
-    subtitle: "नागरिकांसाठी अर्ज नमुने",
-    format: "PDF",
-  },
-];
 
-const marathiMonths = [
-  "जानेवारी",
-  "फेब्रुवारी",
-  "मार्च",
-  "एप्रिल",
-  "मे",
-  "जून",
-  "जुलै",
-  "ऑगस्ट",
-  "सप्टेंबर",
-  "ऑक्टोबर",
-  "नोव्हेंबर",
-  "डिसेंबर",
-];
-
-const weekDays = ["रवि", "सोम", "मंगळ", "बुध", "गुरु", "शुक्र", "शनि"];
+  en: {
+    official: "Gram Panchayat Bokhara · Official Information",
+    title: "Announcements & Circulars",
+    hero:
+      "Find Gram Sabha meetings, office orders, important deadlines and essential documents for citizens in one place.",
+    home: "Home",
+    latest: "Latest Announcements & Notices",
+    latestDesc: "View Gram Panchayat notices and important updates.",
+    search: "Search notices...",
+    filters: ["All", "Gram Sabha", "Circular", "Important Deadline"],
+    noResults: "No announcements found for your search.",
+    calendarTitle: "Gram Sabha & Village Events Calendar",
+    calendarDesc: "Select a date to view events scheduled for that month.",
+    prevMonth: "Previous month",
+    nextMonth: "Next month",
+    legend: "A marked date has a notice or event",
+    selectDate: "Select an event date",
+    noEvent: "No event is recorded for this date.",
+    selectDateHint: "Select a date on the calendar to view available events here.",
+    download: "Downloads",
+    documentsDesc: "Essential documents for citizens.",
+    downloadTitle: "Download",
+    noteTitle: "Note:",
+    note:
+      "The information shown is sample content. Publish official dates, notices and PDF files only after confirmation from the Gram Panchayat.",
+    footerTitle: "Need more information about notices and events?",
+    footerDesc:
+      "Contact the Gram Panchayat Bokhara office for official notices, meeting schedules and documents.",
+    downloadAlert:
+      "A download link can be added here once the PDF is provided by the Gram Panchayat office.",
+    months: [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December",
+    ],
+    weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    announcements: [
+      {
+        category: "Gram Sabha",
+        title: "Gram Sabha Meeting Notice",
+        description:
+          "The date, time and venue of the Gram Sabha meeting will be published here.",
+        date: "25",
+        month: "OCT",
+        year: 2026,
+        status: "Upcoming Meeting",
+      },
+      {
+        category: "Circular",
+        title: "Office Circulars and Orders",
+        description:
+          "Official circulars and orders issued by the Gram Panchayat.",
+        date: "20",
+        month: "OCT",
+        year: 2026,
+        status: "For Information",
+      },
+      {
+        category: "Important Deadline",
+        title: "House Tax and Water Tax Payment",
+        description:
+          "Official information about tax payment deadlines will be provided by the Gram Panchayat office.",
+        date: "30",
+        month: "OCT",
+        year: 2026,
+        status: "Check Deadline",
+      },
+    ],
+    documents: [
+      {
+        title: "Gram Sabha Notice",
+        subtitle: "Meeting notice and details",
+        format: "PDF",
+      },
+      {
+        title: "Office Circular",
+        subtitle: "Official orders and circulars",
+        format: "PDF",
+      },
+      {
+        title: "Applications and Forms",
+        subtitle: "Application forms for citizens",
+        format: "PDF",
+      },
+    ],
+  },
+};
 
 export default function Announcements() {
-  const [activeFilter, setActiveFilter] = useState("सर्व");
+  const { language } = useLanguage();
+  const t = content[language] || content.mr;
+
+  const [activeFilter, setActiveFilter] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [calendarDate, setCalendarDate] = useState(
-    new Date(2026, 9, 1)
-  );
+  const [calendarDate, setCalendarDate] = useState(new Date(2026, 9, 1));
   const [selectedDay, setSelectedDay] = useState(null);
-
-  const filteredAnnouncements = announcements.filter((item) => {
-    const matchesFilter =
-      activeFilter === "सर्व" || item.category === activeFilter;
-
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesFilter && matchesSearch;
-  });
 
   const year = calendarDate.getFullYear();
   const month = calendarDate.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  const filteredAnnouncements = t.announcements.filter((item) => {
+    const matchesFilter =
+      activeFilter === 0 ||
+      item.category === t.announcements[activeFilter - 1]?.category;
+
+    const query = searchTerm.trim().toLowerCase();
+
+    const matchesSearch =
+      !query ||
+      item.title.toLowerCase().includes(query) ||
+      item.description.toLowerCase().includes(query) ||
+      item.category.toLowerCase().includes(query);
+
+    return matchesFilter && matchesSearch;
+  });
+
   const changeMonth = (direction) => {
     setCalendarDate(new Date(year, month + direction, 1));
     setSelectedDay(null);
   };
 
-  const calendarEvents = announcements.filter(
-    (item) =>
-      item.year === year &&
-      marathiMonths.indexOf(
-        item.month === "OCT" ? "ऑक्टोबर" : item.month
-      ) === month
+  const calendarEvents = t.announcements.filter(
+    (item) => item.year === year && month === 9 && item.month === "OCT"
   );
 
   const selectedEvents = selectedDay
@@ -129,13 +322,12 @@ export default function Announcements() {
       <style>{`
         .ann-page {
           --ann-green: #285440;
-          --ann-dark: #183b2d;
+          --ann-dark: #263b30;
           --ann-gold: #c49a52;
           --ann-terracotta: #b87550;
           --ann-muted: #68756f;
-
           color: #26352e;
-          background: #f7f8f5;
+          background: #fafaf7;
           min-height: 100vh;
           font-family: "Noto Sans Devanagari", "DM Sans", sans-serif;
         }
@@ -149,33 +341,28 @@ export default function Announcements() {
           margin: 0 auto;
         }
 
-        /* HERO */
-
+        /* Light announcement page header */
         .ann-hero {
-          background: linear-gradient(
-            115deg,
-            #183c30 0%,
-            #285844 68%,
-            #416b51 100%
-          );
-          color: #fff;
-          padding: 52px 0 46px;
+          background: #f1f3ed;
+          color: #26352e;
+          padding: 42px 0 38px;
           position: relative;
           overflow: hidden;
+          border-bottom: 1px solid #e1e5dc;
         }
 
         .ann-hero:after {
           content: "";
           position: absolute;
-          width: 290px;
-          height: 290px;
-          border: 1px solid rgba(255, 255, 255, .13);
+          width: 220px;
+          height: 220px;
+          border: 1px solid rgba(40, 84, 64, 0.1);
           border-radius: 50%;
-          right: -70px;
+          right: -65px;
           top: -100px;
           box-shadow:
-            0 0 0 30px rgba(255, 255, 255, .035),
-            0 0 0 60px rgba(255, 255, 255, .025);
+            0 0 0 25px rgba(40, 84, 64, 0.025),
+            0 0 0 50px rgba(40, 84, 64, 0.02);
           pointer-events: none;
         }
 
@@ -184,48 +371,46 @@ export default function Announcements() {
           align-items: center;
           gap: 8px;
           font-size: 13px;
-          letter-spacing: .4px;
-          color: #e9c995;
-          margin-bottom: 15px;
-          font-weight: 600;
+          letter-spacing: 0.2px;
+          color: #a26743;
+          margin-bottom: 13px;
+          font-weight: 700;
         }
 
         .ann-hero h1 {
-          font-size: clamp(27px, 4vw, 42px);
+          font-size: clamp(28px, 4vw, 42px);
           line-height: 1.4;
           margin: 0 0 12px;
           font-weight: 750;
-          color: #fff5e8;
-          letter-spacing: -.5px;
+          color: #263b30;
+          letter-spacing: -0.5px;
         }
 
         .ann-hero p {
-          max-width: 670px;
+          max-width: 700px;
           margin: 0;
           line-height: 1.9;
-          color: #e0ebe5;
+          color: #68756f;
           font-size: 15px;
         }
 
         .ann-breadcrumb {
           font-size: 13px;
-          color: #d7e6dc;
-          margin-top: 24px;
+          color: #737d75;
+          margin-top: 22px;
         }
 
         .ann-breadcrumb span {
-          color: #e9c995;
-          font-weight: 600;
+          color: #a26743;
+          font-weight: 700;
         }
 
-        /* MAIN CONTENT */
-
         .ann-content {
-          padding: 36px 0 64px;
+          padding: 38px 0 64px;
         }
 
         .ann-section {
-          margin-bottom: 38px;
+          margin-bottom: 42px;
         }
 
         .ann-section-heading {
@@ -234,11 +419,11 @@ export default function Announcements() {
           align-items: end;
           gap: 18px;
           flex-wrap: wrap;
-          margin-bottom: 20px;
+          margin-bottom: 22px;
         }
 
         .ann-section-heading h2 {
-          color: #285440;
+          color: #34483a;
           font-size: clamp(21px, 3vw, 27px);
           margin: 0 0 8px;
           line-height: 1.5;
@@ -264,23 +449,21 @@ export default function Announcements() {
           line-height: 1.8;
         }
 
-        /* SEARCH */
-
         .ann-search {
           display: flex;
           align-items: center;
           gap: 10px;
           background: #fff;
-          border: 1px solid #dce3dd;
-          border-radius: 9px;
-          padding: 0 13px;
+          border: 1px solid #e0e4dc;
+          border-radius: 10px;
+          padding: 0 14px;
           min-width: min(100%, 270px);
-          transition: border-color .2s, box-shadow .2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .ann-search:focus-within {
-          border-color: #8ba994;
-          box-shadow: 0 0 0 3px rgba(40, 84, 64, .08);
+          border-color: #b6c4b5;
+          box-shadow: 0 0 0 3px rgba(40, 84, 64, 0.07);
         }
 
         .ann-search svg {
@@ -294,76 +477,69 @@ export default function Announcements() {
           border: 0;
           outline: 0;
           background: transparent;
-          padding: 12px 0;
+          padding: 13px 0;
           font: inherit;
           font-size: 13px;
           color: #26352e;
         }
 
-        /* FILTERS */
-
         .ann-filter-row {
           display: flex;
           gap: 8px;
           flex-wrap: wrap;
-          margin-bottom: 18px;
+          margin-bottom: 19px;
         }
 
         .ann-filter {
-          border: 1px solid #d8e0da;
-          background: white;
+          border: 1px solid #e0e4dc;
+          background: #fff;
           color: #43564b;
           border-radius: 30px;
           padding: 9px 16px;
           cursor: pointer;
           font: inherit;
           font-size: 13px;
-          transition: .2s;
+          transition: background 0.2s, color 0.2s, border-color 0.2s;
         }
 
         .ann-filter:hover,
         .ann-filter.active {
-          background: #285440;
-          border-color: #285440;
-          color: white;
+          background: #34483a;
+          border-color: #34483a;
+          color: #fff;
         }
-
-        /* ANNOUNCEMENT CARDS */
 
         .ann-list {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 15px;
+          gap: 16px;
         }
 
         .ann-card {
-          background: white;
-          border: 1px solid #e0e6e0;
-          border-radius: 12px;
-          padding: 21px;
+          background: #fff;
+          border: 1px solid #e5e7df;
+          border-radius: 14px;
+          padding: 23px;
           display: flex;
           gap: 16px;
           align-items: flex-start;
-          transition:
-            transform .2s,
-            box-shadow .2s,
-            border-color .2s;
+          transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
 
         .ann-card:hover {
-          transform: translateY(-2px);
-          border-color: #d1ded2;
-          box-shadow: 0 9px 25px rgba(24, 60, 43, .07);
+          transform: translateY(-3px);
+          border-color: #d4c5b4;
+          box-shadow: 0 12px 28px rgba(38, 53, 46, 0.07);
         }
 
         .ann-datebox {
           flex: 0 0 61px;
           text-align: center;
-          border-radius: 9px;
-          background: #edf3e9;
-          color: #285440;
-          padding: 11px 5px;
-          border-bottom: 3px solid #c49a52;
+          border-radius: 10px;
+          background: #f5f1e9;
+          color: #34483a;
+          padding: 12px 5px;
+          border-bottom: 3px solid #b87550;
         }
 
         .ann-datebox strong {
@@ -375,7 +551,7 @@ export default function Announcements() {
         .ann-datebox span {
           font-size: 11px;
           font-weight: 800;
-          letter-spacing: .8px;
+          letter-spacing: 0.8px;
         }
 
         .ann-card-content {
@@ -385,18 +561,18 @@ export default function Announcements() {
 
         .ann-tag {
           display: inline-block;
-          background: #f7eee4;
-          color: #a45f3f;
-          border-radius: 4px;
+          background: #f7eee5;
+          color: #9b6244;
+          border-radius: 5px;
           font-size: 11px;
           font-weight: 700;
-          padding: 5px 8px;
+          padding: 5px 9px;
           margin-bottom: 9px;
         }
 
         .ann-card h3 {
           margin: 0 0 8px;
-          color: #285440;
+          color: #34483a;
           font-size: 17px;
           line-height: 1.6;
         }
@@ -413,7 +589,7 @@ export default function Announcements() {
           gap: 6px;
           align-items: center;
           font-size: 12px;
-          color: #285440;
+          color: #34483a;
           font-weight: 700;
         }
 
@@ -422,30 +598,29 @@ export default function Announcements() {
         }
 
         .ann-empty {
-          background: white;
-          border: 1px dashed #d1dbd3;
-          border-radius: 10px;
+          background: #fff;
+          border: 1px dashed #d7ddd4;
+          border-radius: 12px;
           padding: 30px;
           color: var(--ann-muted);
           text-align: center;
           grid-column: 1 / -1;
         }
 
-        /* CALENDAR AND DOWNLOAD LAYOUT */
-
         .ann-two-col {
           display: grid;
-          grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
           gap: 22px;
           align-items: start;
         }
 
         .ann-panel {
-          background: white;
-          border: 1px solid #e0e6e0;
+          background: #fff;
+          border: 1px solid #e5e7df;
           border-radius: 14px;
-          padding: 22px;
+          padding: 23px;
           min-width: 0;
+          box-shadow: 0 4px 18px rgba(38, 53, 46, 0.025);
         }
 
         .ann-calendar-top {
@@ -459,7 +634,7 @@ export default function Announcements() {
         .ann-calendar-top h3 {
           margin: 0;
           font-size: 19px;
-          color: #a45f3f;
+          color: #34483a;
           font-weight: 750;
         }
 
@@ -469,24 +644,22 @@ export default function Announcements() {
         }
 
         .ann-icon-btn {
-          border: 1px solid #dce4dd;
+          border: 1px solid #e0e4dc;
           background: #fff;
-          color: #285440;
-          border-radius: 7px;
-          width: 35px;
-          height: 35px;
+          color: #34483a;
+          border-radius: 8px;
+          width: 36px;
+          height: 36px;
           display: grid;
           place-items: center;
           cursor: pointer;
-          transition: background .2s, border-color .2s;
+          transition: background 0.2s, border-color 0.2s;
         }
 
         .ann-icon-btn:hover {
-          background: #edf3e9;
-          border-color: #b7cbb9;
+          background: #f1f3ed;
+          border-color: #c8d1c5;
         }
-
-        /* CALENDAR GRID */
 
         .ann-calendar-grid {
           display: grid;
@@ -495,7 +668,7 @@ export default function Announcements() {
         }
 
         .ann-weekday {
-          color: #a45f3f;
+          color: #9b6244;
           font-size: 11px;
           text-align: center;
           padding: 7px 0;
@@ -507,29 +680,29 @@ export default function Announcements() {
           min-width: 0;
           min-height: 41px;
           border: 1px solid transparent;
-          background: #f6f8f5;
+          background: #f7f8f5;
           color: #34473b;
-          border-radius: 7px;
+          border-radius: 8px;
           cursor: pointer;
           font: inherit;
           font-size: 13px;
-          transition: background .2s, border-color .2s;
+          transition: background 0.2s, border-color 0.2s;
         }
 
         .ann-day:hover {
-          border-color: #a5bca9;
+          border-color: #b6c4b5;
         }
 
         .ann-day.has-event {
-          background: #e5f0e6;
-          color: #174c3a;
+          background: #f5eee4;
+          color: #8c5a3c;
           font-weight: 800;
         }
 
         .ann-day.selected {
-          background: #285440;
+          background: #34483a;
           color: #fff;
-          border-color: #285440;
+          border-color: #34483a;
         }
 
         .ann-day .ann-dot {
@@ -553,6 +726,7 @@ export default function Announcements() {
           color: var(--ann-muted);
           font-size: 12px;
           margin-top: 15px;
+          line-height: 1.7;
         }
 
         .ann-legend-dot {
@@ -564,13 +738,13 @@ export default function Announcements() {
         }
 
         .ann-selected-events {
-          border-top: 1px solid #e7ece7;
+          border-top: 1px solid #e7e9e2;
           margin-top: 18px;
           padding-top: 15px;
         }
 
         .ann-selected-events h4 {
-          color: #a45f3f;
+          color: #34483a;
           margin: 0 0 9px;
           font-size: 15px;
         }
@@ -583,10 +757,10 @@ export default function Announcements() {
         }
 
         .ann-event-item {
-          background: #f4f7f3;
+          background: #f7f8f5;
           border-left: 3px solid #b87550;
           border-radius: 8px;
-          padding: 11px;
+          padding: 12px;
           margin-top: 8px;
           font-size: 13px;
           line-height: 1.7;
@@ -594,10 +768,8 @@ export default function Announcements() {
         }
 
         .ann-event-item strong {
-          color: #285440;
+          color: #34483a;
         }
-
-        /* DOWNLOAD DOCUMENTS */
 
         .ann-doc-list {
           display: grid;
@@ -609,25 +781,25 @@ export default function Announcements() {
           align-items: center;
           gap: 12px;
           padding: 14px;
-          border: 1px solid #e2e8e2;
-          border-radius: 9px;
-          background: white;
-          transition: border-color .2s, background .2s;
+          border: 1px solid #e5e7df;
+          border-radius: 10px;
+          background: #fff;
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .ann-doc:hover {
-          border-color: #c7d8c9;
-          background: #fcfdfb;
+          border-color: #d4c5b4;
+          background: #fdfcf9;
         }
 
         .ann-doc-icon {
           flex: 0 0 43px;
           height: 43px;
-          border-radius: 9px;
+          border-radius: 10px;
           display: grid;
           place-items: center;
-          color: #285440;
-          background: #edf3e9;
+          color: #34483a;
+          background: #f1f3ed;
         }
 
         .ann-doc-text {
@@ -638,7 +810,8 @@ export default function Announcements() {
         .ann-doc-text h4 {
           margin: 0 0 4px;
           font-size: 14px;
-          color: #285440;
+          color: #34483a;
+          line-height: 1.6;
         }
 
         .ann-doc-text p {
@@ -654,66 +827,62 @@ export default function Announcements() {
           font-size: 10px;
           font-weight: 800;
           letter-spacing: 1px;
-          color: #a45f3f;
+          color: #9b6244;
         }
 
         .ann-download {
-          border: 1px solid #dce5dc;
-          border-radius: 7px;
-          width: 35px;
-          height: 35px;
-          flex: 0 0 35px;
+          border: 1px solid #e0e4dc;
+          border-radius: 8px;
+          width: 36px;
+          height: 36px;
+          flex: 0 0 36px;
           display: grid;
           place-items: center;
-          color: #285440;
-          background: white;
+          color: #34483a;
+          background: #fff;
           cursor: pointer;
-          transition: background .2s, border-color .2s;
+          transition: background 0.2s, border-color 0.2s;
         }
 
         .ann-download:hover {
-          background: #edf3e9;
-          border-color: #b7cbb9;
+          background: #f1f3ed;
+          border-color: #c8d1c5;
         }
-
-        /* NOTE */
 
         .ann-note {
           margin-top: 17px;
-          padding: 14px;
-          background: #f8f1e5;
+          padding: 15px;
+          background: #faf4e9;
           border-left: 3px solid #b87550;
           color: #665535;
           font-size: 12px;
           line-height: 1.8;
-          border-radius: 4px;
+          border-radius: 5px;
         }
 
         .ann-note strong {
-          color: #a45f3f;
+          color: #9b6244;
         }
-
-        /* FOOTER BANNER */
 
         .ann-footer-banner {
           display: flex;
           gap: 15px;
           align-items: center;
-          background: #edf3e9;
-          border: 1px solid #d8e4d8;
+          background: #f1f3ed;
+          border: 1px solid #e1e5dc;
           border-left: 4px solid #b87550;
-          border-radius: 12px;
-          padding: 20px;
+          border-radius: 13px;
+          padding: 22px;
         }
 
         .ann-footer-banner svg {
           flex: 0 0 auto;
-          color: #285440;
+          color: #34483a;
         }
 
         .ann-footer-banner h3 {
           margin: 0 0 5px;
-          color: #285440;
+          color: #34483a;
           font-size: 16px;
           line-height: 1.6;
         }
@@ -725,13 +894,8 @@ export default function Announcements() {
           line-height: 1.8;
         }
 
-        /* RESPONSIVE */
-
         @media (max-width: 800px) {
-          .ann-two-col {
-            grid-template-columns: 1fr;
-          }
-
+          .ann-two-col,
           .ann-list {
             grid-template-columns: 1fr;
           }
@@ -743,7 +907,7 @@ export default function Announcements() {
           }
 
           .ann-hero {
-            padding: 37px 0 34px;
+            padding: 34px 0 30px;
           }
 
           .ann-content {
@@ -777,72 +941,65 @@ export default function Announcements() {
         }
       `}</style>
 
-      {/* HERO */}
+      {/* Light header */}
       <section className="ann-hero">
         <div className="ann-container">
           <div className="ann-eyebrow">
             <Megaphone size={17} />
-            ग्रामपंचायत बोखारा · अधिकृत माहिती
+            {t.official}
           </div>
-<h1>घोषणा आणि परिपत्रके</h1>
 
-          <p>
-            ग्रामसभा बैठका, कार्यालयीन आदेश, महत्त्वाच्या मुदती आणि
-            नागरिकांसाठी आवश्यक कागदपत्रांची माहिती एकाच ठिकाणी.
-          </p>
+          <h1>{t.title}</h1>
+          <p>{t.hero}</p>
 
           <div className="ann-breadcrumb">
-            मुख्यपृष्ठ / <span>घोषणा आणि परिपत्रके</span>
+            {t.home} / <span>{t.title}</span>
           </div>
         </div>
       </section>
 
-      {/* ANNOUNCEMENTS */}
-      <div className="ann-content">
+      <main className="ann-content">
         <div className="ann-container">
+          {/* Announcements */}
           <section className="ann-section">
             <div className="ann-section-heading">
               <div>
-                <h2>नवीन घोषणा आणि सूचना</h2>
-                <p>
-                  ग्रामपंचायतीच्या सूचना आणि महत्त्वाच्या अपडेट्स पाहा.
-                </p>
+                <h2>{t.latest}</h2>
+                <p>{t.latestDesc}</p>
               </div>
 
               <div className="ann-search">
                 <Search size={17} />
-
                 <input
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="सूचना शोधा..."
-                  aria-label="सूचना शोधा"
+                  placeholder={t.search}
+                  aria-label={t.search}
                 />
               </div>
             </div>
 
             <div className="ann-filter-row">
-              {["सर्व", "ग्रामसभा", "परिपत्रक", "महत्त्वाची मुदत"].map(
-                (filter) => (
-                  <button
-                    key={filter}
-                    className={`ann-filter ${
-                      activeFilter === filter ? "active" : ""
-                    }`}
-                    onClick={() => setActiveFilter(filter)}
-                  >
-                    {filter}
-                  </button>
-                )
-              )}
+              {t.filters.map((filter, index) => (
+                <button
+                  type="button"
+                  key={filter}
+                  className={`ann-filter ${
+                    activeFilter === index ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter(index)}
+                >
+                  {filter}
+                </button>
+              ))}
             </div>
 
             <div className="ann-list">
-              {filteredAnnouncements.length ? (
+              {filteredAnnouncements.length > 0 ? (
                 filteredAnnouncements.map((item, index) => (
                   <article
                     className="ann-card"
-                    key={`${item.title}-${index}`}
+                    key={`${language}-${item.title}-${index}`}
                   >
                     <div className="ann-datebox">
                       <strong>{item.date}</strong>
@@ -851,9 +1008,7 @@ export default function Announcements() {
 
                     <div className="ann-card-content">
                       <span className="ann-tag">{item.category}</span>
-
                       <h3>{item.title}</h3>
-
                       <p>{item.description}</p>
 
                       <span className="ann-status">
@@ -864,45 +1019,45 @@ export default function Announcements() {
                   </article>
                 ))
               ) : (
-                <div className="ann-empty">
-                  या शोधासाठी कोणतीही सूचना सापडली नाही.
-                </div>
+                <div className="ann-empty">{t.noResults}</div>
               )}
             </div>
           </section>
 
-          {/* CALENDAR AND DOWNLOADS */}
+          {/* Calendar and documents */}
           <section className="ann-section">
             <div className="ann-section-heading">
               <div>
-                <h2>ग्रामसभा आणि गाव कार्यक्रम दिनदर्शिका</h2>
-                <p>
-                  महिन्यानुसार तारीख निवडून कार्यक्रमांची माहिती पाहा.
-                </p>
+                <h2>{t.calendarTitle}</h2>
+                <p>{t.calendarDesc}</p>
               </div>
             </div>
 
             <div className="ann-two-col">
-              {/* CALENDAR */}
+              {/* Calendar */}
               <div className="ann-panel">
                 <div className="ann-calendar-top">
                   <h3>
-                    {marathiMonths[month]} {year}
+                    {t.months[month]} {year}
                   </h3>
 
                   <div className="ann-month-controls">
                     <button
+                      type="button"
                       className="ann-icon-btn"
                       onClick={() => changeMonth(-1)}
-                      aria-label="मागील महिना"
+                      aria-label={t.prevMonth}
+                      title={t.prevMonth}
                     >
                       <ChevronLeft size={18} />
                     </button>
 
                     <button
+                      type="button"
                       className="ann-icon-btn"
                       onClick={() => changeMonth(1)}
-                      aria-label="पुढील महिना"
+                      aria-label={t.nextMonth}
+                      title={t.nextMonth}
                     >
                       <ChevronRight size={18} />
                     </button>
@@ -910,34 +1065,34 @@ export default function Announcements() {
                 </div>
 
                 <div className="ann-calendar-grid">
-                  {weekDays.map((day) => (
+                  {t.weekdays.map((day) => (
                     <div className="ann-weekday" key={day}>
                       {day}
                     </div>
                   ))}
 
                   {Array.from({ length: firstDay }, (_, index) => (
-                    <div key={`blank-${index}`} />
+                    <div key={`blank-${year}-${month}-${index}`} />
                   ))}
 
                   {Array.from({ length: daysInMonth }, (_, index) => {
                     const day = index + 1;
-
                     const hasEvent = calendarEvents.some(
                       (item) => Number(item.date) === day
                     );
 
                     return (
                       <button
-                        key={day}
+                        type="button"
+                        key={`${year}-${month}-${day}`}
                         className={`ann-day ${
                           hasEvent ? "has-event" : ""
                         } ${selectedDay === day ? "selected" : ""}`}
                         onClick={() => setSelectedDay(day)}
-                        aria-label={`${day} ${marathiMonths[month]} ${year}`}
+                        aria-label={`${day} ${t.months[month]} ${year}`}
+                        aria-pressed={selectedDay === day}
                       >
                         {day}
-
                         {hasEvent && <span className="ann-dot" />}
                       </button>
                     );
@@ -946,22 +1101,19 @@ export default function Announcements() {
 
                 <div className="ann-legend">
                   <span className="ann-legend-dot" />
-                  चिन्ह असलेल्या तारखेला सूचना / कार्यक्रम आहे
+                  {t.legend}
                 </div>
 
                 <div className="ann-selected-events">
                   <h4>
                     {selectedDay
-                      ? `${selectedDay} ${marathiMonths[month]} ${year}`
-                      : "कार्यक्रमाची तारीख निवडा"}
+                      ? `${selectedDay} ${t.months[month]} ${year}`
+                      : t.selectDate}
                   </h4>
 
                   {selectedDay && selectedEvents.length > 0 ? (
                     selectedEvents.map((item) => (
-                      <div
-                        className="ann-event-item"
-                        key={item.title}
-                      >
+                      <div className="ann-event-item" key={item.title}>
                         <strong>{item.title}</strong>
                         <div>{item.category}</div>
                         {item.description}
@@ -969,30 +1121,29 @@ export default function Announcements() {
                     ))
                   ) : (
                     <p>
-                      {selectedDay
-                        ? "या तारखेसाठी कार्यक्रमाची नोंद उपलब्ध नाही."
-                        : "दिनदर्शिकेतील तारीख निवडा. उपलब्ध कार्यक्रम येथे दिसतील."}
+                      {selectedDay ? t.noEvent : t.selectDateHint}
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* DOWNLOAD SECTION */}
+              {/* Downloads */}
               <div className="ann-panel">
                 <div className="ann-section-heading">
                   <div>
-                    <h2 style={{ fontSize: 21 }}>
-                      डाउनलोड विभाग
-                    </h2>
-                    <p>नागरिकांसाठी आवश्यक कागदपत्रे.</p>
+                    <h2 style={{ fontSize: 21 }}>{t.download}</h2>
+                    <p>{t.documentsDesc}</p>
                   </div>
 
-                  <FileCheck2 size={24} color="#285440" />
+                  <FileCheck2 size={24} color="#34483a" />
                 </div>
 
                 <div className="ann-doc-list">
-                  {documents.map((document) => (
-                    <div className="ann-doc" key={document.title}>
+                  {t.documents.map((document, index) => (
+                    <div
+                      className="ann-doc"
+                      key={`${language}-${document.title}-${index}`}
+                    >
                       <div className="ann-doc-icon">
                         <FileText size={21} />
                       </div>
@@ -1000,21 +1151,17 @@ export default function Announcements() {
                       <div className="ann-doc-text">
                         <h4>{document.title}</h4>
                         <p>{document.subtitle}</p>
-
                         <span className="ann-doc-format">
                           {document.format}
                         </span>
                       </div>
 
                       <button
+                        type="button"
                         className="ann-download"
-                        title="डाउनलोड"
-                        aria-label={`${document.title} डाउनलोड`}
-                        onClick={() =>
-                          window.alert(
-                            "या कागदपत्राची PDF ग्रामपंचायत कार्यालयाकडून उपलब्ध झाल्यावर येथे डाउनलोड लिंक जोडता येईल."
-                          )
-                        }
+                        title={t.downloadTitle}
+                        aria-label={`${document.title} ${t.downloadTitle}`}
+                        onClick={() => window.alert(t.downloadAlert)}
                       >
                         <Download size={17} />
                       </button>
@@ -1023,33 +1170,25 @@ export default function Announcements() {
                 </div>
 
                 <div className="ann-note">
-                  <strong>टीप:</strong> सध्या दाखवलेली माहिती नमुना स्वरूपात
-                  आहे. अधिकृत तारखा, सूचना आणि PDF फाइल्स ग्रामपंचायतीकडून
-                  पुष्टी झाल्यानंतरच प्रकाशित कराव्यात.
+                  <strong>{t.noteTitle}</strong> {t.note}
                 </div>
               </div>
             </div>
           </section>
 
-          {/* FOOTER BANNER */}
+          {/* Contact information */}
           <section className="ann-footer-banner">
             <CalendarClock size={31} />
 
             <div>
-              <h3>
-                सूचना आणि कार्यक्रमांबाबत अधिक माहिती हवी आहे?
-              </h3>
-
-              <p>
-                अधिकृत सूचना, बैठकीचे वेळापत्रक आणि कागदपत्रांसाठी
-                ग्रामपंचायत बोखारा कार्यालयाशी संपर्क साधा.
-              </p>
+              <h3>{t.footerTitle}</h3>
+              <p>{t.footerDesc}</p>
             </div>
 
             <Bell size={23} />
           </section>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -1,40 +1,140 @@
 
 import { Droplets, TreePine, Building2 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
 
-const projects = [
-  {
-    number: "०१",
-    title: "पाणीपुरवठा व जलसंधारण",
-    description:
-      "गावातील पाणीपुरवठा, पावसाचे पाणी साठवणे आणि जलसंधारणाशी संबंधित विकास उपक्रम.",
-    image:
-      "https://tse1.mm.bing.net/th/id/OIP.tlCCExh6LEWuFvGA1EffLQHaFj?r=0&pid=Api&h=220&P=0",
-    icon: Droplets,
-    category: "जलव्यवस्थापन",
+const translations = {
+  mr: {
+    village: "ग्रामपंचायत बोखारा",
+    title: "विकास कामे व उपक्रम",
+    intro:
+      "गावाच्या प्रगतीसाठी पाणीपुरवठा, स्वच्छता, पर्यावरण आणि पायाभूत सुविधांशी संबंधित विकास क्षेत्रांची माहिती.",
+    sideTitle: "विकसित गाव, समृद्ध गाव",
+    sideText:
+      "ग्रामविकासाच्या विविध क्षेत्रांशी संबंधित माहिती येथे उपलब्ध करून दिली जाईल.",
+    sectionTitle: "विकासाची प्रमुख क्षेत्रे",
+    sectionDesc: "ग्रामपंचायतीच्या विकास कामांशी संबंधित प्रमुख विषय.",
+    count: "०३ प्रमुख क्षेत्रे",
+    status: "माहिती अद्ययावत होत आहे",
+    statusText:
+      "अधिकृत कामांची माहिती आणि प्रगती अहवाल उपलब्ध झाल्यावर येथे प्रसिद्ध केले जातील.",
+    noteTitle: "टीप:",
+    note:
+      "वरील छायाचित्रे प्रातिनिधिक आहेत. ती बोखारा गावातील प्रत्यक्ष विकास कामांची छायाचित्रे नाहीत. अधिकृत माहिती उपलब्ध झाल्यानंतर तपशील अद्ययावत केले जातील.",
+    projects: [
+      {
+        title: "पाणीपुरवठा व जलसंधारण",
+        description:
+          "गावातील पाणीपुरवठा, पावसाचे पाणी साठवणे आणि जलसंधारणाशी संबंधित विकास उपक्रम.",
+        category: "जलव्यवस्थापन",
+      },
+      {
+        title: "स्वच्छता व पर्यावरण",
+        description:
+          "स्वच्छ परिसर, कचरा व्यवस्थापन, वृक्षारोपण आणि पर्यावरण संवर्धनासाठीचे उपक्रम.",
+        category: "पर्यावरण",
+      },
+      {
+        title: "रस्ते व पायाभूत सुविधा",
+        description:
+          "गावातील रस्ते, सार्वजनिक जागा आणि मूलभूत सुविधांच्या विकासाशी संबंधित कामे.",
+        category: "पायाभूत सुविधा",
+      },
+    ],
   },
-  {
-    number: "०२",
-    title: "स्वच्छता व पर्यावरण",
-    description:
-      "स्वच्छ परिसर, कचरा व्यवस्थापन, वृक्षारोपण आणि पर्यावरण संवर्धनासाठीचे उपक्रम.",
-    image:
-      "https://tse2.mm.bing.net/th/id/OIP.mPh2yx4tk2oP1fapq_D_0AHaFj?r=0&pid=Api&h=220&P=0",
-    icon: TreePine,
-    category: "पर्यावरण",
+
+  hi: {
+    village: "ग्राम पंचायत बोखारा",
+    title: "विकास कार्य और पहल",
+    intro:
+      "गाँव की प्रगति के लिए जल आपूर्ति, स्वच्छता, पर्यावरण और बुनियादी सुविधाओं से संबंधित विकास क्षेत्रों की जानकारी।",
+    sideTitle: "विकसित गाँव, समृद्ध गाँव",
+    sideText:
+      "ग्राम विकास के विभिन्न क्षेत्रों से संबंधित जानकारी यहाँ उपलब्ध कराई जाएगी।",
+    sectionTitle: "विकास के प्रमुख क्षेत्र",
+    sectionDesc: "ग्राम पंचायत के विकास कार्यों से संबंधित प्रमुख विषय।",
+    count: "०३ प्रमुख क्षेत्र",
+    status: "जानकारी अपडेट की जा रही है",
+    statusText:
+      "आधिकारिक कार्यों की जानकारी और प्रगति रिपोर्ट उपलब्ध होने पर यहाँ प्रकाशित की जाएगी।",
+    noteTitle: "नोट:",
+    note:
+      "ऊपर दी गई तस्वीरें केवल उदाहरण के लिए हैं। ये बोखारा गाँव के वास्तविक विकास कार्यों की तस्वीरें नहीं हैं। आधिकारिक जानकारी उपलब्ध होने पर विवरण अपडेट किए जाएँगे।",
+    projects: [
+      {
+        title: "जल आपूर्ति और जल संरक्षण",
+        description:
+          "गाँव में जल आपूर्ति, वर्षा जल संग्रह और जल संरक्षण से संबंधित विकास पहल।",
+        category: "जल प्रबंधन",
+      },
+      {
+        title: "स्वच्छता और पर्यावरण",
+        description:
+          "स्वच्छ परिसर, कचरा प्रबंधन, वृक्षारोपण और पर्यावरण संरक्षण से संबंधित पहल।",
+        category: "पर्यावरण",
+      },
+      {
+        title: "सड़कें और बुनियादी सुविधाएँ",
+        description:
+          "गाँव की सड़कों, सार्वजनिक स्थानों और बुनियादी सुविधाओं के विकास से संबंधित कार्य।",
+        category: "बुनियादी सुविधाएँ",
+      },
+    ],
   },
-  {
-    number: "०३",
-    title: "रस्ते व पायाभूत सुविधा",
-    description:
-      "गावातील रस्ते, सार्वजनिक जागा आणि मूलभूत सुविधांच्या विकासाशी संबंधित कामे.",
-    image:
-      "https://tse3.mm.bing.net/th/id/OIP.SpeIvgyt3EMkHnEPZtOmZgHaEK?r=0&pid=Api&h=220&P=0",
-    icon: Building2,
-    category: "पायाभूत सुविधा",
+
+  en: {
+    village: "Gram Panchayat Bokhara",
+    title: "Development Works & Initiatives",
+    intro:
+      "Information about development areas related to water supply, sanitation, the environment and infrastructure for village progress.",
+    sideTitle: "A Developed Village, A Prosperous Village",
+    sideText:
+      "Information about various areas of village development will be made available here.",
+    sectionTitle: "Key Development Areas",
+    sectionDesc:
+      "Major areas related to Gram Panchayat development works.",
+    count: "03 Key Areas",
+    status: "Information being updated",
+    statusText:
+      "Details and progress reports of official works will be published here when available.",
+    noteTitle: "Note:",
+    note:
+      "The images above are representative illustrations. They are not photographs of actual development works in Bokhara village. Details will be updated when official information becomes available.",
+    projects: [
+      {
+        title: "Water Supply & Conservation",
+        description:
+          "Development initiatives related to village water supply, rainwater harvesting and water conservation.",
+        category: "Water Management",
+      },
+      {
+        title: "Sanitation & Environment",
+        description:
+          "Initiatives for clean surroundings, waste management, tree plantation and environmental protection.",
+        category: "Environment",
+      },
+      {
+        title: "Roads & Infrastructure",
+        description:
+          "Works related to the development of village roads, public spaces and essential infrastructure.",
+        category: "Infrastructure",
+      },
+    ],
   },
+};
+
+const projectImages = [
+  "https://tse1.mm.bing.net/th/id/OIP.tlCCExh6LEWuFvGA1EffLQHaFj?r=0&pid=Api&h=220&P=0",
+  "https://tse2.mm.bing.net/th/id/OIP.mPh2yx4tk2oP1fapq_D_0AHaFj?r=0&pid=Api&h=220&P=0",
+  "https://tse3.mm.bing.net/th/id/OIP.SpeIvgyt3EMkHnEPZtOmZgHaEK?r=0&pid=Api&h=220&P=0",
 ];
 
+const projectIcons = [Droplets, TreePine, Building2];
+const projectNumbers = ["०१", "०२", "०३"];
+
 export default function Development() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
   return (
     <main className="development-page">
       <style>{`
@@ -294,22 +394,14 @@ export default function Development() {
         <div className="dev-container">
           <div className="dev-heading">
             <div>
-              <div className="dev-eyebrow">
-                ग्रामपंचायत बोखारा
-              </div>
-
-              <h1>विकास कामे व उपक्रम</h1>
-
-              <p>
-                गावाच्या प्रगतीसाठी पाणीपुरवठा, स्वच्छता, पर्यावरण
-                आणि पायाभूत सुविधांशी संबंधित विकास क्षेत्रांची माहिती.
-              </p>
+              <div className="dev-eyebrow">{t.village}</div>
+              <h1>{t.title}</h1>
+              <p>{t.intro}</p>
             </div>
 
             <div className="dev-side-note">
-              <strong>विकसित गाव, समृद्ध गाव</strong>
-              ग्रामविकासाच्या विविध क्षेत्रांशी संबंधित माहिती येथे
-              उपलब्ध करून दिली जाईल.
+              <strong>{t.sideTitle}</strong>
+              {t.sideText}
             </div>
           </div>
         </div>
@@ -319,36 +411,29 @@ export default function Development() {
         <div className="dev-container">
           <div className="dev-section-heading">
             <div>
-              <h2>विकासाची प्रमुख क्षेत्रे</h2>
-              <p>
-                ग्रामपंचायतीच्या विकास कामांशी संबंधित प्रमुख विषय.
-              </p>
+              <h2>{t.sectionTitle}</h2>
+              <p>{t.sectionDesc}</p>
             </div>
 
-            <span className="dev-project-count">
-              ०३ प्रमुख क्षेत्रे
-            </span>
+            <span className="dev-project-count">{t.count}</span>
           </div>
 
           <div className="dev-grid">
-            {projects.map((project) => {
-              const Icon = project.icon;
+            {t.projects.map((project, index) => {
+              const Icon = projectIcons[index];
 
               return (
-                <article
-                  className="dev-card"
-                  key={project.number}
-                >
+                <article className="dev-card" key={projectNumbers[index]}>
                   <div className="dev-image-wrap">
                     <img
                       className="dev-image"
-                      src={project.image}
+                      src={projectImages[index]}
                       alt={project.title}
                       loading="lazy"
                     />
 
                     <span className="dev-number">
-                      {project.number}
+                      {projectNumbers[index]}
                     </span>
                   </div>
 
@@ -359,16 +444,11 @@ export default function Development() {
                     </div>
 
                     <h3>{project.title}</h3>
-
                     <p>{project.description}</p>
 
                     <div className="dev-status">
-                      <strong>
-                        माहिती अद्ययावत होत आहे
-                      </strong>
-
-                      अधिकृत कामांची माहिती आणि प्रगती अहवाल उपलब्ध
-                      झाल्यावर येथे प्रसिद्ध केले जातील.
+                      <strong>{t.status}</strong>
+                      {t.statusText}
                     </div>
                   </div>
                 </article>
@@ -377,9 +457,7 @@ export default function Development() {
           </div>
 
           <div className="dev-note">
-            <strong>टीप:</strong> वरील छायाचित्रे प्रातिनिधिक आहेत.
-            ती बोखारा गावातील प्रत्यक्ष विकास कामांची छायाचित्रे नाहीत.
-            अधिकृत माहिती उपलब्ध झाल्यानंतर तपशील अद्ययावत केले जातील.
+            <strong>{t.noteTitle}</strong> {t.note}
           </div>
         </div>
       </section>

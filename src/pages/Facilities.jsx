@@ -19,6 +19,7 @@ import {
   School,
   Landmark,
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
 
 const mapSearchUrl =
   "https://www.google.com/maps/search/?api=1&query=Bokhara%2C+Nagpur%2C+Maharashtra";
@@ -26,133 +27,457 @@ const mapSearchUrl =
 const mapEmbedUrl =
   "https://maps.google.com/maps?q=Bokhara%2C%20Nagpur%2C%20Maharashtra&t=k&z=14&output=embed";
 
-const facilities = [
-  {
-    id: "water",
-    title: "पाणीपुरवठा आणि स्वच्छता",
-    english: "Water Supply & Sanitation",
-    description:
-      "पिण्याचे पाणी, पाणीपुरवठा व्यवस्था, सांडपाणी व्यवस्थापन आणि गावातील स्वच्छतेविषयी माहिती.",
-    category: "मूलभूत सुविधा",
-    icon: Droplets,
-    color: "green",
+const translations = {
+  mr: {
+    home: "मुख्यपृष्ठ",
+    breadcrumb: "ग्राम पायाभूत सुविधा",
+    eyebrow: "BOKHARA · VILLAGE INFRASTRUCTURE",
+    heroTitle1: "ग्राम पायाभूत सुविधा",
+    heroTitle2: "आणि सोयी-सुविधा",
+    heroDescription:
+      "बोखारा गावातील मूलभूत सुविधा, सार्वजनिक सेवा आणि विकासकामांविषयी माहिती एकाच ठिकाणी पाहा. गावाच्या नकाशातून परिसर समजून घ्या आणि उपलब्ध अधिकृत माहितीचा वापर करा.",
+    viewMap: "गावाचा नकाशा पाहा",
+    viewFacilities: "सुविधा पाहा",
+    mapAria: "बोखारा गावाचा नकाशा",
+    mapTitle: "बोखारा गावाचा Google Maps satellite नकाशा",
+    facilitiesKicker: "PUBLIC FACILITIES",
+    facilitiesTitle: "गावातील सुविधा",
+    facilitiesDescription:
+      "पाणी, रस्ते, शिक्षण, आरोग्य आणि सामुदायिक सुविधांसंबंधी विभागनिहाय माहिती शोधा.",
+    searchPlaceholder: "सुविधा शोधा...",
+    searchAria: "सुविधा शोधा",
+    categoriesAria: "सुविधा प्रकार",
+    categories: [
+      { id: "all", label: "सर्व सुविधा" },
+      { id: "basic", label: "मूलभूत सुविधा" },
+      { id: "infrastructure", label: "पायाभूत सुविधा" },
+      { id: "education", label: "शिक्षण" },
+      { id: "health", label: "आरोग्य" },
+      { id: "community", label: "समुदाय" },
+      { id: "transport", label: "वाहतूक" },
+    ],
+    facilities: [
+      {
+        id: "water",
+        title: "पाणीपुरवठा आणि स्वच्छता",
+        english: "Water Supply & Sanitation",
+        description:
+          "पिण्याचे पाणी, पाणीपुरवठा व्यवस्था, सांडपाणी व्यवस्थापन आणि गावातील स्वच्छतेविषयी माहिती.",
+        category: "basic",
+        icon: Droplets,
+        color: "green",
+      },
+      {
+        id: "roads",
+        title: "रस्ते आणि पथदिवे",
+        english: "Roads & Streetlights",
+        description:
+          "गावातील रस्ते, अंतर्गत मार्ग, सार्वजनिक पथदिवे आणि संबंधित विकासकामांची माहिती.",
+        category: "infrastructure",
+        icon: Route,
+        color: "orange",
+      },
+      {
+        id: "education",
+        title: "शाळा आणि अंगणवाडी",
+        english: "Schools & Anganwadi",
+        description:
+          "गावातील शैक्षणिक सुविधा, अंगणवाडी सेवा आणि मुलांसाठी उपलब्ध असलेल्या सुविधांची माहिती.",
+        category: "education",
+        icon: School,
+        color: "blue",
+      },
+      {
+        id: "health",
+        title: "आरोग्य सेवा",
+        english: "Health Services",
+        description:
+          "आरोग्य केंद्रे, आरोग्य शिबिरे, लसीकरण मोहिमा आणि सार्वजनिक आरोग्यविषयक सूचना.",
+        category: "health",
+        icon: HeartPulse,
+        color: "red",
+      },
+      {
+        id: "community",
+        title: "वाचनालय आणि सामुदायिक सुविधा",
+        english: "Library & Community Facilities",
+        description:
+          "वाचनालये, खेळाची मैदाने, महिला स्वयं-साहाय्य गट आणि सामुदायिक केंद्रांची माहिती.",
+        category: "community",
+        icon: BookOpen,
+        color: "purple",
+      },
+      {
+        id: "transport",
+        title: "वाहतूक आणि संपर्क",
+        english: "Transport & Connectivity",
+        description:
+          "बसथांबे, सार्वजनिक वाहतूक आणि गावाला जोडणाऱ्या मार्गांविषयी माहिती.",
+        category: "transport",
+        icon: Bus,
+        color: "teal",
+      },
+    ],
+    statusPending: "सुविधा-विशिष्ट अधिकृत माहिती अद्ययावत करणे बाकी",
+    noResults: "या शोधासाठी कोणतीही सुविधा सापडली नाही.",
+    showAll: "सर्व सुविधा पाहा",
+    dashboardKicker: "SMART VILLAGE DASHBOARD",
+    dashboardTitle: "स्मार्ट व्हिलेज डॅशबोर्ड",
+    dashboardDescription:
+      "गावातील पायाभूत सुविधांची सद्यस्थिती आणि विकासकामांची प्रगती एकाच ठिकाणी दाखवण्यासाठी हा विभाग तयार केला आहे.",
+    dashboardItems: [
+      { id: "water", title: "पाणीपुरवठा", english: "Water coverage", icon: Waves },
+      { id: "roads", title: "रस्ते विकास", english: "Road development", icon: Route },
+      { id: "lights", title: "पथदिवे", english: "Streetlights", icon: Lightbulb },
+      { id: "sanitation", title: "स्वच्छता", english: "Sanitation", icon: ShieldCheck },
+      { id: "education", title: "शैक्षणिक सुविधा", english: "Education facilities", icon: School },
+      { id: "health", title: "आरोग्य शिबिरे", english: "Health camps", icon: HeartPulse },
+    ],
+    verificationPending: "पडताळणी बाकी",
+    noOfficialData: "अधिकृत आकडेवारी उपलब्ध नाही",
+    dashboardNote:
+      "टीप: डॅशबोर्डमधील आकडे ग्रामपंचायत किंवा संबंधित विभागाकडून पडताळलेली माहिती उपलब्ध झाल्यावर अद्ययावत करावेत.",
+    linksKicker: "USEFUL LINKS",
+    linksTitle: "उपयुक्त अधिकृत दुवे",
+    linksDescription: "शासनाच्या संकेतस्थळांवर आणि गावाच्या नकाशावर थेट जा.",
+    officialLinks: [
+      {
+        id: "maharashtra",
+        title: "महाराष्ट्र शासन",
+        description: "महाराष्ट्र शासनाचे अधिकृत संकेतस्थळ",
+        url: "https://www.maharashtra.gov.in/",
+        icon: Landmark,
+      },
+      {
+        id: "india",
+        title: "भारत सरकार",
+        description: "भारत सरकारचे राष्ट्रीय पोर्टल",
+        url: "https://www.india.gov.in/",
+        icon: Building2,
+      },
+      {
+        id: "maps",
+        title: "Google Maps",
+        description: "बोखारा गावाचा नकाशा उघडा",
+        url: mapSearchUrl,
+        icon: MapPinned,
+      },
+    ],
+    bottomTitle: "गावाच्या विकासासाठी माहिती महत्त्वाची आहे.",
+    bottomDescription:
+      "अधिकृत आकडेवारी आणि सुविधा-संबंधित माहिती उपलब्ध झाल्यावर हा विभाग अद्ययावत करता येईल.",
+    bottomButton: "गावाचा नकाशा",
   },
-  {
-    id: "roads",
-    title: "रस्ते आणि पथदिवे",
-    english: "Roads & Streetlights",
-    description:
-      "गावातील रस्ते, अंतर्गत मार्ग, सार्वजनिक पथदिवे आणि संबंधित विकासकामांची माहिती.",
-    category: "पायाभूत सुविधा",
-    icon: Route,
-    color: "orange",
-  },
-  {
-    id: "education",
-    title: "शाळा आणि अंगणवाडी",
-    english: "Schools & Anganwadi",
-    description:
-      "गावातील शैक्षणिक सुविधा, अंगणवाडी सेवा आणि मुलांसाठी उपलब्ध असलेल्या सुविधांची माहिती.",
-    category: "शिक्षण",
-    icon: School,
-    color: "blue",
-  },
-  {
-    id: "health",
-    title: "आरोग्य सेवा",
-    english: "Health Services",
-    description:
-      "आरोग्य केंद्रे, आरोग्य शिबिरे, लसीकरण मोहिमा आणि सार्वजनिक आरोग्यविषयक सूचना.",
-    category: "आरोग्य",
-    icon: HeartPulse,
-    color: "red",
-  },
-  {
-    id: "community",
-    title: "वाचनालय आणि सामुदायिक सुविधा",
-    english: "Library & Community Facilities",
-    description:
-      "वाचनालये, खेळाची मैदाने, महिला स्वयं-साहाय्य गट आणि सामुदायिक केंद्रांची माहिती.",
-    category: "समुदाय",
-    icon: BookOpen,
-    color: "purple",
-  },
-  {
-    id: "transport",
-    title: "वाहतूक आणि संपर्क",
-    english: "Transport & Connectivity",
-    description:
-      "बसथांबे, सार्वजनिक वाहतूक आणि गावाला जोडणाऱ्या मार्गांविषयी माहिती.",
-    category: "वाहतूक",
-    icon: Bus,
-    color: "teal",
-  },
-];
 
-const dashboardItems = [
-  { title: "पाणीपुरवठा", english: "Water coverage", icon: Waves },
-  { title: "रस्ते विकास", english: "Road development", icon: Route },
-  { title: "पथदिवे", english: "Streetlights", icon: Lightbulb },
-  { title: "स्वच्छता", english: "Sanitation", icon: ShieldCheck },
-  { title: "शैक्षणिक सुविधा", english: "Education facilities", icon: School },
-  { title: "आरोग्य शिबिरे", english: "Health camps", icon: HeartPulse },
-];
+  hi: {
+    home: "मुखपृष्ठ",
+    breadcrumb: "ग्राम बुनियादी सुविधाएँ",
+    eyebrow: "BOKHARA · VILLAGE INFRASTRUCTURE",
+    heroTitle1: "ग्राम बुनियादी सुविधाएँ",
+    heroTitle2: "और नागरिक सुविधाएँ",
+    heroDescription:
+      "बोखारा गाँव की बुनियादी सुविधाओं, सार्वजनिक सेवाओं और विकास कार्यों की जानकारी एक ही जगह देखें। गाँव का नक्शा देखें और उपलब्ध आधिकारिक जानकारी का उपयोग करें।",
+    viewMap: "गाँव का नक्शा देखें",
+    viewFacilities: "सुविधाएँ देखें",
+    mapAria: "बोखारा गाँव का नक्शा",
+    mapTitle: "बोखारा गाँव का Google Maps satellite नक्शा",
+    facilitiesKicker: "PUBLIC FACILITIES",
+    facilitiesTitle: "गाँव की सुविधाएँ",
+    facilitiesDescription:
+      "पानी, सड़क, शिक्षा, स्वास्थ्य और सामुदायिक सुविधाओं की श्रेणी के अनुसार जानकारी खोजें।",
+    searchPlaceholder: "सुविधाएँ खोजें...",
+    searchAria: "सुविधाएँ खोजें",
+    categoriesAria: "सुविधाओं की श्रेणियाँ",
+    categories: [
+      { id: "all", label: "सभी सुविधाएँ" },
+      { id: "basic", label: "बुनियादी सुविधाएँ" },
+      { id: "infrastructure", label: "आधारभूत संरचना" },
+      { id: "education", label: "शिक्षा" },
+      { id: "health", label: "स्वास्थ्य" },
+      { id: "community", label: "समुदाय" },
+      { id: "transport", label: "परिवहन" },
+    ],
+    facilities: [
+      {
+        id: "water",
+        title: "जलापूर्ति और स्वच्छता",
+        english: "Water Supply & Sanitation",
+        description:
+          "पीने के पानी, जलापूर्ति व्यवस्था, गंदे पानी के प्रबंधन और गाँव की स्वच्छता से जुड़ी जानकारी।",
+        category: "basic",
+        icon: Droplets,
+        color: "green",
+      },
+      {
+        id: "roads",
+        title: "सड़कें और स्ट्रीट लाइट",
+        english: "Roads & Streetlights",
+        description:
+          "गाँव की सड़कों, आंतरिक मार्गों, सार्वजनिक स्ट्रीट लाइट और संबंधित विकास कार्यों की जानकारी।",
+        category: "infrastructure",
+        icon: Route,
+        color: "orange",
+      },
+      {
+        id: "education",
+        title: "स्कूल और आंगनवाड़ी",
+        english: "Schools & Anganwadi",
+        description:
+          "गाँव की शैक्षणिक सुविधाओं, आंगनवाड़ी सेवाओं और बच्चों के लिए उपलब्ध सुविधाओं की जानकारी।",
+        category: "education",
+        icon: School,
+        color: "blue",
+      },
+      {
+        id: "health",
+        title: "स्वास्थ्य सेवाएँ",
+        english: "Health Services",
+        description:
+          "स्वास्थ्य केंद्रों, स्वास्थ्य शिविरों, टीकाकरण अभियानों और सार्वजनिक स्वास्थ्य सूचनाओं की जानकारी।",
+        category: "health",
+        icon: HeartPulse,
+        color: "red",
+      },
+      {
+        id: "community",
+        title: "पुस्तकालय और सामुदायिक सुविधाएँ",
+        english: "Library & Community Facilities",
+        description:
+          "पुस्तकालयों, खेल मैदानों, महिला स्वयं सहायता समूहों और सामुदायिक केंद्रों की जानकारी।",
+        category: "community",
+        icon: BookOpen,
+        color: "purple",
+      },
+      {
+        id: "transport",
+        title: "परिवहन और संपर्क",
+        english: "Transport & Connectivity",
+        description:
+          "बस स्टॉप, सार्वजनिक परिवहन और गाँव को जोड़ने वाले मार्गों की जानकारी।",
+        category: "transport",
+        icon: Bus,
+        color: "teal",
+      },
+    ],
+    statusPending: "इस सुविधा की आधिकारिक जानकारी अपडेट होना बाकी है",
+    noResults: "इस खोज में कोई सुविधा नहीं मिली।",
+    showAll: "सभी सुविधाएँ देखें",
+    dashboardKicker: "SMART VILLAGE DASHBOARD",
+    dashboardTitle: "स्मार्ट विलेज डैशबोर्ड",
+    dashboardDescription:
+      "गाँव की आधारभूत सुविधाओं की स्थिति और विकास कार्यों की प्रगति दिखाने के लिए यह विभाग बनाया गया है।",
+    dashboardItems: [
+      { id: "water", title: "जलापूर्ति", english: "Water coverage", icon: Waves },
+      { id: "roads", title: "सड़क विकास", english: "Road development", icon: Route },
+      { id: "lights", title: "स्ट्रीट लाइट", english: "Streetlights", icon: Lightbulb },
+      { id: "sanitation", title: "स्वच्छता", english: "Sanitation", icon: ShieldCheck },
+      { id: "education", title: "शैक्षणिक सुविधाएँ", english: "Education facilities", icon: School },
+      { id: "health", title: "स्वास्थ्य शिविर", english: "Health camps", icon: HeartPulse },
+    ],
+    verificationPending: "सत्यापन बाकी",
+    noOfficialData: "आधिकारिक आँकड़े उपलब्ध नहीं हैं",
+    dashboardNote:
+      "नोट: डैशबोर्ड के आँकड़े ग्राम पंचायत या संबंधित विभाग से सत्यापित जानकारी मिलने के बाद अपडेट किए जाने चाहिए।",
+    linksKicker: "USEFUL LINKS",
+    linksTitle: "उपयोगी आधिकारिक लिंक",
+    linksDescription: "सरकारी वेबसाइटों और गाँव के नक्शे पर सीधे जाएँ।",
+    officialLinks: [
+      {
+        id: "maharashtra",
+        title: "महाराष्ट्र शासन",
+        description: "महाराष्ट्र शासन की आधिकारिक वेबसाइट",
+        url: "https://www.maharashtra.gov.in/",
+        icon: Landmark,
+      },
+      {
+        id: "india",
+        title: "भारत सरकार",
+        description: "भारत सरकार का राष्ट्रीय पोर्टल",
+        url: "https://www.india.gov.in/",
+        icon: Building2,
+      },
+      {
+        id: "maps",
+        title: "Google Maps",
+        description: "बोखारा गाँव का नक्शा खोलें",
+        url: mapSearchUrl,
+        icon: MapPinned,
+      },
+    ],
+    bottomTitle: "गाँव के विकास के लिए जानकारी महत्वपूर्ण है।",
+    bottomDescription:
+      "आधिकारिक आँकड़े और सुविधाओं से जुड़ी जानकारी मिलने पर इस विभाग को अपडेट किया जा सकता है।",
+    bottomButton: "गाँव का नक्शा",
+  },
 
-const officialLinks = [
-  {
-    title: "महाराष्ट्र शासन",
-    description: "महाराष्ट्र शासनाचे अधिकृत संकेतस्थळ",
-    url: "https://www.maharashtra.gov.in/",
-    icon: Landmark,
+  en: {
+    home: "Home",
+    breadcrumb: "Village Infrastructure",
+    eyebrow: "BOKHARA · VILLAGE INFRASTRUCTURE",
+    heroTitle1: "Village Infrastructure",
+    heroTitle2: "and Public Facilities",
+    heroDescription:
+      "Explore information about Bokhara's basic facilities, public services and development works in one place. View the village map and use the official information available.",
+    viewMap: "View Village Map",
+    viewFacilities: "Explore Facilities",
+    mapAria: "Map of Bokhara village",
+    mapTitle: "Google Maps satellite map of Bokhara village",
+    facilitiesKicker: "PUBLIC FACILITIES",
+    facilitiesTitle: "Village Facilities",
+    facilitiesDescription:
+      "Find information by category about water, roads, education, healthcare and community facilities.",
+    searchPlaceholder: "Search facilities...",
+    searchAria: "Search facilities",
+    categoriesAria: "Facility categories",
+    categories: [
+      { id: "all", label: "All Facilities" },
+      { id: "basic", label: "Basic Facilities" },
+      { id: "infrastructure", label: "Infrastructure" },
+      { id: "education", label: "Education" },
+      { id: "health", label: "Healthcare" },
+      { id: "community", label: "Community" },
+      { id: "transport", label: "Transport" },
+    ],
+    facilities: [
+      {
+        id: "water",
+        title: "Water Supply & Sanitation",
+        english: "Water Supply & Sanitation",
+        description:
+          "Information about drinking water, water supply systems, wastewater management and village sanitation.",
+        category: "basic",
+        icon: Droplets,
+        color: "green",
+      },
+      {
+        id: "roads",
+        title: "Roads & Streetlights",
+        english: "Roads & Streetlights",
+        description:
+          "Information about village roads, internal routes, public streetlights and related development works.",
+        category: "infrastructure",
+        icon: Route,
+        color: "orange",
+      },
+      {
+        id: "education",
+        title: "Schools & Anganwadi",
+        english: "Schools & Anganwadi",
+        description:
+          "Information about educational facilities, Anganwadi services and facilities available for children.",
+        category: "education",
+        icon: School,
+        color: "blue",
+      },
+      {
+        id: "health",
+        title: "Health Services",
+        english: "Health Services",
+        description:
+          "Information about health centres, health camps, vaccination drives and public health notices.",
+        category: "health",
+        icon: HeartPulse,
+        color: "red",
+      },
+      {
+        id: "community",
+        title: "Library & Community Facilities",
+        english: "Library & Community Facilities",
+        description:
+          "Information about libraries, playgrounds, women's self-help groups and community centres.",
+        category: "community",
+        icon: BookOpen,
+        color: "purple",
+      },
+      {
+        id: "transport",
+        title: "Transport & Connectivity",
+        english: "Transport & Connectivity",
+        description:
+          "Information about bus stops, public transport and routes connecting the village.",
+        category: "transport",
+        icon: Bus,
+        color: "teal",
+      },
+    ],
+    statusPending: "Official information for this facility is yet to be updated",
+    noResults: "No facilities found for this search.",
+    showAll: "Show All Facilities",
+    dashboardKicker: "SMART VILLAGE DASHBOARD",
+    dashboardTitle: "Smart Village Dashboard",
+    dashboardDescription:
+      "This section is designed to present the current status of village infrastructure and the progress of development works.",
+    dashboardItems: [
+      { id: "water", title: "Water Supply", english: "Water coverage", icon: Waves },
+      { id: "roads", title: "Road Development", english: "Road development", icon: Route },
+      { id: "lights", title: "Streetlights", english: "Streetlights", icon: Lightbulb },
+      { id: "sanitation", title: "Sanitation", english: "Sanitation", icon: ShieldCheck },
+      { id: "education", title: "Education Facilities", english: "Education facilities", icon: School },
+      { id: "health", title: "Health Camps", english: "Health camps", icon: HeartPulse },
+    ],
+    verificationPending: "Verification Pending",
+    noOfficialData: "Official figures are not available",
+    dashboardNote:
+      "Note: Dashboard figures should be updated when verified information is available from the Gram Panchayat or the relevant department.",
+    linksKicker: "USEFUL LINKS",
+    linksTitle: "Useful Official Links",
+    linksDescription:
+      "Go directly to government websites and the village map.",
+    officialLinks: [
+      {
+        id: "maharashtra",
+        title: "Government of Maharashtra",
+        description: "Official website of the Government of Maharashtra",
+        url: "https://www.maharashtra.gov.in/",
+        icon: Landmark,
+      },
+      {
+        id: "india",
+        title: "Government of India",
+        description: "National portal of the Government of India",
+        url: "https://www.india.gov.in/",
+        icon: Building2,
+      },
+      {
+        id: "maps",
+        title: "Google Maps",
+        description: "Open the map of Bokhara village",
+        url: mapSearchUrl,
+        icon: MapPinned,
+      },
+    ],
+    bottomTitle: "Information matters for village development.",
+    bottomDescription:
+      "This section can be updated when official figures and facility-related information become available.",
+    bottomButton: "Village Map",
   },
-  {
-    title: "भारत सरकार",
-    description: "भारत सरकारचे राष्ट्रीय पोर्टल",
-    url: "https://www.india.gov.in/",
-    icon: Building2,
-  },
-  {
-    title: "Google Maps",
-    description: "बोखारा गावाचा नकाशा उघडा",
-    url: mapSearchUrl,
-    icon: MapPinned,
-  },
-];
-
-const categories = [
-  "सर्व सुविधा",
-  "मूलभूत सुविधा",
-  "पायाभूत सुविधा",
-  "शिक्षण",
-  "आरोग्य",
-  "समुदाय",
-  "वाहतूक",
-];
+};
 
 export default function Facilities() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("सर्व सुविधा");
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const filteredFacilities = useMemo(() => {
-    const term = search.trim().toLocaleLowerCase("mr");
+    const term = search.trim().toLocaleLowerCase();
 
-    return facilities.filter((facility) => {
+    return t.facilities.filter((facility) => {
       const matchesCategory =
-        activeCategory === "सर्व सुविधा" ||
-        facility.category === activeCategory;
+        activeCategory === "all" || facility.category === activeCategory;
 
       const searchableText = [
         facility.title,
         facility.english,
         facility.description,
-        facility.category,
       ]
         .join(" ")
-        .toLocaleLowerCase("mr");
+        .toLocaleLowerCase();
 
       return matchesCategory && (!term || searchableText.includes(term));
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, t]);
 
   return (
     <main className="bokhara-facilities">
@@ -171,13 +496,8 @@ export default function Facilities() {
           min-height: 100vh;
         }
 
-        .bokhara-facilities * {
-          box-sizing: border-box;
-        }
-
-        .bokhara-facilities a {
-          text-decoration: none;
-        }
+        .bokhara-facilities * { box-sizing: border-box; }
+        .bokhara-facilities a { text-decoration: none; }
 
         .bf-container {
           width: min(1160px, calc(100% - 40px));
@@ -202,10 +522,7 @@ export default function Facilities() {
           flex-wrap: wrap;
         }
 
-        .bf-breadcrumb a {
-          color: var(--green);
-          font-weight: 700;
-        }
+        .bf-breadcrumb a { color: var(--green); font-weight: 700; }
 
         .bf-hero-grid {
           display: grid;
@@ -265,14 +582,8 @@ export default function Facilities() {
           cursor: pointer;
         }
 
-        .bf-btn:hover {
-          transform: translateY(-2px);
-        }
-
-        .bf-btn-light {
-          background: var(--green);
-          color: #fff;
-        }
+        .bf-btn:hover { transform: translateY(-2px); }
+        .bf-btn-light { background: var(--green); color: #fff; }
 
         .bf-btn-outline {
           color: var(--green);
@@ -280,7 +591,6 @@ export default function Facilities() {
           background: rgba(255, 255, 255, 0.6);
         }
 
-        /* Hero map: replaces the old photo card */
         .bf-hero-aside {
           position: relative;
           min-height: 390px;
@@ -300,13 +610,8 @@ export default function Facilities() {
           background: #e5ede5;
         }
 
-        .bf-section {
-          padding: 67px 0;
-        }
-
-        .bf-section-soft {
-          background: var(--paper);
-        }
+        .bf-section { padding: 67px 0; }
+        .bf-section-soft { background: var(--paper); }
 
         .bf-section-head {
           display: flex;
@@ -422,35 +727,12 @@ export default function Facilities() {
           margin-bottom: 19px;
         }
 
-        .bf-color-green {
-          background: #e8f4eb;
-          color: #217149;
-        }
-
-        .bf-color-orange {
-          background: #fbf0e4;
-          color: #a86320;
-        }
-
-        .bf-color-blue {
-          background: #eaf1fc;
-          color: #3766a7;
-        }
-
-        .bf-color-red {
-          background: #fbeaea;
-          color: #b34646;
-        }
-
-        .bf-color-purple {
-          background: #f1ebfa;
-          color: #7754a7;
-        }
-
-        .bf-color-teal {
-          background: #e6f5f2;
-          color: #247c70;
-        }
+        .bf-color-green { background: #e8f4eb; color: #217149; }
+        .bf-color-orange { background: #fbf0e4; color: #a86320; }
+        .bf-color-blue { background: #eaf1fc; color: #3766a7; }
+        .bf-color-red { background: #fbeaea; color: #b34646; }
+        .bf-color-purple { background: #f1ebfa; color: #7754a7; }
+        .bf-color-teal { background: #e6f5f2; color: #247c70; }
 
         .bf-facility-category {
           color: var(--green);
@@ -491,9 +773,7 @@ export default function Facilities() {
           line-height: 1.7;
         }
 
-        .bf-card-note svg {
-          flex-shrink: 0;
-        }
+        .bf-card-note svg { flex-shrink: 0; }
 
         .bf-empty {
           border: 1px dashed #cbd8ce;
@@ -545,10 +825,7 @@ export default function Facilities() {
           font-weight: 800;
         }
 
-        .bf-dashboard-card h3 {
-          margin: 0 0 5px;
-          font-size: 15px;
-        }
+        .bf-dashboard-card h3 { margin: 0 0 5px; font-size: 15px; }
 
         .bf-dashboard-card p {
           margin: 0;
@@ -638,9 +915,7 @@ export default function Facilities() {
           gap: 20px;
         }
 
-        .bf-bottom-inner strong {
-          font-size: 16px;
-        }
+        .bf-bottom-inner strong { font-size: 16px; }
 
         .bf-bottom-inner p {
           color: #d4e6d9;
@@ -649,160 +924,64 @@ export default function Facilities() {
           line-height: 1.8;
         }
 
-        .bf-bottom-inner .bf-btn {
-          flex-shrink: 0;
-        }
+        .bf-bottom-inner .bf-btn { flex-shrink: 0; }
 
         @media (max-width: 900px) {
-          .bf-hero-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
-          }
-
-          .bf-hero-aside {
-            min-height: 320px;
-          }
-
-          .bf-hero-map {
-            height: 320px;
-          }
-
-          .bf-facility-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-
-          .bf-dashboard-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-
-          .bf-official-grid {
-            grid-template-columns: 1fr;
-          }
+          .bf-hero-grid { grid-template-columns: 1fr; gap: 30px; }
+          .bf-hero-aside { min-height: 320px; }
+          .bf-hero-map { height: 320px; }
+          .bf-facility-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .bf-dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .bf-official-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 600px) {
-          .bf-container {
-            width: min(100% - 28px, 1160px);
-          }
-
-          .bf-hero {
-            padding: 35px 0 40px;
-          }
-
-          .bf-breadcrumb {
-            margin-bottom: 23px;
-          }
-
-          .bf-hero h1 {
-            font-size: 32px;
-          }
-
-          .bf-hero-copy {
-            font-size: 13px;
-          }
-
-          .bf-hero-actions {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          .bf-section {
-            padding: 45px 0;
-          }
-
-          .bf-section-head {
-            align-items: stretch;
-            flex-direction: column;
-            gap: 17px;
-          }
-
-          .bf-search {
-            width: 100%;
-            min-width: 0;
-          }
-
-          .bf-facility-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .bf-facility-card p {
-            min-height: 0;
-          }
-
-          .bf-hero-aside {
-            min-height: 300px;
-          }
-
-          .bf-hero-map {
-            height: 300px;
-          }
-
-          .bf-dashboard-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-          }
-
-          .bf-dashboard-card {
-            padding: 14px;
-          }
-
-          .bf-dashboard-top {
-            align-items: flex-start;
-            flex-direction: column;
-            margin-bottom: 13px;
-          }
-
-          .bf-dashboard-card h3 {
-            font-size: 13px;
-          }
-
-          .bf-dashboard-card p {
-            font-size: 10px;
-          }
-
-          .bf-dashboard-value {
-            font-size: 21px;
-          }
-
-          .bf-bottom-inner {
-            align-items: stretch;
-            flex-direction: column;
-          }
-
-          .bf-bottom-inner .bf-btn {
-            align-self: flex-start;
-          }
+          .bf-container { width: min(100% - 28px, 1160px); }
+          .bf-hero { padding: 35px 0 40px; }
+          .bf-breadcrumb { margin-bottom: 23px; }
+          .bf-hero h1 { font-size: 32px; }
+          .bf-hero-copy { font-size: 13px; }
+          .bf-hero-actions { flex-direction: column; align-items: stretch; }
+          .bf-section { padding: 45px 0; }
+          .bf-section-head { align-items: stretch; flex-direction: column; gap: 17px; }
+          .bf-search { width: 100%; min-width: 0; }
+          .bf-facility-grid { grid-template-columns: 1fr; }
+          .bf-facility-card p { min-height: 0; }
+          .bf-hero-aside { min-height: 300px; }
+          .bf-hero-map { height: 300px; }
+          .bf-dashboard-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+          .bf-dashboard-card { padding: 14px; }
+          .bf-dashboard-top { align-items: flex-start; flex-direction: column; margin-bottom: 13px; }
+          .bf-dashboard-card h3 { font-size: 13px; }
+          .bf-dashboard-card p { font-size: 10px; }
+          .bf-dashboard-value { font-size: 21px; }
+          .bf-bottom-inner { align-items: stretch; flex-direction: column; }
+          .bf-bottom-inner .bf-btn { align-self: flex-start; }
         }
       `}</style>
 
-      {/* Hero */}
       <section className="bf-hero">
         <div className="bf-container">
           <div className="bf-breadcrumb">
-            <a href="/">मुख्यपृष्ठ</a>
+            <a href="/">{t.home}</a>
             <ChevronRight size={14} />
-            <span>ग्राम पायाभूत सुविधा</span>
+            <span>{t.breadcrumb}</span>
           </div>
 
           <div className="bf-hero-grid">
             <div>
               <div className="bf-eyebrow">
                 <MapPin size={14} />
-                BOKHARA · VILLAGE INFRASTRUCTURE
+                {t.eyebrow}
               </div>
 
               <h1>
-                ग्राम पायाभूत सुविधा
+                {t.heroTitle1}
                 <br />
-                आणि सोयी-सुविधा
+                {t.heroTitle2}
               </h1>
 
-              <p className="bf-hero-copy">
-                बोखारा गावातील मूलभूत सुविधा, सार्वजनिक सेवा आणि
-                विकासकामांविषयी माहिती एकाच ठिकाणी पाहा. गावाच्या
-                नकाशातून परिसर समजून घ्या आणि उपलब्ध अधिकृत
-                माहितीचा वापर करा.
-              </p>
+              <p className="bf-hero-copy">{t.heroDescription}</p>
 
               <div className="bf-hero-actions">
                 <a
@@ -812,22 +991,21 @@ export default function Facilities() {
                   rel="noreferrer"
                 >
                   <MapPinned size={17} />
-                  गावाचा नकाशा पाहा
+                  {t.viewMap}
                   <ArrowUpRight size={15} />
                 </a>
 
                 <a className="bf-btn bf-btn-outline" href="#bf-facilities">
-                  सुविधा पाहा
+                  {t.viewFacilities}
                   <ChevronRight size={16} />
                 </a>
               </div>
             </div>
 
-            {/* Village map replaces the old hero photo card */}
-            <aside className="bf-hero-aside" aria-label="बोखारा गावाचा नकाशा">
+            <aside className="bf-hero-aside" aria-label={t.mapAria}>
               <iframe
                 className="bf-hero-map"
-                title="बोखारा गावाचा Google Maps satellite नकाशा"
+                title={t.mapTitle}
                 src={mapEmbedUrl}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -838,17 +1016,13 @@ export default function Facilities() {
         </div>
       </section>
 
-      {/* Facilities */}
       <section className="bf-section" id="bf-facilities">
         <div className="bf-container">
           <div className="bf-section-head">
             <div>
-              <div className="bf-kicker">PUBLIC FACILITIES</div>
-              <h2>गावातील सुविधा</h2>
-              <p className="bf-section-intro">
-                पाणी, रस्ते, शिक्षण, आरोग्य आणि सामुदायिक सुविधांसंबंधी
-                विभागनिहाय माहिती शोधा.
-              </p>
+              <div className="bf-kicker">{t.facilitiesKicker}</div>
+              <h2>{t.facilitiesTitle}</h2>
+              <p className="bf-section-intro">{t.facilitiesDescription}</p>
             </div>
 
             <label className="bf-search">
@@ -857,24 +1031,24 @@ export default function Facilities() {
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="सुविधा शोधा..."
-                aria-label="सुविधा शोधा"
+                placeholder={t.searchPlaceholder}
+                aria-label={t.searchAria}
               />
             </label>
           </div>
 
-          <div className="bf-category-list" aria-label="सुविधा प्रकार">
-            {categories.map((category) => (
+          <div className="bf-category-list" aria-label={t.categoriesAria}>
+            {t.categories.map((category) => (
               <button
                 type="button"
-                key={category}
+                key={category.id}
                 className={`bf-category ${
-                  activeCategory === category ? "active" : ""
+                  activeCategory === category.id ? "active" : ""
                 }`}
-                aria-pressed={activeCategory === category}
-                onClick={() => setActiveCategory(category)}
+                aria-pressed={activeCategory === category.id}
+                onClick={() => setActiveCategory(category.id)}
               >
-                {category}
+                {category.label}
               </button>
             ))}
           </div>
@@ -882,6 +1056,9 @@ export default function Facilities() {
           <div className="bf-facility-grid">
             {filteredFacilities.map((facility) => {
               const Icon = facility.icon;
+              const categoryLabel =
+                t.categories.find((category) => category.id === facility.category)
+                  ?.label ?? "";
 
               return (
                 <article className="bf-facility-card" key={facility.id}>
@@ -889,23 +1066,14 @@ export default function Facilities() {
                     <Icon size={24} />
                   </div>
 
-                  <div className="bf-facility-category">
-                    {facility.category}
-                  </div>
-
+                  <div className="bf-facility-category">{categoryLabel}</div>
                   <h3>{facility.title}</h3>
-
-                  <div className="bf-facility-english">
-                    {facility.english}
-                  </div>
-
+                  <div className="bf-facility-english">{facility.english}</div>
                   <p>{facility.description}</p>
 
                   <div className="bf-card-note">
                     <CheckCircle2 size={15} />
-                    <span>
-                      सुविधा-विशिष्ट अधिकृत माहिती अद्ययावत करणे बाकी
-                    </span>
+                    <span>{t.statusPending}</span>
                   </div>
                 </article>
               );
@@ -914,16 +1082,16 @@ export default function Facilities() {
             {filteredFacilities.length === 0 && (
               <div className="bf-empty">
                 <Search size={25} />
-                <p>या शोधासाठी कोणतीही सुविधा सापडली नाही.</p>
+                <p>{t.noResults}</p>
                 <button
                   className="bf-category active"
                   type="button"
                   onClick={() => {
                     setSearch("");
-                    setActiveCategory("सर्व सुविधा");
+                    setActiveCategory("all");
                   }}
                 >
-                  सर्व सुविधा पाहा
+                  {t.showAll}
                 </button>
               </div>
             )}
@@ -931,63 +1099,55 @@ export default function Facilities() {
         </div>
       </section>
 
-      {/* Smart Village dashboard */}
       <section className="bf-section" id="bf-dashboard">
         <div className="bf-container">
-          <div className="bf-kicker">SMART VILLAGE DASHBOARD</div>
-          <h2>स्मार्ट व्हिलेज डॅशबोर्ड</h2>
-          <p className="bf-section-intro">
-            गावातील पायाभूत सुविधांची सद्यस्थिती आणि विकासकामांची
-            प्रगती एकाच ठिकाणी दाखवण्यासाठी हा विभाग तयार केला आहे.
-          </p>
+          <div className="bf-kicker">{t.dashboardKicker}</div>
+          <h2>{t.dashboardTitle}</h2>
+          <p className="bf-section-intro">{t.dashboardDescription}</p>
 
           <div className="bf-dashboard-grid">
-            {dashboardItems.map((item) => {
+            {t.dashboardItems.map((item) => {
               const Icon = item.icon;
 
               return (
-                <article className="bf-dashboard-card" key={item.title}>
+                <article className="bf-dashboard-card" key={item.id}>
                   <div className="bf-dashboard-top">
                     <div className="bf-dashboard-icon">
                       <Icon size={20} />
                     </div>
-                    <span className="bf-unverified">पडताळणी बाकी</span>
+                    <span className="bf-unverified">
+                      {t.verificationPending}
+                    </span>
                   </div>
 
                   <h3>{item.title}</h3>
                   <p>{item.english}</p>
                   <div className="bf-dashboard-value">—</div>
-                  <p>अधिकृत आकडेवारी उपलब्ध नाही</p>
+                  <p>{t.noOfficialData}</p>
                 </article>
               );
             })}
           </div>
 
-          <p className="bf-dashboard-footnote">
-            टीप: डॅशबोर्डमधील आकडे ग्रामपंचायत किंवा संबंधित विभागाकडून
-            पडताळलेली माहिती उपलब्ध झाल्यावर अद्ययावत करावेत.
-          </p>
+          <p className="bf-dashboard-footnote">{t.dashboardNote}</p>
         </div>
       </section>
 
-      {/* Official links */}
       <section className="bf-section bf-section-soft" id="bf-official-links">
         <div className="bf-container">
-          <div className="bf-kicker">USEFUL LINKS</div>
-          <h2>उपयुक्त अधिकृत दुवे</h2>
-          <p className="bf-section-intro">
-            शासनाच्या संकेतस्थळांवर आणि गावाच्या नकाशावर थेट जा.
-          </p>
+          <div className="bf-kicker">{t.linksKicker}</div>
+          <h2>{t.linksTitle}</h2>
+          <p className="bf-section-intro">{t.linksDescription}</p>
 
           <div className="bf-official-grid">
-            {officialLinks.map((link) => {
+            {t.officialLinks.map((link) => {
               const Icon = link.icon;
 
               return (
                 <a
                   className="bf-official-card"
                   href={link.url}
-                  key={link.title}
+                  key={link.id}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -1008,15 +1168,11 @@ export default function Facilities() {
         </div>
       </section>
 
-      {/* Bottom call to action */}
       <section className="bf-bottom-band">
         <div className="bf-container bf-bottom-inner">
           <div>
-            <strong>गावाच्या विकासासाठी माहिती महत्त्वाची आहे.</strong>
-            <p>
-              अधिकृत आकडेवारी आणि सुविधा-संबंधित माहिती उपलब्ध झाल्यावर
-              हा विभाग अद्ययावत करता येईल.
-            </p>
+            <strong>{t.bottomTitle}</strong>
+            <p>{t.bottomDescription}</p>
           </div>
 
           <a
@@ -1025,7 +1181,7 @@ export default function Facilities() {
             target="_blank"
             rel="noreferrer"
           >
-            गावाचा नकाशा
+            {t.bottomButton}
             <ArrowUpRight size={16} />
           </a>
         </div>

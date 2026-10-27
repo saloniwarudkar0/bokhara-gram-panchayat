@@ -1,9 +1,66 @@
 
 import { ArrowUpRight, CloudSun, MapPin } from "lucide-react";
 
+import { useLanguage } from "../pages/LanguageContext";
+
 export default function VillageWeather() {
+  const { language } = useLanguage();
+
   const weatherUrl =
     "https://www.google.com/search?q=Bokhara+Nagpur+Maharashtra+weather";
+
+  const textByLanguage = {
+    mr: {
+      kicker: "बोखारा · दैनिक हवामान",
+      heading: "आपल्या गावाचं हवामान",
+      intro:
+        "ऊन असो, पाऊस असो किंवा ढगाळ वातावरण — दिवसाचं नियोजन करण्यासाठी हवामानाची माहिती पाहा.",
+      location: "बोखारा, नागपूर, महाराष्ट्र",
+      titleLine1: "आज निसर्गाचा",
+      titleLine2: "अंदाज काय आहे?",
+      description:
+        "आजचे तापमान, पावसाचा अंदाज आणि हवामानाची ताजी माहिती Google वर पाहा.",
+      button: "हवामान पाहा",
+      ariaLabel:
+        "Google वर बोखारा नागपूरचे हवामान नवीन टॅबमध्ये पाहा",
+      footnote: "ग्रामपंचायत बोखारा · नागपूर",
+      update: "ताजी माहिती पाहण्यासाठी क्लिक करा ↗",
+    },
+    hi: {
+      kicker: "बोखारा · दैनिक मौसम",
+      heading: "हमारे गाँव का मौसम",
+      intro:
+        "धूप हो, बारिश हो या बादल छाए हों — दिन की योजना बनाने के लिए मौसम की जानकारी देखें।",
+      location: "बोखारा, नागपुर, महाराष्ट्र",
+      titleLine1: "आज मौसम का",
+      titleLine2: "मिज़ाज कैसा है?",
+      description:
+        "आज का तापमान, बारिश का पूर्वानुमान और मौसम की ताज़ा जानकारी Google पर देखें।",
+      button: "मौसम देखें",
+      ariaLabel:
+        "Google पर बोखारा नागपुर का मौसम नए टैब में देखें",
+      footnote: "बोखारा ग्राम पंचायत · नागपुर",
+      update: "ताज़ा जानकारी देखने के लिए क्लिक करें ↗",
+    },
+    en: {
+      kicker: "BOKHARA · DAILY WEATHER",
+      heading: "Weather in Our Village",
+      intro:
+        "Whether it is sunny, rainy, or cloudy, check the weather to help plan your day.",
+      location: "Bokhara, Nagpur, Maharashtra",
+      titleLine1: "What does",
+      titleLine2: "today's weather bring?",
+      description:
+        "Check today's temperature, rain forecast, and the latest weather information on Google.",
+      button: "Check Weather",
+      ariaLabel:
+        "View Bokhara Nagpur weather on Google in a new tab",
+      footnote: "Bokhara Gram Panchayat · Nagpur",
+      update: "Click to view the latest information ↗",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
 
   return (
     <>
@@ -257,59 +314,57 @@ export default function VillageWeather() {
         }
       `}</style>
 
-      <section className="village-weather" aria-labelledby="village-weather-title">
+      <section
+        className="village-weather"
+        aria-labelledby="village-weather-title"
+      >
         <div className="village-weather-inner">
           <div className="village-weather-heading">
             <div>
               <span className="village-weather-kicker">
-                BO KHARA · DAILY WEATHER
+                {text.kicker}
               </span>
 
               <h2 id="village-weather-title">
-                आपल्या गावाचं हवामान
+                {text.heading}
               </h2>
             </div>
 
-            <p>
-              ऊन असो, पाऊस असो किंवा ढगाळ वातावरण —
-              दिवसाचं नियोजन करण्यासाठी हवामानाची माहिती पाहा.
-            </p>
+            <p>{text.intro}</p>
           </div>
 
           <div className="village-weather-scene">
             <div className="village-weather-content">
               <span className="village-weather-location">
                 <MapPin size={15} />
-                बोखारा, नागपूर, महाराष्ट्र
+                {text.location}
               </span>
 
               <h3>
-                आज निसर्गाचा<br />
-                अंदाज काय आहे?
+                {text.titleLine1}
+                <br />
+                {text.titleLine2}
               </h3>
 
-              <p>
-                आजचे तापमान, पावसाचा अंदाज आणि हवामानाची
-                ताजी माहिती Google वर पाहा.
-              </p>
+              <p>{text.description}</p>
 
               <a
                 className="village-weather-link"
                 href={weatherUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Google वर बोखारा नागपूरचे हवामान नवीन टॅबमध्ये पाहा"
+                aria-label={text.ariaLabel}
               >
                 <CloudSun size={20} />
-                हवामान पाहा
+                {text.button}
                 <ArrowUpRight size={17} />
               </a>
             </div>
           </div>
 
           <div className="village-weather-footnote">
-            <span>ग्रामपंचायत बोखारा · नागपूर</span>
-            <span>ताजी माहिती पाहण्यासाठी क्लिक करा ↗</span>
+            <span>{text.footnote}</span>
+            <span>{text.update}</span>
           </div>
         </div>
       </section>

@@ -22,6 +22,7 @@ import bokharaLogo from "./assets/bokhara-logo.png";
 import { useState, useEffect } from "react";
 import Development from "./pages/Development.jsx";
 import { useLanguage } from "./pages/LanguageContext.jsx";
+import ScrollToTop from "./ScrollToTop";
 
 import {
   Menu,
@@ -211,25 +212,33 @@ const t = headerText[language];
             </div>
 
             <div>
-              <strong>महाराष्ट्र शासन</strong>
-              <span>Government of Maharashtra</span>
+              <strong>{t.government}</strong>
+<span>
+  {language === "mr"
+    ? "महाराष्ट्र शासन"
+    : language === "hi"
+      ? "महाराष्ट्र सरकार"
+      : "Government of Maharashtra"}
+</span>
             </div>
           </div>
 
           <div className="topbar-contact">
-            <span>
-              <Phone size={13} />
-              संपर्क कार्यालय
-            </span>
-            <span>
-              <Mail size={13} />
-              ई-मेल
-            </span>
-            <span>
-              <MapPin size={13} />
-              बोकार, नागपूर
-            </span>
-          </div>
+  <span>
+    <Phone size={13} />
+    {t.contact}
+  </span>
+
+  <span>
+    <Mail size={13} />
+    {t.email}
+  </span>
+
+  <span>
+    <MapPin size={13} />
+    {t.location}
+  </span>
+</div>
         </div>
       </div>
 
@@ -348,70 +357,162 @@ const t = headerText[language];
 
 function Hero() {
   const [slide, setSlide] = useState(0);
-  
-useEffect(() => {
-  const timer = setInterval(() => {
-    setSlide((previous) => (previous + 1) % 3);
-  }, 5000);
+  const { language } = useLanguage();
 
-  return () => clearInterval(timer);
-}, []);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlide((previous) => (previous + 1) % 3);
+    }, 5000);
 
+    return () => clearInterval(timer);
+  }, []);
 
-  
-const slides = [
-  {
-    eyebrow: "आपले गाव, आपली जबाबदारी",
-    title: "बोकार",
-    subtitle: "ग्रामपंचायत",
-    description:
-      "स्वच्छ, सुंदर आणि विकसित गावाच्या निर्मितीसाठी आपण सर्वजण एकत्र येऊया.",
-    image: bokharaLogo,
-  },
-  {
-    eyebrow: "ग्रामविकास • जनसहभाग",
-    title: "प्रगत गाव",
-    subtitle: "समृद्ध गाव",
-    description:
-      "लोकसहभागातून गावाच्या विकासासाठी एकत्रित आणि सातत्यपूर्ण प्रयत्न.",
-    image:
-      "https://www.services.bis.gov.in/php/BIS_2.0/gpportal2/assets/img/photo_gallery/Gram%20Panchayat%20Sensitization%20Training%20Programme%20Badli%20Block-1.jpg",
-  },
-  {
-    eyebrow: "डिजिटल ग्रामपंचायत",
-    title: "नागरिक सेवा",
-    subtitle: "आपल्या सेवेसाठी",
-    description:
-      "ग्रामपंचायतीची माहिती आणि नागरिक सेवांसाठी एक सुलभ डिजिटल व्यासपीठ.",
-    image:
-      "https://th-i.thgim.com/public/incoming/wj8t8x/article66286631.ece/alternates/LANDSCAPE_1200/PTI12_02_2022_000070B.jpg",
-  },
-];
+  const slidesByLanguage = {
+    mr: [
+      {
+        eyebrow: "आपले गाव, आपली जबाबदारी",
+        title: "बोखारा",
+        subtitle: "ग्रामपंचायत",
+        description:
+          "स्वच्छ, सुंदर आणि विकसित गावाच्या निर्मितीसाठी आपण सर्वजण एकत्र येऊया.",
+        image: bokharaLogo,
+      },
+      {
+        eyebrow: "ग्रामविकास • जनसहभाग",
+        title: "प्रगत गाव",
+        subtitle: "समृद्ध गाव",
+        description:
+          "लोकसहभागातून गावाच्या विकासासाठी एकत्रित आणि सातत्यपूर्ण प्रयत्न.",
+        image:
+          "https://www.services.bis.gov.in/php/BIS_2.0/gpportal2/assets/img/photo_gallery/Gram%20Panchayat%20Sensitization%20Training%20Programme%20Badli%20Block-1.jpg",
+      },
+      {
+        eyebrow: "डिजिटल ग्रामपंचायत",
+        title: "नागरिक सेवा",
+        subtitle: "आपल्या सेवेसाठी",
+        description:
+          "ग्रामपंचायतीची माहिती आणि नागरिक सेवांसाठी एक सुलभ डिजिटल व्यासपीठ.",
+        image:
+          "https://th-i.thgim.com/public/incoming/wj8t8x/article66286631.ece/alternates/LANDSCAPE_1200/PTI12_02_2022_000070B.jpg",
+      },
+    ],
 
+    hi: [
+      {
+        eyebrow: "हमारा गाँव, हमारी जिम्मेदारी",
+        title: "बोखारा",
+        subtitle: "ग्राम पंचायत",
+        description:
+          "स्वच्छ, सुंदर और विकसित गाँव बनाने के लिए आइए, हम सब मिलकर प्रयास करें।",
+        image: bokharaLogo,
+      },
+      {
+        eyebrow: "ग्राम विकास • जनभागीदारी",
+        title: "प्रगतिशील गाँव",
+        subtitle: "समृद्ध गाँव",
+        description:
+          "जनभागीदारी से गाँव के विकास के लिए सामूहिक और निरंतर प्रयास।",
+        image:
+          "https://www.services.bis.gov.in/php/BIS_2.0/gpportal2/assets/img/photo_gallery/Gram%20Panchayat%20Sensitization%20Training%20Programme%20Badli%20Block-1.jpg",
+      },
+      {
+        eyebrow: "डिजिटल ग्राम पंचायत",
+        title: "नागरिक सेवाएँ",
+        subtitle: "आपकी सेवा में",
+        description:
+          "ग्राम पंचायत की जानकारी और नागरिक सेवाओं के लिए एक सरल डिजिटल मंच।",
+        image:
+          "https://th-i.thgim.com/public/incoming/wj8t8x/article66286631.ece/alternates/LANDSCAPE_1200/PTI12_02_2022_000070B.jpg",
+      },
+    ],
 
-  const currentSlide = slides[slide];
+    en: [
+      {
+        eyebrow: "Our Village, Our Responsibility",
+        title: "Bokhara",
+        subtitle: "Gram Panchayat",
+        description:
+          "Let us work together to build a clean, beautiful and developed village.",
+        image: bokharaLogo,
+      },
+      {
+        eyebrow: "Village Development • Public Participation",
+        title: "Progressive Village",
+        subtitle: "Prosperous Community",
+        description:
+          "Collective and sustained efforts for village development through public participation.",
+        image:
+          "https://www.services.bis.gov.in/php/BIS_2.0/gpportal2/assets/img/photo_gallery/Gram%20Panchayat%20Sensitization%20Training%20Programme%20Badli%20Block-1.jpg",
+      },
+      {
+        eyebrow: "Digital Gram Panchayat",
+        title: "Citizen Services",
+        subtitle: "Here to Serve You",
+        description:
+          "A convenient digital platform for Gram Panchayat information and citizen services.",
+        image:
+          "https://th-i.thgim.com/public/incoming/wj8t8x/article66286631.ece/alternates/LANDSCAPE_1200/PTI12_02_2022_000070B.jpg",
+      },
+    ],
+  };
+
+  const slides = slidesByLanguage[language] || slidesByLanguage.mr;
+  const currentSlide = slides[slide] || slides[0];
+
+  const labels = {
+    mr: {
+      about: "गावाबद्दल जाणून घ्या",
+      services: "नागरिक सेवा",
+      panchayat: "ग्रामपंचायत बोखारा",
+      location: "नागपूर, महाराष्ट्र",
+      caption: "ग्रामविकासाचा संकल्प",
+      previous: "मागील स्लाइड",
+      next: "पुढील स्लाइड",
+      goTo: "स्लाइडवर जा",
+    },
+    hi: {
+      about: "गाँव के बारे में जानें",
+      services: "नागरिक सेवाएँ",
+      panchayat: "ग्राम पंचायत बोखारा",
+      location: "नागपुर, महाराष्ट्र",
+      caption: "ग्राम विकास का संकल्प",
+      previous: "पिछली स्लाइड",
+      next: "अगली स्लाइड",
+      goTo: "स्लाइड पर जाएँ",
+    },
+    en: {
+      about: "Learn About Our Village",
+      services: "Citizen Services",
+      panchayat: "Bokhara Gram Panchayat",
+      location: "Nagpur, Maharashtra",
+      caption: "Our Commitment to Village Development",
+      previous: "Previous slide",
+      next: "Next slide",
+      goTo: "Go to slide",
+    },
+  };
+
+  const text = labels[language] || labels.mr;
 
   return (
     <section
       className="hero"
       id="home"
       style={{
-       
-backgroundImage: `linear-gradient(
-  90deg,
-  rgba(15, 35, 30, 0.40) 0%,
-  rgba(15, 35, 30, 0.18) 45%,
-  rgba(15, 35, 30, 0.03) 100%
-), url("${currentSlide.image}")`,
-backgroundSize: "cover",
-backgroundPosition: "center",
-backgroundRepeat: "no-repeat",
-
+        backgroundImage: `linear-gradient(
+          90deg,
+          rgba(15, 35, 30, 0.40) 0%,
+          rgba(15, 35, 30, 0.18) 45%,
+          rgba(15, 35, 30, 0.03) 100%
+        ), url("${currentSlide.image}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div
         className="container hero-content"
-        key={slide}
+        key={`${language}-${slide}`}
         style={{
           minHeight: "455px",
           display: "flex",
@@ -434,28 +535,28 @@ backgroundRepeat: "no-repeat",
           <p>{currentSlide.description}</p>
 
           <div className="hero-actions">
-            <a href="/about" className="button button-primary">
-              गावाबद्दल जाणून घ्या
+            <Link to="/about" className="button button-primary">
+              {text.about}
               <ArrowRight size={16} />
-            </a>
+            </Link>
 
             <a href="#services" className="button button-outline">
               <FileText size={16} />
-              नागरिक सेवा
+              {text.services}
             </a>
           </div>
 
           <div className="hero-meta">
             <span>
               <Landmark size={15} />
-              ग्रामपंचायत बोकार
+              {text.panchayat}
             </span>
 
             <span className="meta-separator" />
 
             <span>
               <MapPin size={15} />
-              नागपूर, महाराष्ट्र
+              {text.location}
             </span>
           </div>
         </div>
@@ -465,7 +566,7 @@ backgroundRepeat: "no-repeat",
         <div className="container hero-bottom-inner">
           <div className="hero-caption">
             <span className="caption-line" />
-            <span>ग्रामविकासाचा संकल्प</span>
+            <span>{text.caption}</span>
           </div>
 
           <div className="hero-controls" aria-label="Hero slides">
@@ -478,7 +579,7 @@ backgroundRepeat: "no-repeat",
                     (previous + slides.length - 1) % slides.length
                 )
               }
-              aria-label="Previous slide"
+              aria-label={text.previous}
             >
               ←
             </button>
@@ -491,7 +592,7 @@ backgroundRepeat: "no-repeat",
                   slide === index ? "slide-dot-active" : ""
                 }`}
                 onClick={() => setSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
+                aria-label={`${text.goTo} ${index + 1}`}
                 aria-pressed={slide === index}
               />
             ))}
@@ -502,7 +603,7 @@ backgroundRepeat: "no-repeat",
               onClick={() =>
                 setSlide((previous) => (previous + 1) % slides.length)
               }
-              aria-label="Next slide"
+              aria-label={text.next}
             >
               →
             </button>
@@ -516,16 +617,61 @@ backgroundRepeat: "no-repeat",
 
 function AnnouncementBar() {
   const [thoughtIndex, setThoughtIndex] = useState(0);
+  const { language } = useLanguage();
 
-  const thoughts = [
-    "स्वच्छ गाव, सुंदर गाव — हीच आपल्या विकासाची खरी ओळख!",
-    "झाडे लावा, झाडे जगवा — निसर्गाचे रक्षण करा.",
-    "पाणी वाचवा, जीवन वाचवा — प्रत्येक थेंब अनमोल आहे.",
-    "एकीचे बळ मोठे, चला गावाच्या विकासासाठी एकत्र येऊया.",
-    "शिक्षण हेच प्रगतीचे साधन, प्रत्येक मुलाला शिक्षित करूया.",
-    "आपले गाव, आपली जबाबदारी — स्वच्छतेला देऊया प्राधान्य.",
-    "लोकसहभागातून ग्रामविकास, हाच समृद्ध गावाचा ध्यास.",
-  ];
+  const thoughtsByLanguage = {
+    mr: [
+      "स्वच्छ गाव, सुंदर गाव — हीच आपल्या विकासाची खरी ओळख!",
+      "झाडे लावा, झाडे जगवा — निसर्गाचे रक्षण करा.",
+      "पाणी वाचवा, जीवन वाचवा — प्रत्येक थेंब अनमोल आहे.",
+      "एकीचे बळ मोठे, चला गावाच्या विकासासाठी एकत्र येऊया.",
+      "शिक्षण हेच प्रगतीचे साधन, प्रत्येक मुलाला शिक्षित करूया.",
+      "आपले गाव, आपली जबाबदारी — स्वच्छतेला देऊया प्राधान्य.",
+      "लोकसहभागातून ग्रामविकास, हाच समृद्ध गावाचा ध्यास.",
+    ],
+    hi: [
+      "स्वच्छ गाँव, सुंदर गाँव — यही हमारे विकास की सच्ची पहचान है!",
+      "पेड़ लगाएँ, पेड़ बचाएँ — प्रकृति की रक्षा करें।",
+      "जल बचाएँ, जीवन बचाएँ — हर बूंद अनमोल है।",
+      "एकता में शक्ति है, आइए गाँव के विकास के लिए मिलकर काम करें।",
+      "शिक्षा ही प्रगति का साधन है, हर बच्चे को शिक्षित करें।",
+      "हमारा गाँव, हमारी जिम्मेदारी — स्वच्छता को प्राथमिकता दें।",
+      "जनभागीदारी से ग्राम विकास, यही समृद्ध गाँव का संकल्प है।",
+    ],
+    en: [
+      "Clean village, beautiful village — the true identity of our development!",
+      "Plant trees, protect trees — protect nature.",
+      "Save water, save lives — every drop is precious.",
+      "Unity is strength. Let us work together for village development.",
+      "Education is the path to progress. Let us educate every child.",
+      "Our village, our responsibility — let us prioritize cleanliness.",
+      "Village development through public participation builds a prosperous community.",
+    ],
+  };
+
+  const labelsByLanguage = {
+    mr: {
+      section: "आजचा सुविचार",
+      subtitle: "एक सुंदर विचार, एक सकारात्मक सुरुवात",
+      previous: "मागील सुविचार",
+      next: "पुढील सुविचार",
+    },
+    hi: {
+      section: "आज का सुविचार",
+      subtitle: "एक सुंदर विचार, एक सकारात्मक शुरुआत",
+      previous: "पिछला सुविचार",
+      next: "अगला सुविचार",
+    },
+    en: {
+      section: "Thought of the Day",
+      subtitle: "A beautiful thought, a positive beginning",
+      previous: "Previous thought",
+      next: "Next thought",
+    },
+  };
+
+  const thoughts = thoughtsByLanguage[language] || thoughtsByLanguage.mr;
+  const labels = labelsByLanguage[language] || labelsByLanguage.mr;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -533,7 +679,7 @@ function AnnouncementBar() {
     }, 6000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [thoughts.length]);
 
   const previousThought = () => {
     setThoughtIndex((prev) => (prev - 1 + thoughts.length) % thoughts.length);
@@ -544,7 +690,7 @@ function AnnouncementBar() {
   };
 
   return (
-    <section className="thought-highlight" aria-label="आजचा सुविचार">
+    <section className="thought-highlight" aria-label={labels.section}>
       <div className="thought-highlight-inner">
         <div className="thought-icon">
           <span>❝</span>
@@ -553,24 +699,25 @@ function AnnouncementBar() {
         <div className="thought-content">
           <div className="thought-heading">
             <span className="thought-live-dot" />
-            <span>आजचा सुविचार</span>
+            <span>{labels.section}</span>
             <span className="thought-heading-line" />
-            <span className="thought-subtitle">एक सुंदर विचार, एक सकारात्मक सुरुवात</span>
+            <span className="thought-subtitle">{labels.subtitle}</span>
           </div>
 
-          <p className="thought-text" key={thoughtIndex}>
+          <p className="thought-text" key={`${language}-${thoughtIndex}`}>
             {thoughts[thoughtIndex]}
           </p>
         </div>
 
         <div className="thought-controls">
-          <button onClick={previousThought} aria-label="मागील सुविचार">
+          <button onClick={previousThought} aria-label={labels.previous}>
             &#8592;
           </button>
           <span className="thought-count">
-            {String(thoughtIndex + 1).padStart(2, "0")} / {String(thoughts.length).padStart(2, "0")}
+            {String(thoughtIndex + 1).padStart(2, "0")} /{" "}
+            {String(thoughts.length).padStart(2, "0")}
           </span>
-          <button onClick={nextThought} aria-label="पुढील सुविचार">
+          <button onClick={nextThought} aria-label={labels.next}>
             &#8594;
           </button>
         </div>
@@ -779,44 +926,120 @@ function SectionHeading({ eyebrow, title, description, centered = false }) {
 }
 
 
+
 function Officials() {
+  const { language } = useLanguage();
+
   const leaders = [
     {
       name: "देवेंद्र फडणवीस",
-      role: "माननीय मुख्यमंत्री",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/83bac49e-9d0.png",
+      role: {
+        mr: "माननीय मुख्यमंत्री",
+        hi: "माननीय मुख्यमंत्री",
+        en: "Honourable Chief Minister",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/83bac49e-9d0.png",
     },
     {
       name: "एकनाथ शिंदे",
-      role: "माननीय उपमुख्यमंत्री",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/650e8288-a9d.png",
+      role: {
+        mr: "माननीय उपमुख्यमंत्री",
+        hi: "माननीय उपमुख्यमंत्री",
+        en: "Honourable Deputy Chief Minister",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/650e8288-a9d.png",
     },
     {
       name: "सुनेत्रा अजित पवार",
-      role: "माननीय उपमुख्यमंत्री",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/a8f2b4ad-d4f.png",
+      role: {
+        mr: "माननीय उपमुख्यमंत्री",
+        hi: "माननीय उपमुख्यमंत्री",
+        en: "Honourable Deputy Chief Minister",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/a8f2b4ad-d4f.png",
     },
     {
       name: "जयकुमार गोरे",
-      role: "मंत्री, ग्रामविकास व पंचायतराज विभाग",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/9a2089ac-879.png",
+      role: {
+        mr: "मंत्री, ग्रामविकास व पंचायतराज विभाग",
+        hi: "मंत्री, ग्राम विकास एवं पंचायती राज विभाग",
+        en: "Minister, Rural Development and Panchayati Raj",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/9a2089ac-879.png",
     },
     {
       name: "योगेश कदम",
-      role: "राज्यमंत्री, ग्रामविकास व पंचायतराज विभाग",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/625d6b22-a34.png",
+      role: {
+        mr: "राज्यमंत्री, ग्रामविकास व पंचायतराज विभाग",
+        hi: "राज्यमंत्री, ग्राम विकास एवं पंचायती राज विभाग",
+        en: "Minister of State, Rural Development and Panchayati Raj",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/625d6b22-a34.png",
     },
     {
       name: "श्री चंद्रकांत पुलकुंडवार",
-      role: "प्रधान सचिव, ग्रामविकास व पंचायतराज विभाग",
-      image: "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/2ed9a290-f20.jpeg",
+      role: {
+        mr: "प्रधान सचिव, ग्रामविकास व पंचायतराज विभाग",
+        hi: "प्रधान सचिव, ग्राम विकास एवं पंचायती राज विभाग",
+        en: "Principal Secretary, Rural Development and Panchayati Raj",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/krakpiexceluploads/2ed9a290-f20.jpeg",
     },
     {
       name: "सौ. विजयलक्ष्मी बिदरी",
-      role: "विभागीय आयुक्त (नागपूर)",
-      image: "https://lotustechcrm.blob.core.windows.net/gpwebsitetemplateuploads/38863106-2a04-42fa-bc72-00b97019d88a.png",
+      role: {
+        mr: "विभागीय आयुक्त (नागपूर)",
+        hi: "विभागीय आयुक्त (नागपुर)",
+        en: "Divisional Commissioner (Nagpur)",
+      },
+      image:
+        "https://lotustechcrm.blob.core.windows.net/gpwebsitetemplateuploads/38863106-2a04-42fa-bc72-00b97019d88a.png",
     },
   ];
+
+  const textByLanguage = {
+    mr: {
+      title: "मान्यवर अधिकारी",
+      description:
+        "ग्रामविकास व पंचायतराज विभागातील माननीय पदाधिकारी आणि अधिकारी.",
+      membersTitle: "ग्रामपंचायतीचे माननीय सदस्य",
+      membersDescription:
+        "ग्रामपंचायत बोखारा येथील स्थानिक सदस्यांची माहिती येथे उपलब्ध केली जाईल.",
+      memberName: "सदस्याचे नाव",
+      memberRole: "ग्रामपंचायत सदस्य",
+      membersLabel: "ग्रामपंचायतीचे माननीय सदस्य",
+    },
+    hi: {
+      title: "माननीय अधिकारी",
+      description:
+        "ग्राम विकास एवं पंचायती राज विभाग के माननीय पदाधिकारी और अधिकारी।",
+      membersTitle: "ग्राम पंचायत के माननीय सदस्य",
+      membersDescription:
+        "ग्राम पंचायत बोखारा के स्थानीय सदस्यों की जानकारी यहाँ उपलब्ध कराई जाएगी।",
+      memberName: "सदस्य का नाम",
+      memberRole: "ग्राम पंचायत सदस्य",
+      membersLabel: "ग्राम पंचायत के माननीय सदस्य",
+    },
+    en: {
+      title: "Distinguished Officials",
+      description:
+        "Honourable representatives and officials of the Rural Development and Panchayati Raj Department.",
+      membersTitle: "Gram Panchayat Members",
+      membersDescription:
+        "Information about local members of Bokhara Gram Panchayat will be provided here.",
+      memberName: "Member Name",
+      memberRole: "Gram Panchayat Member",
+      membersLabel: "Gram Panchayat Members",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
 
   return (
     <section
@@ -1026,13 +1249,9 @@ function Officials() {
         }
       `}</style>
 
-      <h2 className="officials-title">
-        मान्यवर अधिकारी
-      </h2>
+      <h2 className="officials-title">{text.title}</h2>
 
-      <p className="officials-description">
-        ग्रामविकास व पंचायतराज विभागातील माननीय पदाधिकारी आणि अधिकारी.
-      </p>
+      <p className="officials-description">{text.description}</p>
 
       <div className="officials-photo-grid">
         {leaders.map((leader) => (
@@ -1043,138 +1262,191 @@ function Officials() {
               loading="lazy"
             />
             <h3>{leader.name}</h3>
-            <p>{leader.role}</p>
+            <p>{leader.role[language] || leader.role.mr}</p>
           </article>
         ))}
       </div>
 
-      <h2 className="members-heading">
-        ग्रामपंचायतीचे माननीय सदस्य
-      </h2>
+      <h2 className="members-heading">{text.membersTitle}</h2>
 
-      <p className="members-description">
-        ग्रामपंचायत बोकार येथील स्थानिक सदस्यांची माहिती येथे उपलब्ध केली जाईल.
-      </p>
+      <p className="members-description">{text.membersDescription}</p>
 
-      
-<div
-  className="members-grid"
-  aria-label="ग्रामपंचायतीचे माननीय सदस्य"
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "22px",
-    maxWidth: "1000px",
-    margin: "28px auto 0",
-  }}
->
-  {[1, 2, 3].map((member) => (
-    <article
-      key={member}
-      className="official-photo-card"
-      style={{
-        flex: "0 1 205px",
-        width: "205px",
-        overflow: "hidden",
-        background: "#fff",
-        border: "1px solid #e5e2d9",
-        borderRadius: "13px",
-        boxShadow: "0 5px 18px rgba(31, 48, 39, 0.07)",
-        textAlign: "center",
-      }}
-    >
       <div
+        className="members-grid"
+        aria-label={text.membersLabel}
         style={{
-          height: "185px",
           display: "flex",
-          alignItems: "center",
+          flexWrap: "wrap",
           justifyContent: "center",
-          background: "#e8e9e2",
-          borderBottom: "3px solid #b69b62",
+          gap: "22px",
+          maxWidth: "1000px",
+          margin: "28px auto 0",
         }}
       >
-        <svg
-          viewBox="0 0 24 24"
-          width="58"
-          height="58"
-          fill="none"
-          stroke="#92978c"
-          strokeWidth="1.2"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
-        </svg>
+        {[1, 2, 3].map((member) => (
+          <article
+            key={member}
+            className="official-photo-card"
+            style={{
+              flex: "0 1 205px",
+              width: "205px",
+              overflow: "hidden",
+              background: "#fff",
+              border: "1px solid #e5e2d9",
+              borderRadius: "13px",
+              boxShadow: "0 5px 18px rgba(31, 48, 39, 0.07)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                height: "185px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#e8e9e2",
+                borderBottom: "3px solid #b69b62",
+              }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="58"
+                height="58"
+                fill="none"
+                stroke="#92978c"
+                strokeWidth="1.2"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+              </svg>
+            </div>
+
+            <h3>{text.memberName}</h3>
+            <p>{text.memberRole}</p>
+          </article>
+        ))}
       </div>
-
-      <h3>सदस्याचे नाव</h3>
-      <p>ग्रामपंचायत सदस्य</p>
-    </article>
-  ))}
-</div>
-
     </section>
   );
 }
 
 
+
+
 function AboutVillage() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      image1: "हिरवेगार शेत आणि ग्रामीण परिसर",
+      image2: "निसर्गरम्य ग्रामीण परिसर",
+      eyebrow: "आमच्या गावाविषयी",
+      title: "आपले गाव, आपली जबाबदारी",
+      subtitle: "स्वच्छ • सुंदर • विकसित",
+      paragraph1: (
+        <>
+          ग्रामपंचायत <b>बोखारा</b> ही स्थानिक स्वराज्य संस्थेच्या माध्यमातून
+          गावातील नागरिकांना मूलभूत सुविधा उपलब्ध करून देण्यासाठी,
+          स्वच्छता राखण्यासाठी आणि सर्वांगीण विकासासाठी कार्य करण्याचे
+          ध्येय ठेवते.
+        </>
+      ),
+      paragraph2:
+        "लोकसहभाग, पारदर्शक प्रशासन आणि शाश्वत विकास यांच्या माध्यमातून गाव अधिक स्वच्छ, सुंदर आणि सक्षम बनवण्यासाठी आपण सर्वांनी एकत्रित प्रयत्न करूया.",
+      participation: "लोकसहभाग",
+      participationDescription: "सर्वांचा सहभाग",
+      development: "शाश्वत विकास",
+      developmentDescription: "हरित आणि स्वच्छ गाव",
+      link: "गावाच्या सुविधांबद्दल जाणून घ्या",
+    },
+    hi: {
+      image1: "हरे-भरे खेत और ग्रामीण परिवेश",
+      image2: "प्राकृतिक सुंदरता से भरपूर ग्रामीण क्षेत्र",
+      eyebrow: "हमारे गाँव के बारे में",
+      title: "हमारा गाँव, हमारी जिम्मेदारी",
+      subtitle: "स्वच्छ • सुंदर • विकसित",
+      paragraph1: (
+        <>
+          ग्राम पंचायत <b>बोखारा</b> स्थानीय स्वशासन के माध्यम से गाँव के
+          नागरिकों को मूलभूत सुविधाएँ उपलब्ध कराने, स्वच्छता बनाए रखने
+          और समग्र विकास के लिए कार्य करने का लक्ष्य रखती है।
+        </>
+      ),
+      paragraph2:
+        "जनभागीदारी, पारदर्शी प्रशासन और सतत विकास के माध्यम से अपने गाँव को अधिक स्वच्छ, सुंदर और सक्षम बनाने के लिए आइए, हम सब मिलकर प्रयास करें।",
+      participation: "जनभागीदारी",
+      participationDescription: "सबकी भागीदारी",
+      development: "सतत विकास",
+      developmentDescription: "हरित और स्वच्छ गाँव",
+      link: "गाँव की सुविधाओं के बारे में जानें",
+    },
+    en: {
+      image1: "Green fields and rural surroundings",
+      image2: "Scenic rural surroundings",
+      eyebrow: "ABOUT OUR VILLAGE",
+      title: "Our Village, Our Responsibility",
+      subtitle: "Clean • Beautiful • Developed",
+      paragraph1: (
+        <>
+          Gram Panchayat <b>Bokhara</b> aims to provide essential facilities
+          to villagers, maintain cleanliness and support overall development
+          through local self-governance.
+        </>
+      ),
+      paragraph2:
+        "Through public participation, transparent administration and sustainable development, let us work together to make our village cleaner, more beautiful and more capable.",
+      participation: "Public Participation",
+      participationDescription: "Everyone's involvement",
+      development: "Sustainable Development",
+      developmentDescription: "A green and clean village",
+      link: "Explore village facilities",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   return (
     <section className="about-section section-padding" id="about">
       <div className="container about-grid">
         <div className="about-visual">
           <div className="about-image-main">
-            
-<div className="about-photo-pair">
-  <div className="about-photo-frame">
-    <img
-      className="about-photo"
-      src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=700&q=85"
-      alt="हिरवेगार शेत आणि ग्रामीण परिसर"
-    />
-    <span className="photo-leaf leaf-top">❧</span>
-    <span className="photo-leaf leaf-bottom">❧</span>
-  </div>
+            <div className="about-photo-pair">
+              <div className="about-photo-frame">
+                <img
+                  className="about-photo"
+                  src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=700&q=85"
+                  alt={text.image1}
+                />
+                <span className="photo-leaf leaf-top">❧</span>
+                <span className="photo-leaf leaf-bottom">❧</span>
+              </div>
 
-  <div className="about-photo-frame">
-    <img
-      className="about-photo"
-      src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=700&q=85"
-      alt="निसर्गरम्य ग्रामीण परिसर"
-    />
-    <span className="photo-leaf leaf-top">❧</span>
-    <span className="photo-leaf leaf-bottom">❧</span>
-  </div>
-</div>
-
-
-            
+              <div className="about-photo-frame">
+                <img
+                  className="about-photo"
+                  src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=700&q=85"
+                  alt={text.image2}
+                />
+                <span className="photo-leaf leaf-top">❧</span>
+                <span className="photo-leaf leaf-bottom">❧</span>
+              </div>
+            </div>
           </div>
 
-          
           <div className="about-art-circle" aria-hidden="true" />
         </div>
 
         <div className="about-copy">
           <SectionHeading
-            eyebrow="आमच्या गावाविषयी"
-            title="आपले गाव, आपली जबाबदारी"
-            description="स्वच्छ • सुंदर • विकसित"
+            eyebrow={text.eyebrow}
+            title={text.title}
+            description={text.subtitle}
           />
 
-          <p className="about-description">
-            ग्रामपंचायत <b>बोकार</b> ही स्थानिक स्वराज्य संस्थेच्या माध्यमातून
-            गावातील नागरिकांना मूलभूत सुविधा उपलब्ध करून देण्यासाठी,
-            स्वच्छता राखण्यासाठी आणि सर्वांगीण विकासासाठी कार्य करण्याचे
-            ध्येय ठेवते.
-          </p>
+          <p className="about-description">{text.paragraph1}</p>
 
-          <p className="about-description">
-            लोकसहभाग, पारदर्शक प्रशासन आणि शाश्वत विकास यांच्या माध्यमातून
-            गाव अधिक स्वच्छ, सुंदर आणि सक्षम बनवण्यासाठी आपण सर्वांनी
-            एकत्रित प्रयत्न करूया.
-          </p>
+          <p className="about-description">{text.paragraph2}</p>
 
           <div className="about-values">
             <div>
@@ -1182,8 +1454,8 @@ function AboutVillage() {
                 <Users size={19} />
               </span>
               <span>
-                <strong>लोकसहभाग</strong>
-                <small>सर्वांचा सहभाग</small>
+                <strong>{text.participation}</strong>
+                <small>{text.participationDescription}</small>
               </span>
             </div>
 
@@ -1192,15 +1464,15 @@ function AboutVillage() {
                 <TreePine size={19} />
               </span>
               <span>
-                <strong>शाश्वत विकास</strong>
-                <small>हरित आणि स्वच्छ गाव</small>
+                <strong>{text.development}</strong>
+                <small>{text.developmentDescription}</small>
               </span>
             </div>
           </div>
 
           <Link to="/facilities" className="text-link">
-  गावाच्या सुविधांबद्दल जाणून घ्या <ArrowRight size={17} />
-</Link>
+            {text.link} <ArrowRight size={17} />
+          </Link>
         </div>
       </div>
     </section>
@@ -1208,36 +1480,83 @@ function AboutVillage() {
 }
 
 function Statistics() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      ariaLabel: "गावाची आकडेवारी",
+      eyebrow: "आकडेवारी",
+      heading: "आपल्या गावाची माहिती",
+      description: "अधिकृत आकडेवारी उपलब्ध झाल्यानंतर येथे अद्ययावत केली जाईल.",
+      statistics: [
+        "एकूण लोकसंख्या",
+        "एकूण कुटुंबे",
+        "प्रभाग",
+        "शैक्षणिक सुविधा",
+      ],
+    },
+    hi: {
+      ariaLabel: "गाँव के आँकड़े",
+      eyebrow: "आँकड़े",
+      heading: "हमारे गाँव की जानकारी",
+      description: "आधिकारिक आँकड़े उपलब्ध होने पर यहाँ अपडेट किए जाएँगे।",
+      statistics: [
+        "कुल जनसंख्या",
+        "कुल परिवार",
+        "वार्ड",
+        "शैक्षणिक सुविधाएँ",
+      ],
+    },
+    en: {
+      ariaLabel: "Village statistics",
+      eyebrow: "STATISTICS",
+      heading: "About Our Village",
+      description:
+        "This section will be updated when official statistics become available.",
+      statistics: [
+        "Total Population",
+        "Total Households",
+        "Wards",
+        "Educational Facilities",
+      ],
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   const statistics = [
     {
       icon: Users,
       value: "—",
-      title: "एकूण लोकसंख्या",
+      title: text.statistics[0],
     },
     {
       icon: Building2,
       value: "—",
-      title: "एकूण कुटुंबे",
+      title: text.statistics[1],
     },
     {
       icon: Landmark,
       value: "—",
-      title: "प्रभाग",
+      title: text.statistics[2],
     },
     {
       icon: GraduationCap,
       value: "—",
-      title: "शैक्षणिक सुविधा",
+      title: text.statistics[3],
     },
   ];
 
   return (
-    <section className="statistics-section" aria-label="Village statistics">
+    <section
+      className="statistics-section"
+      aria-label={text.ariaLabel}
+    >
       <div className="container statistics-panel">
         <div className="statistics-intro">
-          <span className="section-eyebrow">आकडेवारी</span>
-          <h2>आपल्या गावाची माहिती</h2>
-          <p>अधिकृत आकडेवारी उपलब्ध झाल्यानंतर येथे अद्ययावत केली जाईल.</p>
+          <span className="section-eyebrow">{text.eyebrow}</span>
+          <h2>{text.heading}</h2>
+          <p>{text.description}</p>
         </div>
 
         <div className="statistics-grid">
@@ -1260,36 +1579,96 @@ function Statistics() {
   );
 }
 
-
 function VillageSnapshot() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "गाव एक दृष्टिक्षेपात",
+      title: "आपल्या बोखारा गावाची माहिती",
+      description: "गावाची मूलभूत माहिती आणि महत्त्वाची आकडेवारी.",
+      labels: [
+        "एकूण लोकसंख्या",
+        "एकूण कुटुंबे",
+        "एकूण प्रभाग",
+        "साक्षरता दर",
+        "एकूण क्षेत्रफळ",
+        "पाण्याचे स्रोत",
+      ],
+    },
+    hi: {
+      eyebrow: "एक नज़र में गाँव",
+      title: "हमारे बोखारा गाँव की जानकारी",
+      description: "गाँव की मूलभूत जानकारी और महत्वपूर्ण आँकड़े।",
+      labels: [
+        "कुल जनसंख्या",
+        "कुल परिवार",
+        "कुल वार्ड",
+        "साक्षरता दर",
+        "कुल क्षेत्रफल",
+        "जल स्रोत",
+      ],
+    },
+    en: {
+      eyebrow: "VILLAGE AT A GLANCE",
+      title: "About Our Bokhara Village",
+      description: "Basic information and important statistics about the village.",
+      labels: [
+        "Total Population",
+        "Total Households",
+        "Total Wards",
+        "Literacy Rate",
+        "Total Area",
+        "Water Sources",
+      ],
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   const details = [
-    { icon: Users, label: "एकूण लोकसंख्या", value: "7865", color: "#e77934" },
-    { icon: Building2, label: "एकूण कुटुंबे", value: "856", color: "#527fba" },
-    { icon: Landmark, label: "एकूण प्रभाग", value: "75", color: "#8a6ab3" },
-    { icon: GraduationCap, label: "साक्षरता दर", value: "6553", color: "#43836b" },
-    { icon: TreePine, label: "एकूण क्षेत्रफळ", value: "5446", color: "#d4a32e" },
-    { icon: Droplets, label: "पाण्याचे स्रोत", value: "15", color: "#269db5" },
+    { icon: Users, value: "7865", color: "#e77934" },
+    { icon: Building2, value: "856", color: "#527fba" },
+    { icon: Landmark, value: "75", color: "#8a6ab3" },
+    { icon: GraduationCap, value: "6553", color: "#43836b" },
+    { icon: TreePine, value: "5446", color: "#d4a32e" },
+    { icon: Droplets, value: "15", color: "#269db5" },
   ];
 
   return (
-    <section id="village-snapshot" className="section-padding" style={{ background: "#fffaf5" }}>
+    <section
+      id="village-snapshot"
+      className="section-padding"
+      style={{ background: "#fffaf5" }}
+    >
       <div className="container">
         <SectionHeading
-          eyebrow="गाव एक दृष्टिक्षेपात"
-          title="आपल्या बोकार गावाची माहिती"
-          description="गावाची मूलभूत माहिती आणि महत्त्वाची आकडेवारी."
+          eyebrow={text.eyebrow}
+          title={text.title}
+          description={text.description}
           centered
         />
 
         <div className="snapshot-grid">
-          {details.map((item) => {
+          {details.map((item, index) => {
             const Icon = item.icon;
+
             return (
-              <article className="snapshot-card" key={item.label}>
-                <span className="snapshot-icon" style={{ color: item.color, background: `${item.color}16` }}>
+              <article className="snapshot-card" key={text.labels[index]}>
+                <span
+                  className="snapshot-icon"
+                  style={{
+                    color: item.color,
+                    background: `${item.color}16`,
+                  }}
+                >
                   <Icon size={25} />
                 </span>
-                <span className="snapshot-label">{item.label}</span>
+
+                <span className="snapshot-label">
+                  {text.labels[index]}
+                </span>
+
                 <strong className="snapshot-value">{item.value}</strong>
                 <small></small>
               </article>
@@ -1348,26 +1727,106 @@ function VillageSnapshot() {
 }
 
 function LatestUpdates() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "ताज्या बातम्या",
+      title: "बातम्या व अद्यतन",
+      description: "ग्रामपंचायतीच्या घडामोडी, सूचना आणि विकास उपक्रम.",
+      allNotices: "सर्व सूचना",
+      moreInfo: "अधिक माहिती",
+      updates: [
+        {
+          category: "ग्रामसभा",
+          title: "ग्रामसभा आणि सार्वजनिक बैठकींचे अद्यतन",
+          description:
+            "ग्रामसभेची तारीख व वेळ अधिकृत सूचना प्रसिद्ध झाल्यानंतर येथे दिली जाईल.",
+        },
+        {
+          category: "नागरिक सूचना",
+          title: "ग्रामपंचायतीच्या महत्त्वाच्या सूचना",
+          description:
+            "नागरिकांसाठी आवश्यक सूचना आणि घोषणांची माहिती येथे पाहता येईल.",
+        },
+        {
+          category: "ग्रामविकास",
+          title: "स्वच्छता आणि विकास उपक्रम",
+          description:
+            "गावातील उपक्रम आणि विकासकामांची माहिती अधिकृत तपशीलानुसार अद्ययावत होईल.",
+        },
+      ],
+    },
+    hi: {
+      eyebrow: "ताज़ा खबरें",
+      title: "समाचार और अपडेट",
+      description: "ग्राम पंचायत की गतिविधियाँ, सूचनाएँ और विकास कार्य।",
+      allNotices: "सभी सूचनाएँ",
+      moreInfo: "अधिक जानकारी",
+      updates: [
+        {
+          category: "ग्राम सभा",
+          title: "ग्राम सभा और सार्वजनिक बैठकों के अपडेट",
+          description:
+            "ग्राम सभा की तारीख और समय आधिकारिक सूचना जारी होने के बाद यहाँ दिया जाएगा।",
+        },
+        {
+          category: "नागरिक सूचना",
+          title: "ग्राम पंचायत की महत्वपूर्ण सूचनाएँ",
+          description:
+            "नागरिकों के लिए आवश्यक सूचनाएँ और घोषणाएँ यहाँ देखी जा सकेंगी।",
+        },
+        {
+          category: "ग्राम विकास",
+          title: "स्वच्छता और विकास पहल",
+          description:
+            "गाँव की पहलों और विकास कार्यों की जानकारी आधिकारिक विवरण के अनुसार अपडेट होगी।",
+        },
+      ],
+    },
+    en: {
+      eyebrow: "LATEST NEWS",
+      title: "News & Updates",
+      description:
+        "Gram Panchayat activities, public notices, and village development initiatives.",
+      allNotices: "All Notices",
+      moreInfo: "More Information",
+      updates: [
+        {
+          category: "Gram Sabha",
+          title: "Gram Sabha and Public Meeting Updates",
+          description:
+            "The Gram Sabha date and time will be published here after the official notice is released.",
+        },
+        {
+          category: "Citizen Notices",
+          title: "Important Gram Panchayat Notices",
+          description:
+            "Important notices and announcements for citizens will be available here.",
+        },
+        {
+          category: "Village Development",
+          title: "Cleanliness and Development Initiatives",
+          description:
+            "Information about village initiatives and development works will be updated according to official details.",
+        },
+      ],
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   const updates = [
     {
       icon: CalendarDays,
-      category: "ग्रामसभा",
-      title: "ग्रामसभा आणि सार्वजनिक बैठकींचे अद्यतन",
-      description: "ग्रामसभेची तारीख व वेळ अधिकृत सूचना प्रसिद्ध झाल्यानंतर येथे दिली जाईल.",
       color: "#e77934",
     },
     {
       icon: FileText,
-      category: "नागरिक सूचना",
-      title: "ग्रामपंचायतीच्या महत्त्वाच्या सूचना",
-      description: "नागरिकांसाठी आवश्यक सूचना आणि घोषणांची माहिती येथे पाहता येईल.",
       color: "#527fba",
     },
     {
       icon: TreePine,
-      category: "ग्रामविकास",
-      title: "स्वच्छता आणि विकास उपक्रम",
-      description: "गावातील उपक्रम आणि विकासकामांची माहिती अधिकृत तपशीलानुसार अद्ययावत होईल.",
       color: "#43836b",
     },
   ];
@@ -1377,30 +1836,41 @@ function LatestUpdates() {
       <div className="container">
         <div className="schemes-header">
           <SectionHeading
-            eyebrow="ताज्या बातम्या"
-            title="बातम्या व अद्यतन"
-            description="ग्रामपंचायतीच्या घडामोडी, सूचना आणि विकास उपक्रम."
+            eyebrow={text.eyebrow}
+            title={text.title}
+            description={text.description}
           />
+
           <a href="#notices" className="button button-outline-dark">
-            सर्व सूचना <ArrowRight size={16} />
+            {text.allNotices} <ArrowRight size={16} />
           </a>
         </div>
 
         <div className="updates-grid">
-          {updates.map((item) => {
+          {updates.map((item, index) => {
             const Icon = item.icon;
+            const update = text.updates[index];
+
             return (
-              <article className="update-card" key={item.category}>
+              <article className="update-card" key={update.category}>
                 <div className="update-card-top">
-                  <span style={{ background: `${item.color}18`, color: item.color }}>
+                  <span
+                    style={{
+                      background: `${item.color}18`,
+                      color: item.color,
+                    }}
+                  >
                     <Icon size={22} />
                   </span>
-                  <small>{item.category}</small>
+
+                  <small>{update.category}</small>
                 </div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+
+                <h3>{update.title}</h3>
+                <p>{update.description}</p>
+
                 <a href="#notices" className="text-link">
-                  अधिक माहिती <ArrowRight size={15} />
+                  {text.moreInfo} <ArrowRight size={15} />
                 </a>
               </article>
             );
@@ -1426,19 +1896,52 @@ function LatestUpdates() {
 
 
 function WelcomeVideo() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "आपले स्वागत आहे",
+      title: "आपल्या गावाची ओळख, आपल्या माणसांच्या शब्दांत",
+      description:
+        "सरपंच किंवा गावातील युवकांकडून बोखारा गावाची माहिती, यशस्वी उपक्रम आणि भविष्यातील विकासाची स्वप्ने सांगणारा छोटा स्वागत व्हिडिओ येथे जोडता येईल.",
+      contact: "व्हिडिओसाठी संपर्क करा",
+      village: "बोखारा ग्रामपंचायत",
+      comingSoon: "स्वागत व्हिडिओ लवकरच",
+    },
+    hi: {
+      eyebrow: "आपका स्वागत है",
+      title: "हमारे गाँव की पहचान, अपने लोगों की जुबानी",
+      description:
+        "यहाँ सरपंच या गाँव के युवाओं द्वारा बोखारा गाँव की जानकारी, सफल पहल और भविष्य के विकास के सपनों को साझा करने वाला छोटा स्वागत वीडियो जोड़ा जा सकता है।",
+      contact: "वीडियो के लिए संपर्क करें",
+      village: "बोखारा ग्राम पंचायत",
+      comingSoon: "स्वागत वीडियो जल्द आ रहा है",
+    },
+    en: {
+      eyebrow: "WELCOME",
+      title: "Discover Our Village Through the Voices of Its People",
+      description:
+        "A short welcome video can be added here, featuring the Sarpanch or local youth sharing information about Bokhara, successful initiatives, and their vision for future development.",
+      contact: "Contact Us About the Video",
+      village: "Bokhara Gram Panchayat",
+      comingSoon: "Welcome Video Coming Soon",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   return (
     <section className="section-padding">
       <div className="container welcome-video-grid">
         <div className="welcome-video-copy">
-          <span className="section-eyebrow">आपले स्वागत आहे</span>
-          <h2>आपल्या गावाची ओळख, आपल्या माणसांच्या शब्दांत</h2>
-          <p>
-            सरपंच किंवा गावातील युवकांकडून बोकार गावाची माहिती, यशस्वी उपक्रम
-            आणि भविष्यातील विकासाची स्वप्ने सांगणारा छोटा स्वागत व्हिडिओ येथे
-            जोडता येईल.
-          </p>
+          <span className="section-eyebrow">{text.eyebrow}</span>
+
+          <h2>{text.title}</h2>
+
+          <p>{text.description}</p>
+
           <a href="#contact" className="text-link">
-            व्हिडिओसाठी संपर्क करा <ArrowRight size={16} />
+            {text.contact} <ArrowRight size={16} />
           </a>
         </div>
 
@@ -1447,13 +1950,19 @@ function WelcomeVideo() {
             <div className="video-sun" />
             <div className="video-hill video-hill-one" />
             <div className="video-hill video-hill-two" />
-            <div className="video-house"><span /></div>
+            <div className="video-house">
+              <span />
+            </div>
             <div className="video-tree" />
           </div>
+
           <div className="video-placeholder-overlay">
-            <span className="video-play"><span>▶</span></span>
-            <strong>बोकार ग्रामपंचायत</strong>
-            <small>स्वागत व्हिडिओ लवकरच</small>
+            <span className="video-play">
+              <span>▶</span>
+            </span>
+
+            <strong>{text.village}</strong>
+            <small>{text.comingSoon}</small>
           </div>
         </div>
       </div>
@@ -1484,20 +1993,89 @@ function WelcomeVideo() {
   );
 }
 
+
 function ProgressMeters() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "प्रगती मीटर",
+      title: "आपल्या गावाची विकासाकडे वाटचाल",
+      description: "स्वच्छता, पाणीपुरवठा आणि ग्रामविकास योजनांची प्रगती.",
+      notePending: "अधिकृत टक्केवारी प्रतीक्षेत",
+      reportPending: "अधिकृत प्रगती अहवाल प्रतीक्षेत",
+      note:
+        "टीप: अधिकृत प्रगती अहवाल प्राप्त झाल्यानंतरच टक्केवारी आणि मीटर अद्ययावत केले जातील.",
+      indicators: [
+        "स्वच्छता उपक्रम",
+        "नळजोडणी कव्हरेज",
+        "ग्रामविकास योजना",
+      ],
+    },
+    hi: {
+      eyebrow: "प्रगति मीटर",
+      title: "हमारे गाँव की विकास यात्रा",
+      description: "स्वच्छता, जल आपूर्ति और ग्राम विकास योजनाओं की प्रगति।",
+      notePending: "आधिकारिक प्रतिशत की प्रतीक्षा है",
+      reportPending: "आधिकारिक प्रगति रिपोर्ट की प्रतीक्षा है",
+      note:
+        "नोट: आधिकारिक प्रगति रिपोर्ट प्राप्त होने के बाद ही प्रतिशत और मीटर अपडेट किए जाएँगे।",
+      indicators: [
+        "स्वच्छता पहल",
+        "नल कनेक्शन कवरेज",
+        "ग्राम विकास योजना",
+      ],
+    },
+    en: {
+      eyebrow: "PROGRESS METERS",
+      title: "Our Village's Journey Towards Development",
+      description:
+        "Progress in cleanliness, water supply, and village development schemes.",
+      notePending: "Awaiting official percentage",
+      reportPending: "Awaiting official progress report",
+      note:
+        "Note: Percentages and meters will be updated only after the official progress report is received.",
+      indicators: [
+        "Cleanliness Initiatives",
+        "Tap Connection Coverage",
+        "Village Development Scheme",
+      ],
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   const indicators = [
-    { title: "स्वच्छता उपक्रम", note: "अधिकृत टक्केवारी प्रतीक्षेत", value: null, color: "#43836b" },
-    { title: "नळजोडणी कव्हरेज", note: "अधिकृत टक्केवारी प्रतीक्षेत", value: null, color: "#527fba" },
-    { title: "ग्रामविकास योजना", note: "अधिकृत प्रगती अहवाल प्रतीक्षेत", value: null, color: "#e77934" },
+    {
+      title: text.indicators[0],
+      note: text.notePending,
+      value: null,
+      color: "#43836b",
+    },
+    {
+      title: text.indicators[1],
+      note: text.notePending,
+      value: null,
+      color: "#527fba",
+    },
+    {
+      title: text.indicators[2],
+      note: text.reportPending,
+      value: null,
+      color: "#e77934",
+    },
   ];
 
   return (
-    <section className="section-padding" style={{ background: "#fffaf5" }}>
+    <section
+      className="section-padding"
+      style={{ background: "#fffaf5" }}
+    >
       <div className="container">
         <SectionHeading
-          eyebrow="प्रगती मीटर"
-          title="आपल्या गावाची विकासाकडे वाटचाल"
-          description="स्वच्छता, पाणीपुरवठा आणि ग्रामविकास योजनांची प्रगती."
+          eyebrow={text.eyebrow}
+          title={text.title}
+          description={text.description}
           centered
         />
 
@@ -1506,24 +2084,28 @@ function ProgressMeters() {
             <article className="progress-meter-card" key={item.title}>
               <div className="progress-meter-heading">
                 <span>{item.title}</span>
-                <strong>{item.value === null ? "—" : `${item.value}%`}</strong>
+                <strong>
+                  {item.value === null ? "—" : `${item.value}%`}
+                </strong>
               </div>
+
               <div className="progress-track">
                 <span
                   className="progress-fill"
                   style={{
-                    width: item.value === null ? "0%" : `${item.value}%`,
+                    width:
+                      item.value === null ? "0%" : `${item.value}%`,
                     background: item.color,
                   }}
                 />
               </div>
+
               <small>{item.note}</small>
             </article>
           ))}
         </div>
-        <p className="progress-note">
-          टीप: अधिकृत प्रगती अहवाल प्राप्त झाल्यानंतरच टक्केवारी आणि मीटर अद्ययावत केले जातील.
-        </p>
+
+        <p className="progress-note">{text.note}</p>
       </div>
 
       <style>{`
@@ -1542,73 +2124,281 @@ function ProgressMeters() {
 }
 
 
+
 function Services() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "नागरिकांसाठी",
+      title: "नागरिक सेवा व सोयी-सुविधा",
+      description: "ग्रामपंचायतीशी संबंधित महत्त्वाच्या सेवा आणि माहिती.",
+      moreInfo: "अधिक माहिती",
+    },
+    hi: {
+      eyebrow: "नागरिकों के लिए",
+      title: "नागरिक सेवाएँ और सुविधाएँ",
+      description: "ग्राम पंचायत से संबंधित महत्वपूर्ण सेवाएँ और जानकारी।",
+      moreInfo: "अधिक जानकारी",
+    },
+    en: {
+      eyebrow: "FOR CITIZENS",
+      title: "Citizen Services & Facilities",
+      description:
+        "Important services and information related to the Gram Panchayat.",
+      moreInfo: "More Information",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
+  const translatedServices = {
+    mr: services,
+
+    hi: [
+      {
+        ...services[0],
+        english: "Certificates",
+        title: "प्रमाणपत्र सेवाएँ",
+        description:
+          "जन्म, मृत्यु और अन्य आवश्यक प्रमाणपत्रों की जानकारी।",
+      },
+      {
+        ...services[1],
+        english: "Water Supply",
+        title: "जल आपूर्ति",
+        description:
+          "गाँव में पानी की आपूर्ति और संबंधित सुविधाओं की जानकारी।",
+      },
+      {
+        ...services[2],
+        english: "Cleanliness",
+        title: "स्वच्छता और पर्यावरण",
+        description:
+          "स्वच्छ गाँव, कचरा प्रबंधन और पर्यावरण संबंधी पहल।",
+      },
+      {
+        ...services[3],
+        english: "Education & Health",
+        title: "शिक्षा और स्वास्थ्य",
+        description:
+          "गाँव की शिक्षा, स्वास्थ्य सुविधाओं और संबंधित जानकारी।",
+      },
+    ],
+
+    en: [
+      {
+        ...services[0],
+        english: "Certificates",
+        title: "Certificate Services",
+        description:
+          "Information about birth, death, and other essential certificates.",
+      },
+      {
+        ...services[1],
+        english: "Water Supply",
+        title: "Water Supply",
+        description:
+          "Information about village water supply and related facilities.",
+      },
+      {
+        ...services[2],
+        english: "Cleanliness",
+        title: "Cleanliness & Environment",
+        description:
+          "Village cleanliness, waste management, and environmental initiatives.",
+      },
+      {
+        ...services[3],
+        english: "Education & Health",
+        title: "Education & Health",
+        description:
+          "Information about village education and healthcare facilities.",
+      },
+    ],
+  };
+
+  const currentServices =
+    translatedServices[language] || translatedServices.mr;
+
   return (
-    <section className="services-section section-padding" id="services">
+    <section
+      className="services-section section-padding"
+      id="services"
+    >
       <div className="container">
         <SectionHeading
-          eyebrow="नागरिकांसाठी"
-          title="नागरिक सेवा व सोयी-सुविधा"
-          description="ग्रामपंचायतीशी संबंधित महत्त्वाच्या सेवा आणि माहिती."
+          eyebrow={text.eyebrow}
+          title={text.title}
+          description={text.description}
           centered
         />
 
         <div className="services-grid">
-  {services.map((service, index) => {
-    const Icon = service.icon;
+          {currentServices.map((service, index) => {
+            const Icon = service.icon;
 
-    return (
-      <a
-        className={`service-card service-${service.color}`}
-        href="/facilities"
-        key={service.title}
-        style={{ "--card-index": index }}
-      >
-        <div className="service-icon">
-          <Icon size={24} strokeWidth={1.7} />
+            return (
+              <a
+                className={`service-card service-${service.color}`}
+                href="/facilities"
+                key={`${language}-${service.english}-${index}`}
+                style={{ "--card-index": index }}
+              >
+                <div className="service-icon">
+                  {Icon && <Icon size={24} strokeWidth={1.7} />}
+                </div>
+
+                <span className="service-english">
+                  {service.english}
+                </span>
+
+                <h3>{service.title}</h3>
+
+                <p>{service.description}</p>
+
+                <div className="service-link">
+                  {text.moreInfo}
+                  <ArrowRight size={16} />
+                </div>
+              </a>
+            );
+          })}
         </div>
-
-        <span className="service-english">{service.english}</span>
-        <h3>{service.title}</h3>
-        <p>{service.description}</p>
-
-        <div className="service-link">
-          अधिक माहिती <ArrowRight size={16} />
-        </div>
-      </a>
-    );
-  })}
-</div>
-</div>
-
+      </div>
     </section>
   );
 }
+
+
 function HomeSchemes() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      eyebrow: "विकासाच्या संधी",
+      title: "योजना व कार्यक्रम",
+      description: "शासकीय योजनांविषयी माहिती आणि मार्गदर्शन.",
+      allSchemes: "सर्व योजना",
+      readAbout: "योजनेविषयी अधिक वाचा",
+    },
+    hi: {
+      eyebrow: "विकास के अवसर",
+      title: "योजनाएँ और कार्यक्रम",
+      description: "सरकारी योजनाओं की जानकारी और मार्गदर्शन।",
+      allSchemes: "सभी योजनाएँ",
+      readAbout: "योजना के बारे में और पढ़ें",
+    },
+    en: {
+      eyebrow: "DEVELOPMENT OPPORTUNITIES",
+      title: "Schemes & Programs",
+      description: "Information and guidance about government schemes.",
+      allSchemes: "All Schemes",
+      readAbout: "Read more about",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
+  // तीनों भाषाओं में समान 3 कार्ड
+  const schemeTranslations = {
+    mr: [
+      {
+        number: "01",
+        title: "शासकीय कल्याणकारी योजना",
+        description: "नागरिकांसाठी उपलब्ध शासकीय योजनांची माहिती.",
+      },
+      {
+        number: "02",
+        title: "ग्रामीण विकास योजना",
+        description: "ग्रामविकास आणि पायाभूत सुविधांसाठी विविध उपक्रम.",
+      },
+      {
+        number: "03",
+        title: "स्वच्छता व पाणीपुरवठा",
+        description: "स्वच्छता आणि सुरक्षित पिण्याच्या पाण्यासाठी उपक्रम.",
+      },
+    ],
+
+    hi: [
+      {
+        number: "01",
+        title: "सरकारी कल्याणकारी योजनाएँ",
+        description:
+          "नागरिकों के लिए उपलब्ध सरकारी कल्याण योजनाओं की जानकारी।",
+      },
+      {
+        number: "02",
+        title: "ग्रामीण विकास योजनाएँ",
+        description:
+          "ग्राम विकास और बुनियादी सुविधाओं से जुड़े कार्यक्रम।",
+      },
+      {
+        number: "03",
+        title: "स्वच्छता और जल आपूर्ति",
+        description:
+          "स्वच्छता और सुरक्षित पेयजल से जुड़ी पहल।",
+      },
+    ],
+
+    en: [
+      {
+        number: "",
+        title: "Government Welfare Schemes",
+        description:
+          "Information about government welfare schemes available to citizens.",
+      },
+      {
+        number: "02",
+        title: "Rural Development Programs",
+        description:
+          "Programs related to village infrastructure and development.",
+      },
+      {
+        number: "03",
+        title: "Sanitation and Water Supply",
+        description:
+          "Initiatives for cleanliness and safe drinking water.",
+      },
+    ],
+  };
+
+  const currentSchemes =
+    schemeTranslations[language] || schemeTranslations.mr;
 
   return (
     <section className="schemes-section section-padding" id="schemes">
       <div className="container">
         <div className="schemes-header">
           <SectionHeading
-            eyebrow="विकासाच्या संधी"
-            title="योजना व कार्यक्रम"
-            description="शासकीय योजनांविषयी माहिती आणि मार्गदर्शन."
+            eyebrow={text.eyebrow}
+            title={text.title}
+            description={text.description}
           />
 
           <Link to="/schemes" className="button button-outline-dark">
-  सर्व योजना <ArrowRight size={16} />
-</Link>
+            {text.allSchemes} <ArrowRight size={16} />
+          </Link>
         </div>
 
         <div className="schemes-grid">
-          {schemes.map((scheme) => (
-            <article className="scheme-card" key={scheme.number}>
-              <span className="scheme-number">{scheme.number}</span>
+          {currentSchemes.map((scheme) => (
+            <article
+              className="scheme-card"
+              key={scheme.number}
+            >
+             
+
               <div className="scheme-line" />
+
               <h3>{scheme.title}</h3>
+
               <p>{scheme.description}</p>
-              <a href="#notices" aria-label={`Read about ${scheme.title}`}>
+
+              <a
+                href="#notices"
+                aria-label={`${text.readAbout} ${scheme.title}`}
+              >
                 <ArrowRight size={19} />
               </a>
             </article>
@@ -1619,9 +2409,35 @@ function HomeSchemes() {
   );
 }
 
-
-
 function ComplaintCallout() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      tagline: "आपला आवाज महत्त्वाचा आहे",
+      title: "तुमच्या सूचना व तक्रारी आम्हाला कळवा",
+      description:
+        "ग्रामपंचायतीशी संबंधित प्रश्न, सूचना किंवा तक्रारींसाठी संपर्क साधा. ऑनलाइन तक्रार सुविधा अधिकृत प्रणाली उपलब्ध झाल्यावर जोडता येईल.",
+      contact: "संपर्क माहिती",
+    },
+    hi: {
+      tagline: "आपकी आवाज़ महत्वपूर्ण है",
+      title: "अपने सुझाव और शिकायतें हमें बताएँ",
+      description:
+        "ग्राम पंचायत से संबंधित प्रश्नों, सुझावों या शिकायतों के लिए संपर्क करें। आधिकारिक प्रणाली उपलब्ध होने पर ऑनलाइन शिकायत सुविधा जोड़ी जा सकेगी।",
+      contact: "संपर्क जानकारी",
+    },
+    en: {
+      tagline: "YOUR VOICE MATTERS",
+      title: "Share Your Suggestions and Complaints",
+      description:
+        "Contact us with questions, suggestions, or complaints related to the Gram Panchayat. An online complaint facility can be added once an official system becomes available.",
+      contact: "Contact Information",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   return (
     <section className="complaint-section" id="complaints">
       <div className="container complaint-panel">
@@ -1630,16 +2446,13 @@ function ComplaintCallout() {
         </div>
 
         <div className="complaint-copy">
-          <span>आपला आवाज महत्त्वाचा आहे</span>
-          <h2>तुमच्या सूचना व तक्रारी आम्हाला कळवा</h2>
-          <p>
-            ग्रामपंचायतीशी संबंधित प्रश्न, सूचना किंवा तक्रारींसाठी संपर्क
-            साधा. ऑनलाइन तक्रार सुविधा अधिकृत प्रणाली उपलब्ध झाल्यावर जोडता येईल.
-          </p>
+          <span>{text.tagline}</span>
+          <h2>{text.title}</h2>
+          <p>{text.description}</p>
         </div>
 
         <a href="#contact" className="button button-primary">
-          संपर्क माहिती <ArrowRight size={16} />
+          {text.contact} <ArrowRight size={16} />
         </a>
       </div>
     </section>
@@ -1647,6 +2460,79 @@ function ComplaintCallout() {
 }
 
 function Footer() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      brand: "बोखारा ग्रामपंचायत",
+      location: "नागपूर, महाराष्ट्र",
+      description:
+        "पारदर्शक प्रशासन, नागरिकांचा सहभाग आणि शाश्वत ग्रामविकासासाठी समर्पित स्थानिक स्वराज्य संस्था.",
+      importantLinks: "महत्त्वाचे दुवे",
+      about: "आमच्याबद्दल",
+      administration: "ग्रामपंचायत प्रशासन",
+      schemes: "योजना व कार्यक्रम",
+      notices: "सूचना व घोषणा",
+      citizenServices: "नागरिक सेवा",
+      facilities: "सोयी-सुविधा",
+      development: "ग्रामविकास कामे",
+      complaints: "तक्रार नोंदणी",
+      contactInfo: "संपर्क माहिती",
+      contact: "संपर्क",
+      address: "बोखारा, नागपूर, महाराष्ट्र",
+      phone: "अधिकृत क्रमांक उपलब्ध झाल्यावर अद्ययावत होईल",
+      email: "अधिकृत ई-मेल उपलब्ध झाल्यावर अद्ययावत होईल",
+      rights: "सर्व हक्क राखीव.",
+      guidelines: "महाराष्ट्र शासनाच्या मार्गदर्शक तत्त्वांनुसार",
+    },
+    hi: {
+      brand: "बोखारा ग्राम पंचायत",
+      location: "नागपुर, महाराष्ट्र",
+      description:
+        "पारदर्शी प्रशासन, नागरिकों की भागीदारी और सतत ग्रामीण विकास के लिए समर्पित स्थानीय स्वशासन संस्था।",
+      importantLinks: "महत्वपूर्ण लिंक",
+      about: "हमारे बारे में",
+      administration: "ग्राम पंचायत प्रशासन",
+      schemes: "योजनाएँ और कार्यक्रम",
+      notices: "सूचनाएँ और घोषणाएँ",
+      citizenServices: "नागरिक सेवाएँ",
+      facilities: "सुविधाएँ",
+      development: "ग्राम विकास कार्य",
+      complaints: "शिकायत पंजीकरण",
+      contactInfo: "संपर्क जानकारी",
+      contact: "संपर्क",
+      address: "बोखारा, नागपुर, महाराष्ट्र",
+      phone: "आधिकारिक नंबर उपलब्ध होने पर अपडेट किया जाएगा",
+      email: "आधिकारिक ई-मेल उपलब्ध होने पर अपडेट किया जाएगा",
+      rights: "सर्वाधिकार सुरक्षित।",
+      guidelines: "महाराष्ट्र सरकार के दिशा-निर्देशों के अनुसार",
+    },
+    en: {
+      brand: "Bokhara Gram Panchayat",
+      location: "Nagpur, Maharashtra",
+      description:
+        "A local self-government institution dedicated to transparent administration, citizen participation, and sustainable village development.",
+      importantLinks: "Important Links",
+      about: "About Us",
+      administration: "Gram Panchayat Administration",
+      schemes: "Schemes & Programs",
+      notices: "Notices & Announcements",
+      citizenServices: "Citizen Services",
+      facilities: "Facilities",
+      development: "Village Development Works",
+      complaints: "Complaint Registration",
+      contactInfo: "Contact Information",
+      contact: "Contact",
+      address: "Bokhara, Nagpur, Maharashtra",
+      phone: "Will be updated when the official phone number is available",
+      email: "Will be updated when the official email is available",
+      rights: "All rights reserved.",
+      guidelines: "As per Government of Maharashtra guidelines",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   return (
     <footer className="site-footer" id="contact">
       <div className="container footer-main">
@@ -1656,47 +2542,43 @@ function Footer() {
               <Landmark size={27} />
             </span>
             <span>
-              <strong>बोकार ग्रामपंचायत</strong>
-              <small>नागपूर, महाराष्ट्र</small>
+              <strong>{text.brand}</strong>
+              <small>{text.location}</small>
             </span>
           </a>
 
-          <p>
-            पारदर्शक प्रशासन, नागरिकांचा सहभाग आणि शाश्वत ग्रामविकासासाठी
-            समर्पित स्थानिक स्वराज्य संस्था.
-          </p>
+          <p>{text.description}</p>
         </div>
 
         <div className="footer-links-column">
-          <h3>महत्त्वाचे दुवे</h3>
-          <a href="#about">आमच्याबद्दल</a>
-          <a href="#administration">ग्रामपंचायत प्रशासन</a>
-          <a href="#schemes">योजना व कार्यक्रम</a>
-          <a href="#notices">सूचना व घोषणा</a>
-          
+          <h3>{text.importantLinks}</h3>
+          <a href="#about">{text.about}</a>
+          <a href="#administration">{text.administration}</a>
+          <a href="#schemes">{text.schemes}</a>
+          <a href="#notices">{text.notices}</a>
         </div>
 
         <div className="footer-links-column">
-          <h3>नागरिक सेवा</h3>
-          <a href="#services">सोयी-सुविधा</a>
-          <a href="#development">ग्रामविकास कामे</a>
-          <a href="#complaints">तक्रार नोंदणी</a>
-          <a href="#contact">संपर्क माहिती</a>
+          <h3>{text.citizenServices}</h3>
+          <a href="#services">{text.facilities}</a>
+          <a href="#development">{text.development}</a>
+          <a href="#complaints">{text.complaints}</a>
+          <a href="#contact">{text.contactInfo}</a>
         </div>
 
         <div className="footer-contact-column">
-          <h3>संपर्क</h3>
+          <h3>{text.contact}</h3>
           <p>
             <MapPin size={16} />
-            बोकार, नागपूर, महाराष्ट्र
+            {text.address}
           </p>
           <p>
             <Phone size={16} />
-            अधिकृत क्रमांक उपलब्ध झाल्यावर अद्ययावत होईल
+            {text.phone}
           </p>
           <p>
             <Mail size={16} />
-            अधिकृत ई-मेल उपलब्ध झाल्यावर अद्ययावत होईल
+            {text.email}
           </p>
         </div>
       </div>
@@ -1704,18 +2586,50 @@ function Footer() {
       <div className="footer-bottom">
         <div className="container footer-bottom-inner">
           <span>
-            © {new Date().getFullYear()} बोकार ग्रामपंचायत. सर्व हक्क राखीव.
+            © {new Date().getFullYear()} {text.brand}. {text.rights}
           </span>
-          <span>महाराष्ट्र शासनाच्या मार्गदर्शक तत्त्वांनुसार</span>
+          <span>{text.guidelines}</span>
         </div>
       </div>
     </footer>
   );
 }
 
+
 function FloatingSearch() {
+  const { language } = useLanguage();
+
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+
+  const textByLanguage = {
+    mr: {
+      label: "वेबसाइटवर शोधा",
+      placeholder: "माहिती शोधा...",
+      search: "शोधा",
+      close: "शोध बंद करा",
+      open: "शोध उघडा",
+      notFound: "संबंधित माहिती या पृष्ठावर सापडली नाही.",
+    },
+    hi: {
+      label: "वेबसाइट पर खोजें",
+      placeholder: "जानकारी खोजें...",
+      search: "खोजें",
+      close: "खोज बंद करें",
+      open: "खोज खोलें",
+      notFound: "इस पृष्ठ पर संबंधित जानकारी नहीं मिली।",
+    },
+    en: {
+      label: "Search the website",
+      placeholder: "Search information...",
+      search: "Search",
+      close: "Close search",
+      open: "Open search",
+      notFound: "No related information was found on this page.",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
 
   function searchPage(event) {
     event.preventDefault();
@@ -1729,14 +2643,19 @@ function FloatingSearch() {
         "h1, h2, h3, .nav-link, .service-card, .notice-item"
       )
     ).find((element) =>
-      element.textContent.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+      element.textContent
+        .toLocaleLowerCase()
+        .includes(value.toLocaleLowerCase())
     );
 
     if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
       setOpen(false);
     } else {
-      window.alert("संबंधित माहिती या पृष्ठावर सापडली नाही.");
+      window.alert(text.notFound);
     }
   }
 
@@ -1744,16 +2663,18 @@ function FloatingSearch() {
     <div className="floating-search">
       {open && (
         <form className="search-popover" onSubmit={searchPage}>
-          <label htmlFor="site-search">वेबसाइटवर शोधा</label>
+          <label htmlFor="site-search">{text.label}</label>
+
           <div>
             <input
               id="site-search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="माहिती शोधा..."
+              placeholder={text.placeholder}
               autoFocus
             />
-            <button type="submit" aria-label="Search">
+
+            <button type="submit" aria-label={text.search}>
               <Search size={18} />
             </button>
           </div>
@@ -1763,7 +2684,7 @@ function FloatingSearch() {
       <button
         className="floating-search-button"
         onClick={() => setOpen(!open)}
-        aria-label={open ? "Close search" : "Open search"}
+        aria-label={open ? text.close : text.open}
       >
         {open ? <X size={21} /> : <Search size={21} />}
       </button>
@@ -1771,46 +2692,76 @@ function FloatingSearch() {
   );
 }
 
-
 function GalleryTeaser() {
+  const { language } = useLanguage();
+
+  const textByLanguage = {
+    mr: {
+      label: "ग्रामपंचायत बोखारा",
+      title: "📸 फोटो गॅलरी",
+      description: "आपल्या गावाची सुंदर झलक",
+      photo1: "ग्रामपंचायत परिसराचे फोटो पहा",
+      photo2: "गावातील इमारतीचे फोटो पहा",
+      alt1: "ग्रामपंचायत परिसर",
+      alt2: "गावातील इमारत",
+      allPhotos: "सर्व फोटो पहा",
+    },
+    hi: {
+      label: "बोखारा ग्राम पंचायत",
+      title: "📸 फोटो गैलरी",
+      description: "हमारे गाँव की सुंदर झलक",
+      photo1: "ग्राम पंचायत परिसर की तस्वीरें देखें",
+      photo2: "गाँव की इमारत की तस्वीरें देखें",
+      alt1: "ग्राम पंचायत परिसर",
+      alt2: "गाँव की इमारत",
+      allPhotos: "सभी तस्वीरें देखें",
+    },
+    en: {
+      label: "Bokhara Gram Panchayat",
+      title: "📸 Photo Gallery",
+      description: "A beautiful glimpse of our village",
+      photo1: "View photos of the Gram Panchayat premises",
+      photo2: "View photos of a village building",
+      alt1: "Gram Panchayat premises",
+      alt2: "Village building",
+      allPhotos: "View All Photos",
+    },
+  };
+
+  const text = textByLanguage[language] || textByLanguage.mr;
+
   return (
     <>
       <section className="gallery-teaser">
         <div className="gallery-teaser-row">
           <div className="gallery-teaser-title">
             <span className="gallery-teaser-label">
-              ग्रामपंचायत बोकार
+              {text.label}
             </span>
 
-            <h2>📸 फोटो गॅलरी</h2>
+            <h2>{text.title}</h2>
 
-            <p>आपल्या गावाची सुंदर झलक</p>
+            <p>{text.description}</p>
           </div>
 
           <div className="gallery-teaser-photos">
-            <Link
-              to="/gallery"
-              aria-label="ग्रामपंचायत परिसराचे फोटो पहा"
-            >
+            <Link to="/gallery" aria-label={text.photo1}>
               <img
                 src="https://tse4.mm.bing.net/th/id/OIP.eUvqkPOYoYL1DYDNyO-sdgHaDw?r=0&pid=Api&h=220&P=0"
-                alt="ग्रामपंचायत परिसर"
+                alt={text.alt1}
               />
             </Link>
 
-            <Link
-              to="/gallery"
-              aria-label="गावातील इमारतीचे फोटो पहा"
-            >
+            <Link to="/gallery" aria-label={text.photo2}>
               <img
                 src="https://tse3.mm.bing.net/th/id/OIP.NHT6_RIjIIeScMn9tzYAqwHaEc?r=0&pid=Api&h=220&P=0"
-                alt="गावातील इमारत"
+                alt={text.alt2}
               />
             </Link>
           </div>
 
           <Link to="/gallery" className="gallery-teaser-button">
-            सर्व फोटो पहा <span>→</span>
+            {text.allPhotos} <span>→</span>
           </Link>
         </div>
       </section>
@@ -1872,19 +2823,19 @@ function GalleryTeaser() {
           flex-shrink: 0;
         }
 
-       .gallery-teaser-photos a {
-  display: block;
-  width: 150px;
-  height: 150px;
-  flex: 0 0 150px;
-  box-sizing: border-box;
-  overflow: hidden;
-  border-radius: 50%;
-  border: none;
-  outline: none;
-  box-shadow: 0 4px 12px rgba(27, 79, 43, 0.18);
-  transition: transform 0.25s ease;
-}
+        .gallery-teaser-photos a {
+          display: block;
+          width: 150px;
+          height: 150px;
+          flex: 0 0 150px;
+          box-sizing: border-box;
+          overflow: hidden;
+          border-radius: 50%;
+          border: none;
+          outline: none;
+          box-shadow: 0 4px 12px rgba(27, 79, 43, 0.18);
+          transition: transform 0.25s ease;
+        }
 
         .gallery-teaser-photos a:hover {
           transform: scale(1.06);
@@ -1977,13 +2928,12 @@ function GalleryTeaser() {
   );
 }
 
-
-
-
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
+        <ScrollToTop />
+
         <WelcomeScreen />
         <Header />
 
@@ -2012,25 +2962,43 @@ export default function App() {
             }
           />
 
-          <Route path="/home" element={<Navigate to="/" replace />} />
+          <Route
+            path="/home"
+            element={<Navigate to="/" replace />}
+          />
 
           <Route path="/about" element={<About />} />
-          <Route path="/administration" element={<Administration />} />
+          <Route
+            path="/administration"
+            element={<Administration />}
+          />
           <Route path="/projects" element={<Projects />} />
           <Route path="/schemes" element={<Schemes />} />
-          <Route path="/announcements" element={<Announcements />} />
-          <Route path="/facilities" element={<Facilities />} />
-<Route path="/complaint" element={<Complaint />} />
-          
           <Route
-  path="/gallery"
-  element={
-    <>
-      <Gallery />
-      <Footer />
-    </>
-  }
-/>
+            path="/announcements"
+            element={<Announcements />}
+          />
+          <Route path="/facilities" element={<Facilities />} />
+
+          <Route
+            path="/complaint"
+            element={
+              <>
+                <Complaint />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/gallery"
+            element={
+              <>
+                <Gallery />
+                <Footer />
+              </>
+            }
+          />
 
           <Route
             path="/development"
@@ -2043,19 +3011,9 @@ export default function App() {
           />
 
           <Route
-  path="/complaint"
-  element={
-    <>
-      <Complaint />
-      <Footer />
-    </>
-  }
-/>
-
-<Route
-  path="/complaints"
-  element={<Navigate to="/complaint" replace />}
-/>
+            path="/complaints"
+            element={<Navigate to="/complaint" replace />}
+          />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

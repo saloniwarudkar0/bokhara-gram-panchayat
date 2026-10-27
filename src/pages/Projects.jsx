@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   ArrowDownRight,
@@ -13,8 +12,8 @@ import {
   HandHeart,
   Hammer,
   Landmark,
+   Lightbulb,
   Leaf,
-  Lightbulb,
   Recycle,
   Sparkles,
   Trees,
@@ -22,151 +21,501 @@ import {
   Waves,
   Wrench,
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
+
+const translations = {
+  mr: {
+    overviewEyebrow: "प्रगतीचा आढावा",
+    overviewTitle: "विकासकामांची स्थिती",
+    overviewDescription: "विविध क्षेत्रांतील विकासकामांचा संक्षिप्त आढावा.",
+    planning: "विकासकामांचे नियोजन",
+    completed: "पूर्ण झालेली कामे",
+    ongoing: "सुरू असलेली कामे",
+    proposed: "प्रस्तावित कामे",
+    completedDescription: "पूर्ण म्हणून नोंदविलेली विकासकामे.",
+    ongoingDescription: "प्रगतीपथावर असलेल्या उपक्रमांची माहिती.",
+    proposedDescription: "नियोजन किंवा विचाराधीन असलेले उपक्रम.",
+    completion: "पूर्णता",
+    inProgress: "प्रगतीपथावर",
+    underPlanning: "नियोजनाधीन",
+    sampleData:
+      "टीप: प्रकल्पांची नावे, संख्या आणि प्रगती ही नमुना माहिती आहे. अधिकृत नोंदींनुसार ती अद्ययावत करा.",
+    ourApproach: "आमचा दृष्टिकोन",
+    smallSteps: "छोट्या पावलांतून",
+    bigChange: "मोठा बदल.",
+    introduction:
+      "ग्रामविकास म्हणजे केवळ बांधकाम नव्हे. नागरिकांना आवश्यक सुविधा मिळाव्यात, परिसर स्वच्छ राहावा आणि प्रत्येकाला गावाच्या प्रगतीत सहभागी होता यावे, हा त्यामागील मुख्य उद्देश आहे.",
+    gramPanchayat: "ग्रामपंचायत बोखारा",
+    visualRecord: "दृश्य नोंद",
+    galleryTitle: "विकासाची काही झलक",
+    galleryDescription:
+      "ग्रामविकास, पर्यावरण आणि पायाभूत सुविधांशी संबंधित छायाचित्रे.",
+    visuals: "04 / छायाचित्रे",
+    galleryDisclaimer:
+      "टीप: सध्या नमुना छायाचित्रे वापरली आहेत. ग्रामपंचायतीच्या प्रत्यक्ष विकासकामांची छायाचित्रे येथे समाविष्ट करा.",
+    projectsAndInitiatives: "प्रकल्प आणि उपक्रम",
+    efforts: "गावासाठी सुरू असलेले प्रयत्न",
+    projectsDescription:
+      "प्रत्येक विकासकामाची सद्यस्थिती आणि त्यामागील उद्देश जाणून घ्या.",
+    allProjects: "सर्व कामे",
+    completedFilter: "पूर्ण झालेली",
+    ongoingFilter: "सुरू असलेली",
+    proposedFilter: "प्रस्तावित",
+    projectTypes: "प्रकल्प प्रकार",
+    progress: "प्रगती",
+    complete: "पूर्ण",
+    workOngoing: "काम सुरू",
+    planned: "प्रस्तावित",
+    noProjects: "या प्रकारातील कोणतेही काम उपलब्ध नाही.",
+    citizenParticipation: "लोकसहभाग महत्त्वाचा",
+    citizenTitle: "गावाच्या प्रगतीत",
+    citizenTitleHighlight: "तुमचाही सहभाग.",
+    citizenDescription:
+      "स्वच्छता, पाणी बचत, पर्यावरण संवर्धन आणि सार्वजनिक सुविधांची काळजी घेण्यासाठी नागरिकांचा सहभाग महत्त्वाचा आहे.",
+    oneVillage: "एक गाव, एक ध्येय",
+    collectiveEfforts: "सामूहिक प्रयत्नांतून शाश्वत विकास",
+    citizenActions: "नागरिकांची कृती",
+    yourParticipation: "आपला सहभाग",
+    actionsDescription: "गावाच्या विकासासाठी करता येणाऱ्या उपयुक्त कृती.",
+    selected: "कृती निवडल्या",
+    closingEyebrow: "आपले गाव · आपली जबाबदारी",
+    closingTitle: "बोखाराच्या उज्ज्वल भविष्यासाठी एकत्र येऊया.",
+    closingDescription:
+      "आपल्या सूचना, कल्पना आणि सहभागातून गावाचा विकास अधिक सक्षम बनवूया.",
+    contact: "संपर्क साधा",
+    commitments: [
+      {
+        title: "रस्ते आणि पायाभूत सुविधा",
+        description: "गावातील रस्ते व सार्वजनिक सुविधांमध्ये सुधारणा.",
+      },
+      {
+        title: "स्वच्छ पाणी",
+        description: "पाणीपुरवठा आणि पाण्याच्या उपलब्धतेवर लक्ष.",
+      },
+      {
+        title: "स्वच्छ आणि सुंदर गाव",
+        description: "स्वच्छता, कचरा व्यवस्थापन आणि नागरिकांचा सहभाग.",
+      },
+      {
+        title: "पर्यावरण संवर्धन",
+        description: "वृक्षारोपण आणि हिरवळ वाढवण्यासाठी प्रयत्न.",
+      },
+    ],
+    projects: [
+      {
+        title: "अंतर्गत रस्त्यांचा विकास",
+        type: "पायाभूत सुविधा",
+        description:
+          "गावातील अंतर्गत रस्त्यांची सुधारणा करून नागरिकांसाठी सुरक्षित आणि सोयीस्कर वाहतूक व्यवस्था निर्माण करणे.",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "पाणीपुरवठा व्यवस्था",
+        type: "पाणी व स्वच्छता",
+        description:
+          "नागरिकांना नियमित आणि स्वच्छ पाणी उपलब्ध व्हावे यासाठी पाणीपुरवठा सुविधांमध्ये सुधारणा करणे.",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "सार्वजनिक स्वच्छता अभियान",
+        type: "स्वच्छता",
+        description:
+          "सार्वजनिक ठिकाणे स्वच्छ ठेवणे, कचरा व्यवस्थापन सुधारणे आणि स्वच्छतेबाबत जनजागृती करणे.",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "वृक्षारोपण व हरित परिसर",
+        type: "पर्यावरण",
+        description:
+          "वृक्षारोपणाला प्रोत्साहन देऊन हिरवळ वाढवणे आणि पर्यावरण संवर्धनासाठी नागरिकांचा सहभाग घेणे.",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "सार्वजनिक परिसर सुधारणा",
+        type: "ग्रामसुविधा",
+        description:
+          "सार्वजनिक ठिकाणे अधिक स्वच्छ, सुरक्षित आणि नागरिकांसाठी उपयुक्त करण्याच्या दृष्टीने सुधारणा.",
+        year: "नियोजनाधीन",
+        yearLabel: "नियोजनाधीन",
+      },
+      {
+        title: "पथदिवे व प्रकाश व्यवस्था",
+        type: "मूलभूत सुविधा",
+        description:
+          "आवश्यक ठिकाणी प्रकाश व्यवस्था सुधारून नागरिकांची सुरक्षितता आणि सोय वाढवणे.",
+        year: "नियोजनाधीन",
+        yearLabel: "नियोजनाधीन",
+      },
+    ],
+    galleryItems: [
+      { title: "पायाभूत सुविधा", category: "रस्ते व बांधकाम" },
+      { title: "हरित परिसर", category: "पर्यावरण संवर्धन" },
+      { title: "विकासकामे", category: "बांधकाम व सुविधा" },
+      { title: "निसर्ग आणि गाव", category: "हरित विकास" },
+    ],
+  },
+
+  hi: {
+    overviewEyebrow: "प्रगति की समीक्षा",
+    overviewTitle: "विकास कार्यों की स्थिति",
+    overviewDescription: "विभिन्न क्षेत्रों में विकास कार्यों की संक्षिप्त जानकारी।",
+    planning: "विकास कार्यों की योजना",
+    completed: "पूरे हुए कार्य",
+    ongoing: "जारी कार्य",
+    proposed: "प्रस्तावित कार्य",
+    completedDescription: "पूर्ण के रूप में दर्ज विकास कार्य।",
+    ongoingDescription: "प्रगति पर चल रही पहलों की जानकारी।",
+    proposedDescription: "योजनाधीन या विचाराधीन पहलें।",
+    completion: "पूर्णता",
+    inProgress: "प्रगति पर",
+    underPlanning: "योजनाधीन",
+    sampleData:
+      "नोट: परियोजनाओं के नाम, संख्या और प्रगति नमूना जानकारी है। इन्हें आधिकारिक रिकॉर्ड के अनुसार अपडेट करें।",
+    ourApproach: "हमारा दृष्टिकोण",
+    smallSteps: "छोटे कदमों से",
+    bigChange: "बड़ा बदलाव।",
+    introduction:
+      "ग्राम विकास केवल निर्माण तक सीमित नहीं है। नागरिकों को आवश्यक सुविधाएँ मिलें, परिसर स्वच्छ रहे और हर व्यक्ति गाँव की प्रगति में भाग ले सके—यही इसका मुख्य उद्देश्य है।",
+    gramPanchayat: "ग्राम पंचायत बोखारा",
+    visualRecord: "चित्रों में झलक",
+    galleryTitle: "विकास की कुछ झलकियाँ",
+    galleryDescription:
+      "ग्राम विकास, पर्यावरण और बुनियादी सुविधाओं से संबंधित तस्वीरें।",
+    visuals: "04 / तस्वीरें",
+    galleryDisclaimer:
+      "नोट: अभी नमूना तस्वीरें इस्तेमाल की गई हैं। यहाँ ग्राम पंचायत के वास्तविक विकास कार्यों की तस्वीरें जोड़ें।",
+    projectsAndInitiatives: "परियोजनाएँ और पहल",
+    efforts: "गाँव के लिए जारी प्रयास",
+    projectsDescription:
+      "प्रत्येक विकास कार्य की वर्तमान स्थिति और उसका उद्देश्य जानें।",
+    allProjects: "सभी कार्य",
+    completedFilter: "पूरे हुए",
+    ongoingFilter: "जारी",
+    proposedFilter: "प्रस्तावित",
+    projectTypes: "परियोजना प्रकार",
+    progress: "प्रगति",
+    complete: "पूर्ण",
+    workOngoing: "कार्य जारी",
+    planned: "प्रस्तावित",
+    noProjects: "इस श्रेणी में कोई कार्य उपलब्ध नहीं है।",
+    citizenParticipation: "जनभागीदारी महत्वपूर्ण है",
+    citizenTitle: "गाँव की प्रगति में",
+    citizenTitleHighlight: "आपकी भी भागीदारी।",
+    citizenDescription:
+      "स्वच्छता, जल संरक्षण, पर्यावरण सुरक्षा और सार्वजनिक सुविधाओं की देखभाल में नागरिकों की भागीदारी महत्वपूर्ण है।",
+    oneVillage: "एक गाँव, एक लक्ष्य",
+    collectiveEfforts: "सामूहिक प्रयासों से सतत विकास",
+    citizenActions: "नागरिकों के कार्य",
+    yourParticipation: "आपकी भागीदारी",
+    actionsDescription: "गाँव के विकास के लिए उपयोगी कदम।",
+    selected: "कार्य चुने गए",
+    closingEyebrow: "हमारा गाँव · हमारी जिम्मेदारी",
+    closingTitle: "बोखारा के उज्ज्वल भविष्य के लिए साथ आएँ।",
+    closingDescription:
+      "आपके सुझावों, विचारों और भागीदारी से गाँव के विकास को और मजबूत बनाएँ।",
+    contact: "संपर्क करें",
+    commitments: [
+      {
+        title: "सड़कें और बुनियादी सुविधाएँ",
+        description: "गाँव की सड़कों और सार्वजनिक सुविधाओं में सुधार।",
+      },
+      {
+        title: "स्वच्छ पानी",
+        description: "जल आपूर्ति और पानी की उपलब्धता पर ध्यान।",
+      },
+      {
+        title: "स्वच्छ और सुंदर गाँव",
+        description: "स्वच्छता, कचरा प्रबंधन और नागरिकों की भागीदारी।",
+      },
+      {
+        title: "पर्यावरण संरक्षण",
+        description: "वृक्षारोपण और हरियाली बढ़ाने के प्रयास।",
+      },
+    ],
+    projects: [
+      {
+        title: "आंतरिक सड़कों का विकास",
+        type: "बुनियादी सुविधाएँ",
+        description:
+          "गाँव की आंतरिक सड़कों में सुधार करके नागरिकों के लिए सुरक्षित और सुविधाजनक यातायात व्यवस्था बनाना।",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "जल आपूर्ति व्यवस्था",
+        type: "पानी और स्वच्छता",
+        description:
+          "नागरिकों को नियमित और स्वच्छ पानी उपलब्ध कराने के लिए जल आपूर्ति सुविधाओं में सुधार करना।",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "सार्वजनिक स्वच्छता अभियान",
+        type: "स्वच्छता",
+        description:
+          "सार्वजनिक स्थानों को साफ रखना, कचरा प्रबंधन सुधारना और स्वच्छता के प्रति जागरूकता बढ़ाना।",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "वृक्षारोपण और हरित परिसर",
+        type: "पर्यावरण",
+        description:
+          "वृक्षारोपण को प्रोत्साहित करके हरियाली बढ़ाना और पर्यावरण संरक्षण में नागरिकों की भागीदारी बढ़ाना।",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "सार्वजनिक परिसर में सुधार",
+        type: "ग्राम सुविधाएँ",
+        description:
+          "सार्वजनिक स्थानों को अधिक स्वच्छ, सुरक्षित और नागरिकों के लिए उपयोगी बनाने हेतु सुधार करना।",
+        year: "योजनाधीन",
+        yearLabel: "योजनाधीन",
+      },
+      {
+        title: "स्ट्रीट लाइट और प्रकाश व्यवस्था",
+        type: "बुनियादी सुविधाएँ",
+        description:
+          "आवश्यक स्थानों पर प्रकाश व्यवस्था सुधारकर नागरिकों की सुरक्षा और सुविधा बढ़ाना।",
+        year: "योजनाधीन",
+        yearLabel: "योजनाधीन",
+      },
+    ],
+    galleryItems: [
+      { title: "बुनियादी सुविधाएँ", category: "सड़कें और निर्माण" },
+      { title: "हरित परिसर", category: "पर्यावरण संरक्षण" },
+      { title: "विकास कार्य", category: "निर्माण और सुविधाएँ" },
+      { title: "प्रकृति और गाँव", category: "हरित विकास" },
+    ],
+  },
+
+  en: {
+    overviewEyebrow: "PROGRESS OVERVIEW",
+    overviewTitle: "Development Status",
+    overviewDescription: "A brief overview of development work across different areas.",
+    planning: "Development Planning",
+    completed: "Completed Projects",
+    ongoing: "Ongoing Projects",
+    proposed: "Proposed Projects",
+    completedDescription: "Development projects recorded as completed.",
+    ongoingDescription: "Information about initiatives currently in progress.",
+    proposedDescription: "Initiatives under consideration or planning.",
+    completion: "Completed",
+    inProgress: "In progress",
+    underPlanning: "Under planning",
+    sampleData:
+      "Note: Project names, counts, and progress figures are sample information. Update them according to official records.",
+    ourApproach: "OUR APPROACH",
+    smallSteps: "Small steps lead to",
+    bigChange: "big change.",
+    introduction:
+      "Village development is about more than construction. It aims to provide essential facilities, maintain a clean environment, and enable everyone to participate in the village's progress.",
+    gramPanchayat: "Gram Panchayat Bokhara",
+    visualRecord: "VISUAL RECORD",
+    galleryTitle: "A Glimpse of Development",
+    galleryDescription:
+      "Images related to village development, the environment, and infrastructure.",
+    visuals: "04 / VISUALS",
+    galleryDisclaimer:
+      "Note: Sample images are currently being used. Replace them with photographs of actual Gram Panchayat development work.",
+    projectsAndInitiatives: "PROJECTS & INITIATIVES",
+    efforts: "Ongoing Efforts for the Village",
+    projectsDescription:
+      "Explore the current status and purpose of each development project.",
+    allProjects: "All Projects",
+    completedFilter: "Completed",
+    ongoingFilter: "Ongoing",
+    proposedFilter: "Proposed",
+    projectTypes: "Project categories",
+    progress: "Progress",
+    complete: "Completed",
+    workOngoing: "In progress",
+    planned: "Proposed",
+    noProjects: "No projects are available in this category.",
+    citizenParticipation: "COMMUNITY PARTICIPATION MATTERS",
+    citizenTitle: "Be part of",
+    citizenTitleHighlight: "the village's progress.",
+    citizenDescription:
+      "Community participation is important for cleanliness, water conservation, environmental protection, and maintaining public facilities.",
+    oneVillage: "One Village, One Goal",
+    collectiveEfforts: "Sustainable development through collective effort",
+    citizenActions: "CITIZEN ACTIONS",
+    yourParticipation: "Your Participation",
+    actionsDescription: "Practical actions that can support village development.",
+    selected: "actions selected",
+    closingEyebrow: "OUR VILLAGE · OUR RESPONSIBILITY",
+    closingTitle: "Let's work together for Bokhara's brighter future.",
+    closingDescription:
+      "Your suggestions, ideas, and participation can help strengthen village development.",
+    contact: "Contact Us",
+    commitments: [
+      {
+        title: "Roads and Infrastructure",
+        description: "Improve village roads and public facilities.",
+      },
+      {
+        title: "Clean Water",
+        description: "Focus on water supply and availability.",
+      },
+      {
+        title: "A Clean and Beautiful Village",
+        description: "Cleanliness, waste management, and community participation.",
+      },
+      {
+        title: "Environmental Protection",
+        description: "Encourage tree planting and increase green cover.",
+      },
+    ],
+    projects: [
+      {
+        title: "Internal Road Development",
+        type: "Infrastructure",
+        description:
+          "Improve internal roads to provide safer and more convenient transportation for residents.",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "Water Supply System",
+        type: "Water & Sanitation",
+        description:
+          "Improve water supply facilities to help residents access clean water regularly.",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "Public Cleanliness Campaign",
+        type: "Cleanliness",
+        description:
+          "Keep public places clean, improve waste management, and raise awareness about sanitation.",
+        year: "2025–26",
+        yearLabel: "2025–26",
+      },
+      {
+        title: "Tree Plantation and Green Spaces",
+        type: "Environment",
+        description:
+          "Encourage tree planting, increase greenery, and involve residents in environmental protection.",
+        year: "2026–27",
+        yearLabel: "2026–27",
+      },
+      {
+        title: "Public Area Improvements",
+        type: "Village Facilities",
+        description:
+          "Improve public spaces to make them cleaner, safer, and more useful for residents.",
+        year: "Under planning",
+        yearLabel: "Under planning",
+      },
+      {
+        title: "Street Lighting",
+        type: "Basic Facilities",
+        description:
+          "Improve lighting in necessary locations to increase public safety and convenience.",
+        year: "Under planning",
+        yearLabel: "Under planning",
+      },
+    ],
+    galleryItems: [
+      { title: "Infrastructure", category: "Roads & Construction" },
+      { title: "Green Spaces", category: "Environmental Protection" },
+      { title: "Development Work", category: "Construction & Facilities" },
+      { title: "Nature and Village", category: "Green Development" },
+    ],
+  },
+};
 
 const projectCategories = [
-  "सर्व कामे",
-  "पूर्ण झालेली",
-  "सुरू असलेली",
-  "प्रस्तावित",
+  { id: "all", key: "allProjects" },
+  { id: "completed", key: "completedFilter" },
+  { id: "ongoing", key: "ongoingFilter" },
+  { id: "proposed", key: "proposedFilter" },
 ];
 
-const projects = [
+const projectData = [
   {
     id: 1,
-    title: "अंतर्गत रस्त्यांचा विकास",
-    category: "पूर्ण झालेली",
-    type: "पायाभूत सुविधा",
-    description:
-      "गावातील अंतर्गत रस्त्यांची सुधारणा करून नागरिकांसाठी सुरक्षित आणि सोयीस्कर वाहतूक व्यवस्था निर्माण करणे.",
+    category: "completed",
     icon: Building2,
     color: "green",
-    status: "पूर्ण",
+    status: "completed",
     progress: 100,
-    year: "2025–26",
   },
   {
     id: 2,
-    title: "पाणीपुरवठा व्यवस्था",
-    category: "सुरू असलेली",
-    type: "पाणी व स्वच्छता",
-    description:
-      "नागरिकांना नियमित आणि स्वच्छ पाणी उपलब्ध व्हावे यासाठी पाणीपुरवठा सुविधांमध्ये सुधारणा करणे.",
+    category: "ongoing",
     icon: Droplets,
     color: "blue",
-    status: "काम सुरू",
+    status: "ongoing",
     progress: 65,
-    year: "2026–27",
   },
   {
     id: 3,
-    title: "सार्वजनिक स्वच्छता अभियान",
-    category: "पूर्ण झालेली",
-    type: "स्वच्छता",
-    description:
-      "सार्वजनिक ठिकाणे स्वच्छ ठेवणे, कचरा व्यवस्थापन सुधारणे आणि स्वच्छतेबाबत जनजागृती करणे.",
+    category: "completed",
     icon: Recycle,
     color: "orange",
-    status: "पूर्ण",
+    status: "completed",
     progress: 100,
-    year: "2025–26",
   },
   {
     id: 4,
-    title: "वृक्षारोपण व हरित परिसर",
-    category: "सुरू असलेली",
-    type: "पर्यावरण",
-    description:
-      "वृक्षारोपणाला प्रोत्साहन देऊन हिरवळ वाढवणे आणि पर्यावरण संवर्धनासाठी नागरिकांचा सहभाग घेणे.",
+    category: "ongoing",
     icon: Trees,
     color: "green",
-    status: "काम सुरू",
+    status: "ongoing",
     progress: 45,
-    year: "2026–27",
   },
   {
     id: 5,
-    title: "सार्वजनिक परिसर सुधारणा",
-    category: "प्रस्तावित",
-    type: "ग्रामसुविधा",
-    description:
-      "सार्वजनिक ठिकाणे अधिक स्वच्छ, सुरक्षित आणि नागरिकांसाठी उपयुक्त करण्याच्या दृष्टीने सुधारणा.",
+    category: "proposed",
     icon: Landmark,
     color: "purple",
-    status: "प्रस्तावित",
+    status: "proposed",
     progress: 0,
-    year: "नियोजनाधीन",
   },
   {
     id: 6,
-    title: "पथदिवे व प्रकाश व्यवस्था",
-    category: "प्रस्तावित",
-    type: "मूलभूत सुविधा",
-    description:
-      "आवश्यक ठिकाणी प्रकाश व्यवस्था सुधारून नागरिकांची सुरक्षितता आणि सोय वाढवणे.",
+    category: "proposed",
     icon: Lightbulb,
     color: "orange",
-    status: "प्रस्तावित",
+    status: "proposed",
     progress: 0,
-    year: "नियोजनाधीन",
   },
 ];
 
-const galleryItems = [
+const galleryImages = [
   {
     image:
       "https://tse1.mm.bing.net/th/id/OIP.dYDJq3P3wCyD1q-DfY6WswAAAA?r=0&pid=Api&h=220&P=0",
-    title: "पायाभूत सुविधा",
-    category: "रस्ते व बांधकाम",
     className: "gallery-tall",
   },
   {
     image:
       "https://tse4.mm.bing.net/th/id/OIP.j-OY9OeTHpYEmGlO0O_BWQHaEd?r=0&pid=Api&h=220&P=0",
-    title: "हरित परिसर",
-    category: "पर्यावरण संवर्धन",
     className: "",
   },
   {
     image:
       "https://tse4.mm.bing.net/th/id/OIP.TRg5Iww01Ko3zUj-Ud95VwHaER?r=0&pid=Api&h=220&P=0",
-    title: "विकासकामे",
-    category: "बांधकाम व सुविधा",
     className: "",
   },
   {
     image:
       "https://tse2.mm.bing.net/th/id/OIP.VrlphdRfTjnTMpHjAhwdNAHaFj?r=0&pid=Api&h=220&P=0",
-    title: "निसर्ग आणि गाव",
-    category: "हरित विकास",
     className: "gallery-wide",
   },
 ];
 
 const commitments = [
-  {
-    id: "roads",
-    title: "रस्ते आणि पायाभूत सुविधा",
-    description: "गावातील रस्ते व सार्वजनिक सुविधांमध्ये सुधारणा.",
-    icon: Hammer,
-  },
-  {
-    id: "water",
-    title: "स्वच्छ पाणी",
-    description: "पाणीपुरवठा आणि पाण्याच्या उपलब्धतेवर लक्ष.",
-    icon: Waves,
-  },
-  {
-    id: "cleanliness",
-    title: "स्वच्छ आणि सुंदर गाव",
-    description: "स्वच्छता, कचरा व्यवस्थापन आणि नागरिकांचा सहभाग.",
-    icon: Sparkles,
-  },
-  {
-    id: "environment",
-    title: "पर्यावरण संवर्धन",
-    description: "वृक्षारोपण आणि हिरवळ वाढवण्यासाठी प्रयत्न.",
-    icon: Leaf,
-  },
+  { id: "roads", icon: Hammer },
+  { id: "water", icon: Waves },
+  { id: "cleanliness", icon: Sparkles },
+  { id: "environment", icon: Leaf },
 ];
 
 function SectionTitle({ eyebrow, title, description }) {
@@ -183,26 +532,27 @@ function SectionTitle({ eyebrow, title, description }) {
 }
 
 export default function Projects() {
-  const [activeCategory, setActiveCategory] = useState("सर्व कामे");
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
+  const [activeCategory, setActiveCategory] = useState("all");
   const [checkedCommitments, setCheckedCommitments] = useState([]);
 
   const filteredProjects =
-    activeCategory === "सर्व कामे"
-      ? projects
-      : projects.filter(
-          (project) => project.category === activeCategory
-        );
+    activeCategory === "all"
+      ? projectData
+      : projectData.filter((project) => project.category === activeCategory);
 
-  const completedProjects = projects.filter(
-    (project) => project.category === "पूर्ण झालेली"
+  const completedProjects = projectData.filter(
+    (project) => project.category === "completed"
   ).length;
 
-  const ongoingProjects = projects.filter(
-    (project) => project.category === "सुरू असलेली"
+  const ongoingProjects = projectData.filter(
+    (project) => project.category === "ongoing"
   ).length;
 
-  const proposedProjects = projects.filter(
-    (project) => project.category === "प्रस्तावित"
+  const proposedProjects = projectData.filter(
+    (project) => project.category === "proposed"
   ).length;
 
   function toggleCommitment(id) {
@@ -217,21 +567,19 @@ export default function Projects() {
     <div className="projects-page">
       <style>{projectsStyles}</style>
 
-     
-
-      {/* 2. PROJECT OVERVIEW */}
+      {/* PROJECT OVERVIEW */}
       <section className="project-overview-section">
         <div className="projects-container">
           <div className="overview-heading-row">
             <SectionTitle
-              eyebrow="प्रगतीचा आढावा"
-              title="विकासकामांची स्थिती"
-              description="विविध क्षेत्रांतील विकासकामांचा संक्षिप्त आढावा."
+              eyebrow={t.overviewEyebrow}
+              title={t.overviewTitle}
+              description={t.overviewDescription}
             />
 
             <div className="overview-side-note">
               <CalendarDays size={17} />
-              <span>विकासकामांचे नियोजन</span>
+              <span>{t.planning}</span>
             </div>
           </div>
 
@@ -241,10 +589,10 @@ export default function Projects() {
                 <CircleCheck size={23} />
               </span>
               <span className="overview-value">{completedProjects}</span>
-              <h3>पूर्ण झालेली कामे</h3>
-              <p>पूर्ण म्हणून नोंदविलेली विकासकामे.</p>
+              <h3>{t.completed}</h3>
+              <p>{t.completedDescription}</p>
               <div className="overview-card-bottom">
-                <span>पूर्णता</span>
+                <span>{t.completion}</span>
                 <span className="status-dot status-dot-green" />
               </div>
             </div>
@@ -254,10 +602,10 @@ export default function Projects() {
                 <Wrench size={23} />
               </span>
               <span className="overview-value">{ongoingProjects}</span>
-              <h3>सुरू असलेली कामे</h3>
-              <p>प्रगतीपथावर असलेल्या उपक्रमांची माहिती.</p>
+              <h3>{t.ongoing}</h3>
+              <p>{t.ongoingDescription}</p>
               <div className="overview-card-bottom">
-                <span>प्रगतीपथावर</span>
+                <span>{t.inProgress}</span>
                 <span className="status-dot status-dot-orange" />
               </div>
             </div>
@@ -267,96 +615,89 @@ export default function Projects() {
                 <Clock3 size={23} />
               </span>
               <span className="overview-value">{proposedProjects}</span>
-              <h3>प्रस्तावित कामे</h3>
-              <p>नियोजन किंवा विचाराधीन असलेले उपक्रम.</p>
+              <h3>{t.proposed}</h3>
+              <p>{t.proposedDescription}</p>
               <div className="overview-card-bottom">
-                <span>नियोजनाधीन</span>
+                <span>{t.underPlanning}</span>
                 <span className="status-dot status-dot-blue" />
               </div>
             </div>
           </div>
 
-          <p className="data-disclaimer">
-            टीप: प्रकल्पांची नावे, संख्या आणि प्रगती ही नमुना माहिती आहे.
-            अधिकृत नोंदींनुसार ती अद्ययावत करा.
-          </p>
+          <p className="data-disclaimer">{t.sampleData}</p>
         </div>
       </section>
 
-      {/* 3. INTRODUCTION */}
+      {/* INTRODUCTION */}
       <section className="projects-introduction">
         <div className="projects-container introduction-grid">
           <div className="introduction-heading">
             <span className="section-eyebrow">
               <span className="eyebrow-dot" />
-              आमचा दृष्टिकोन
+              {t.ourApproach}
             </span>
             <h2>
-              छोट्या पावलांतून
+              {t.smallSteps}
               <br />
-              <span>मोठा बदल.</span>
+              <span>{t.bigChange}</span>
             </h2>
           </div>
 
           <div className="introduction-content">
-            <p>
-              ग्रामविकास म्हणजे केवळ बांधकाम नव्हे. नागरिकांना
-              आवश्यक सुविधा मिळाव्यात, परिसर स्वच्छ राहावा आणि
-              प्रत्येकाला गावाच्या प्रगतीत सहभागी होता यावे,
-              हा त्यामागील मुख्य उद्देश आहे.
-            </p>
+            <p>{t.introduction}</p>
 
             <div className="introduction-signature">
               <span className="signature-line" />
-              <span>ग्रामपंचायत बोखारा</span>
+              <span>{t.gramPanchayat}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. GALLERY — ONLY ONCE */}
+      {/* GALLERY */}
       <section className="project-gallery-section" id="project-gallery">
         <div className="projects-container">
           <div className="gallery-heading-row">
             <SectionTitle
-              eyebrow="दृश्य नोंद"
-              title="विकासाची काही झलक"
-              description="ग्रामविकास, पर्यावरण आणि पायाभूत सुविधांशी संबंधित छायाचित्रे."
+              eyebrow={t.visualRecord}
+              title={t.galleryTitle}
+              description={t.galleryDescription}
             />
-            <span className="gallery-count">04 / VISUALS</span>
+            <span className="gallery-count">{t.visuals}</span>
           </div>
 
           <div className="project-gallery-grid">
-            {galleryItems.map((item) => (
-              <article
-                className={`project-gallery-item ${item.className}`}
-                key={item.title}
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                />
-                <div className="gallery-image-overlay" />
-                <div className="gallery-image-caption">
-                  <span>{item.category}</span>
-                  <h3>{item.title}</h3>
-                </div>
-                <span className="gallery-image-arrow">
-                  <ArrowDownRight size={20} />
-                </span>
-              </article>
-            ))}
+            {galleryImages.map((item, index) => {
+              const galleryItem = t.galleryItems[index];
+
+              return (
+                <article
+                  className={`project-gallery-item ${item.className}`}
+                  key={item.image}
+                >
+                  <img
+                    src={item.image}
+                    alt={galleryItem.title}
+                    loading="lazy"
+                  />
+                  <div className="gallery-image-overlay" />
+                  <div className="gallery-image-caption">
+                    <span>{galleryItem.category}</span>
+                    <h3>{galleryItem.title}</h3>
+                  </div>
+                  <span className="gallery-image-arrow" aria-hidden="true">
+                    <ArrowDownRight size={20} />
+                  </span>
+                </article>
+              );
+            })}
           </div>
 
-          <p className="gallery-disclaimer">
-            टीप: सध्या नमुना छायाचित्रे वापरली आहेत. ग्रामपंचायतीच्या
-            प्रत्यक्ष विकासकामांची छायाचित्रे येथे समाविष्ट करा.
-          </p>
+          <p className="gallery-disclaimer">{t.galleryDisclaimer}</p>
         </div>
       </section>
 
-      {/* 5. PROJECT LIST */}
+      {/* PROJECT LIST */}
       <section
         className="development-projects-section"
         id="development-projects"
@@ -364,28 +705,28 @@ export default function Projects() {
         <div className="projects-container">
           <div className="projects-list-heading">
             <SectionTitle
-              eyebrow="प्रकल्प आणि उपक्रम"
-              title="गावासाठी सुरू असलेले प्रयत्न"
-              description="प्रत्येक विकासकामाची सद्यस्थिती आणि त्यामागील उद्देश जाणून घ्या."
+              eyebrow={t.projectsAndInitiatives}
+              title={t.efforts}
+              description={t.projectsDescription}
             />
           </div>
 
           <div
             className="project-filters"
             role="group"
-            aria-label="प्रकल्प प्रकार"
+            aria-label={t.projectTypes}
           >
             {projectCategories.map((category) => (
               <button
-                key={category}
+                key={category.id}
                 type="button"
                 className={`project-filter ${
-                  activeCategory === category ? "active" : ""
+                  activeCategory === category.id ? "active" : ""
                 }`}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => setActiveCategory(category.id)}
               >
-                {category}
-                {activeCategory === category && (
+                {t[category.key]}
+                {activeCategory === category.id && (
                   <span className="filter-dot" />
                 )}
               </button>
@@ -395,6 +736,7 @@ export default function Projects() {
           <div className="development-project-grid">
             {filteredProjects.map((project) => {
               const ProjectIcon = project.icon;
+              const details = t.projects[project.id - 1];
 
               return (
                 <article
@@ -408,31 +750,35 @@ export default function Projects() {
                   </div>
 
                   <div className="project-card-meta">
-                    <span>{project.type}</span>
+                    <span>{details.type}</span>
                     <span
                       className={`project-status ${
-                        project.status === "पूर्ण"
+                        project.status === "completed"
                           ? "status-complete"
-                          : project.status === "काम सुरू"
+                          : project.status === "ongoing"
                             ? "status-ongoing"
                             : "status-planned"
                       }`}
                     >
-                      {project.status}
+                      {project.status === "completed"
+                        ? t.complete
+                        : project.status === "ongoing"
+                          ? t.workOngoing
+                          : t.planned}
                     </span>
                   </div>
 
-                  <h3>{project.title}</h3>
+                  <h3>{details.title}</h3>
                   <p className="project-card-description">
-                    {project.description}
+                    {details.description}
                   </p>
 
                   <div className="project-progress-area">
                     <div className="progress-label-row">
-                      <span>प्रगती</span>
+                      <span>{t.progress}</span>
                       <strong>
                         {project.progress === 0
-                          ? "नियोजनाधीन"
+                          ? t.underPlanning
                           : `${project.progress}%`}
                       </strong>
                     </div>
@@ -440,7 +786,7 @@ export default function Projects() {
                     <div
                       className="project-progress-track"
                       role="progressbar"
-                      aria-label={`${project.title} प्रगती`}
+                      aria-label={`${details.title} — ${t.progress}`}
                       aria-valuenow={project.progress}
                       aria-valuemin={0}
                       aria-valuemax={100}
@@ -455,9 +801,9 @@ export default function Projects() {
                   <div className="project-card-footer">
                     <span>
                       <CalendarDays size={15} />
-                      {project.year}
+                      {details.yearLabel}
                     </span>
-                    <span className="project-card-arrow">
+                    <span className="project-card-arrow" aria-hidden="true">
                       <ArrowRight size={17} />
                     </span>
                   </div>
@@ -469,37 +815,34 @@ export default function Projects() {
           {filteredProjects.length === 0 && (
             <div className="empty-projects">
               <Building2 size={32} />
-              <p>या प्रकारातील कोणतेही काम उपलब्ध नाही.</p>
+              <p>{t.noProjects}</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* 6. CITIZEN PARTICIPATION — ONLY ONCE */}
+      {/* CITIZEN PARTICIPATION */}
       <section className="citizen-participation-section">
         <div className="projects-container participation-grid">
           <div className="participation-copy">
             <span className="section-eyebrow">
               <span className="eyebrow-dot" />
-              लोकसहभाग महत्त्वाचा
+              {t.citizenParticipation}
             </span>
 
             <h2>
-              गावाच्या प्रगतीत
+              {t.citizenTitle}
               <br />
-              <span>तुमचाही सहभाग.</span>
+              <span>{t.citizenTitleHighlight}</span>
             </h2>
 
-            <p>
-              स्वच्छता, पाणी बचत, पर्यावरण संवर्धन आणि सार्वजनिक
-              सुविधांची काळजी घेण्यासाठी नागरिकांचा सहभाग महत्त्वाचा आहे.
-            </p>
+            <p>{t.citizenDescription}</p>
 
             <div className="participation-highlight">
               <HandHeart size={24} />
               <div>
-                <strong>एक गाव, एक ध्येय</strong>
-                <span>सामूहिक प्रयत्नांतून शाश्वत विकास</span>
+                <strong>{t.oneVillage}</strong>
+                <span>{t.collectiveEfforts}</span>
               </div>
             </div>
           </div>
@@ -507,21 +850,20 @@ export default function Projects() {
           <div className="participation-checklist">
             <div className="checklist-header">
               <div>
-                <span className="checklist-kicker">CITIZEN ACTIONS</span>
-                <h3>आपला सहभाग</h3>
+                <span className="checklist-kicker">{t.citizenActions}</span>
+                <h3>{t.yourParticipation}</h3>
               </div>
               <span className="checklist-icon">
                 <Users size={22} />
               </span>
             </div>
 
-            <p className="checklist-description">
-              गावाच्या विकासासाठी करता येणाऱ्या उपयुक्त कृती.
-            </p>
+            <p className="checklist-description">{t.actionsDescription}</p>
 
             <div className="checklist-items">
-              {commitments.map((commitment) => {
+              {commitments.map((commitment, index) => {
                 const CommitmentIcon = commitment.icon;
+                const details = t.commitments[index];
                 const isChecked = checkedCommitments.includes(commitment.id);
 
                 return (
@@ -539,8 +881,8 @@ export default function Projects() {
                     </span>
 
                     <span className="commitment-text">
-                      <strong>{commitment.title}</strong>
-                      <small>{commitment.description}</small>
+                      <strong>{details.title}</strong>
+                      <small>{details.description}</small>
                     </span>
 
                     <span className="commitment-check">
@@ -553,7 +895,8 @@ export default function Projects() {
 
             <div className="checklist-footer">
               <span>
-                {checkedCommitments.length} / {commitments.length} कृती निवडल्या
+                {checkedCommitments.length} / {commitments.length}{" "}
+                {t.selected}
               </span>
               <span className="checklist-progress-track">
                 <span
@@ -569,7 +912,7 @@ export default function Projects() {
         </div>
       </section>
 
-      {/* 7. CLOSING BANNER */}
+      {/* CLOSING BANNER */}
       <section className="projects-closing-section">
         <div className="projects-container">
           <div className="projects-closing-banner">
@@ -581,16 +924,13 @@ export default function Projects() {
             </div>
 
             <div className="closing-copy">
-              <span>आपले गाव · आपली जबाबदारी</span>
-              <h2>बोखाराच्या उज्ज्वल भविष्यासाठी एकत्र येऊया.</h2>
-              <p>
-                आपल्या सूचना, कल्पना आणि सहभागातून गावाचा विकास अधिक
-                सक्षम बनवूया.
-              </p>
+              <span>{t.closingEyebrow}</span>
+              <h2>{t.closingTitle}</h2>
+              <p>{t.closingDescription}</p>
             </div>
 
             <a href="/contact" className="closing-button">
-              संपर्क साधा
+              {t.contact}
               <ArrowRight size={17} />
             </a>
           </div>
@@ -601,6 +941,7 @@ export default function Projects() {
 }
 
 const projectsStyles = `
+${/* Existing CSS retained */ ""}
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap');
 
 .projects-page {
@@ -619,14 +960,9 @@ const projectsStyles = `
 
 .projects-page *,
 .projects-page *::before,
-.projects-page *::after {
-  box-sizing: border-box;
-}
+.projects-page *::after { box-sizing: border-box; }
 
-.projects-page a {
-  color: inherit;
-  text-decoration: none;
-}
+.projects-page a { color: inherit; text-decoration: none; }
 
 .projects-container {
   width: min(1180px, calc(100% - 64px));
@@ -651,9 +987,7 @@ const projectsStyles = `
   background: var(--project-orange);
 }
 
-.section-title {
-  max-width: 650px;
-}
+.section-title { max-width: 650px; }
 
 .section-title h2 {
   margin: 15px 0 12px;
@@ -670,51 +1004,7 @@ const projectsStyles = `
   line-height: 1.9;
 }
 
-/* HERO */
-
-.development-hero {
-  position: relative;
-  padding: 28px 0 36px;
-  background: var(--project-cream);
-  overflow: hidden;
-}
-
-.simple-hero {
-  min-height: auto;
-}
-
-.simple-hero .development-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--project-green);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.simple-hero h1 {
-  margin: 13px 0 9px;
-  color: #27342b;
-  font-size: clamp(34px, 4vw, 48px);
-  line-height: 1.35;
-  font-weight: 800;
-  letter-spacing: -.04em;
-}
-
-.simple-hero h1 span {
-  color: var(--project-orange);
-}
-
-.development-hero-description {
-  max-width: 650px;
-  margin: 0;
-  color: #6b746b;
-  font-size: 13px;
-  line-height: 1.9;
-}
-
 /* OVERVIEW */
-
 .project-overview-section {
   padding: 85px 0 78px;
   background: #f7f8f4;
@@ -769,20 +1059,9 @@ const projectsStyles = `
   border-radius: 4px;
 }
 
-.overview-card-green .overview-icon {
-  background: #e9f1e5;
-  color: #44714b;
-}
-
-.overview-card-orange .overview-icon {
-  background: #fbede2;
-  color: #c46c36;
-}
-
-.overview-card-blue .overview-icon {
-  background: #e6eff3;
-  color: #4b798e;
-}
+.overview-card-green .overview-icon { background: #e9f1e5; color: #44714b; }
+.overview-card-orange .overview-icon { background: #fbede2; color: #c46c36; }
+.overview-card-blue .overview-icon { background: #e6eff3; color: #4b798e; }
 
 .overview-value {
   display: block;
@@ -819,12 +1098,7 @@ const projectsStyles = `
   font-weight: 600;
 }
 
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
+.status-dot { width: 7px; height: 7px; border-radius: 50%; }
 .status-dot-green { background: #57915c; }
 .status-dot-orange { background: #d9844a; }
 .status-dot-blue { background: #6595a9; }
@@ -838,11 +1112,7 @@ const projectsStyles = `
 }
 
 /* INTRODUCTION */
-
-.projects-introduction {
-  padding: 92px 0;
-  background: #fff;
-}
+.projects-introduction { padding: 92px 0; background: #fff; }
 
 .introduction-grid {
   display: grid;
@@ -860,14 +1130,9 @@ const projectsStyles = `
   font-weight: 800;
 }
 
-.introduction-heading h2 span {
-  color: var(--project-green);
-}
+.introduction-heading h2 span { color: var(--project-green); }
 
-.introduction-content {
-  padding-left: 30px;
-  border-left: 2px solid #e3e8de;
-}
+.introduction-content { padding-left: 30px; border-left: 2px solid #e3e8de; }
 
 .introduction-content > p {
   margin: 0;
@@ -886,22 +1151,11 @@ const projectsStyles = `
   font-weight: 800;
 }
 
-.signature-line {
-  width: 31px;
-  height: 2px;
-  background: var(--project-orange);
-}
+.signature-line { width: 31px; height: 2px; background: var(--project-orange); }
 
 /* PROJECT LIST */
-
-.development-projects-section {
-  padding: 95px 0 100px;
-  background: #fff;
-}
-
-.projects-list-heading {
-  margin-bottom: 30px;
-}
+.development-projects-section { padding: 95px 0 100px; background: #fff; }
+.projects-list-heading { margin-bottom: 30px; }
 
 .project-filters {
   display: flex;
@@ -930,23 +1184,9 @@ const projectsStyles = `
   transition: background .2s ease, color .2s ease;
 }
 
-.project-filter:hover {
-  background: #eaf0e6;
-  color: var(--project-green);
-}
-
-.project-filter.active {
-  border-color: var(--project-green);
-  background: var(--project-green);
-  color: white;
-}
-
-.filter-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #e7a576;
-}
+.project-filter:hover { background: #eaf0e6; color: var(--project-green); }
+.project-filter.active { border-color: var(--project-green); background: var(--project-green); color: white; }
+.filter-dot { width: 6px; height: 6px; border-radius: 50%; background: #e7a576; }
 
 .development-project-grid {
   display: grid;
@@ -971,12 +1211,7 @@ const projectsStyles = `
   box-shadow: 0 18px 42px rgba(39, 57, 41, .07);
 }
 
-.project-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22px;
-}
+.project-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
 
 .project-card-icon {
   display: grid;
@@ -986,34 +1221,12 @@ const projectsStyles = `
   border-radius: 5px;
 }
 
-.project-green .project-card-icon {
-  background: #e8f0e4;
-  color: #3e704b;
-}
+.project-green .project-card-icon { background: #e8f0e4; color: #3e704b; }
+.project-blue .project-card-icon { background: #e7f0f4; color: #467b92; }
+.project-orange .project-card-icon { background: #fbede3; color: #bd6e3e; }
+.project-purple .project-card-icon { background: #efebf6; color: #7a629a; }
 
-.project-blue .project-card-icon {
-  background: #e7f0f4;
-  color: #467b92;
-}
-
-.project-orange .project-card-icon {
-  background: #fbede3;
-  color: #bd6e3e;
-}
-
-.project-purple .project-card-icon {
-  background: #efebf6;
-  color: #7a629a;
-}
-
-.project-card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  color: #8a9086;
-  font-size: 10px;
-}
+.project-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #8a9086; font-size: 10px; }
 
 .project-status {
   display: inline-flex;
@@ -1025,20 +1238,9 @@ const projectsStyles = `
   white-space: nowrap;
 }
 
-.status-complete {
-  background: #eaf2e7;
-  color: #42734a;
-}
-
-.status-ongoing {
-  background: #fff0e4;
-  color: #b66c38;
-}
-
-.status-planned {
-  background: #edf0f2;
-  color: #677680;
-}
+.status-complete { background: #eaf2e7; color: #42734a; }
+.status-ongoing { background: #fff0e4; color: #b66c38; }
+.status-planned { background: #edf0f2; color: #677680; }
 
 .development-project-card h3 {
   margin: 15px 0 10px;
@@ -1048,69 +1250,21 @@ const projectsStyles = `
   font-weight: 800;
 }
 
-.project-card-description {
-  margin: 0;
-  color: #7a8279;
-  font-size: 12px;
-  line-height: 1.95;
-}
+.project-card-description { margin: 0; color: #7a8279; font-size: 12px; line-height: 1.95; }
+.project-progress-area { margin-top: auto; padding-top: 24px; }
 
-.project-progress-area {
-  margin-top: auto;
-  padding-top: 24px;
-}
+.progress-label-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 9px; color: #858c82; font-size: 10px; }
+.progress-label-row strong { color: var(--project-green); font-family: 'DM Sans', sans-serif; font-size: 11px; }
 
-.progress-label-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 9px;
-  color: #858c82;
-  font-size: 10px;
-}
-
-.progress-label-row strong {
-  color: var(--project-green);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-}
-
-.project-progress-track {
-  width: 100%;
-  height: 5px;
-  border-radius: 5px;
-  background: #edf0e9;
-  overflow: hidden;
-}
-
-.project-progress-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: #5c855e;
-  transition: width .35s ease;
-}
-
+.project-progress-track { width: 100%; height: 5px; border-radius: 5px; background: #edf0e9; overflow: hidden; }
+.project-progress-fill { display: block; height: 100%; border-radius: inherit; background: #5c855e; transition: width .35s ease; }
 .project-orange .project-progress-fill { background: #d8864d; }
 .project-blue .project-progress-fill { background: #6c9cb0; }
 .project-purple .project-progress-fill { background: #8c7aab; }
 
-.project-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid #eff0eb;
-}
+.project-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 14px; border-top: 1px solid #eff0eb; }
 
-.project-card-footer > span:first-child {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #838b80;
-  font-size: 10px;
-}
+.project-card-footer > span:first-child { display: inline-flex; align-items: center; gap: 7px; color: #838b80; font-size: 10px; }
 
 .project-card-arrow {
   display: grid;
@@ -1123,45 +1277,16 @@ const projectsStyles = `
   transition: background .2s ease, color .2s ease;
 }
 
-.development-project-card:hover .project-card-arrow {
-  background: var(--project-green);
-  color: #fff;
-}
+.development-project-card:hover .project-card-arrow { background: var(--project-green); color: #fff; }
 
-.empty-projects {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 13px;
-  padding: 50px 20px;
-  color: #849080;
-}
-
-.empty-projects p {
-  margin: 0;
-  font-size: 13px;
-}
+.empty-projects { display: flex; flex-direction: column; align-items: center; gap: 13px; padding: 50px 20px; color: #849080; }
+.empty-projects p { margin: 0; font-size: 13px; }
 
 /* GALLERY */
+.project-gallery-section { padding: 92px 0 100px; background: #f6f5ef; }
+.gallery-heading-row { margin-bottom: 34px; }
 
-.project-gallery-section {
-  padding: 92px 0 100px;
-  background: #f6f5ef;
-}
-
-.gallery-heading-row {
-  margin-bottom: 34px;
-}
-
-.gallery-count {
-  padding-bottom: 7px;
-  color: #8b9286;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  white-space: nowrap;
-}
+.gallery-count { padding-bottom: 7px; color: #8b9286; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .12em; white-space: nowrap; }
 
 .project-gallery-grid {
   display: grid;
@@ -1170,69 +1295,23 @@ const projectsStyles = `
   gap: 14px;
 }
 
-.project-gallery-item {
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-  border-radius: 4px;
-  background: #dce1d6;
-  overflow: hidden;
-  isolation: isolate;
-}
+.project-gallery-item { position: relative; min-width: 0; min-height: 0; border-radius: 4px; background: #dce1d6; overflow: hidden; isolation: isolate; }
+.gallery-tall { grid-row: span 2; }
+.gallery-wide { grid-column: span 2; }
 
-.gallery-tall {
-  grid-row: span 2;
-}
-
-.gallery-wide {
-  grid-column: span 2;
-}
-
-.project-gallery-item img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .6s cubic-bezier(.2, .7, .2, 1);
-}
-
-.project-gallery-item:hover img {
-  transform: scale(1.06);
-}
+.project-gallery-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.project-gallery-item:hover img { transform: scale(1.06); }
 
 .gallery-image-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(18, 30, 22, .06) 0%,
-    rgba(18, 30, 22, .03) 36%,
-    rgba(18, 30, 22, .77) 100%
-  );
+  background: linear-gradient(180deg, rgba(18, 30, 22, .06) 0%, rgba(18, 30, 22, .03) 36%, rgba(18, 30, 22, .77) 100%);
 }
 
-.gallery-image-caption {
-  position: absolute;
-  right: 20px;
-  bottom: 21px;
-  left: 20px;
-  z-index: 2;
-}
-
-.gallery-image-caption span {
-  color: #e6c4a6;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.gallery-image-caption h3 {
-  margin: 7px 0 0;
-  color: white;
-  font-size: 19px;
-  font-weight: 800;
-}
+.gallery-image-caption { position: absolute; right: 20px; bottom: 21px; left: 20px; z-index: 2; }
+.gallery-image-caption span { color: #e6c4a6; font-size: 10px; font-weight: 600; }
+.gallery-image-caption h3 { margin: 7px 0 0; color: white; font-size: 19px; font-weight: 800; }
 
 .gallery-image-arrow {
   position: absolute;
@@ -1251,533 +1330,112 @@ const projectsStyles = `
   transition: opacity .2s ease, transform .2s ease;
 }
 
-.project-gallery-item:hover .gallery-image-arrow {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.gallery-wide .gallery-image-caption {
-  right: 70px;
-}
+.project-gallery-item:hover .gallery-image-arrow { opacity: 1; transform: translateY(0); }
+.gallery-wide .gallery-image-caption { right: 70px; }
 
 /* CITIZEN PARTICIPATION */
+.citizen-participation-section { padding: 100px 0; background: #fff; }
 
-.citizen-participation-section {
-  padding: 100px 0;
-  background: #fff;
-}
+.participation-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 85px; }
 
-.participation-grid {
-  display: grid;
-  grid-template-columns: .9fr 1.1fr;
-  align-items: center;
-  gap: 85px;
-}
+.participation-copy h2 { margin: 20px 0 17px; color: #28362c; font-size: clamp(32px, 3.8vw, 46px); line-height: 1.45; letter-spacing: -.05em; font-weight: 800; }
+.participation-copy h2 span { color: var(--project-green); }
+.participation-copy > p { max-width: 430px; margin: 0; color: #737c72; font-size: 13px; line-height: 2.1; }
 
-.participation-copy h2 {
-  margin: 20px 0 17px;
-  color: #28362c;
-  font-size: clamp(32px, 3.8vw, 46px);
-  line-height: 1.45;
-  letter-spacing: -.05em;
-  font-weight: 800;
-}
+.participation-highlight { display: flex; align-items: center; gap: 15px; margin-top: 31px; padding: 18px; border: 1px solid #e6e9e0; border-radius: 4px; background: #f8f9f5; color: var(--project-green); }
+.participation-highlight > svg { flex-shrink: 0; }
+.participation-highlight div { display: flex; flex-direction: column; gap: 5px; }
+.participation-highlight strong { font-size: 13px; font-weight: 800; }
+.participation-highlight span { color: #838b80; font-size: 11px; line-height: 1.7; }
 
-.participation-copy h2 span {
-  color: var(--project-green);
-}
+.participation-checklist { padding: 28px; border: 1px solid #e7eae2; border-radius: 5px; background: #fff; box-shadow: 0 15px 45px rgba(39, 57, 41, .045); }
 
-.participation-copy > p {
-  max-width: 430px;
-  margin: 0;
-  color: #737c72;
-  font-size: 13px;
-  line-height: 2.1;
-}
+.checklist-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.checklist-kicker { color: #9a9f94; font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .13em; }
+.checklist-header h3 { margin: 8px 0 0; color: #2b382e; font-size: 22px; font-weight: 800; }
+.checklist-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 4px; background: #eaf1e6; color: var(--project-green); }
+.checklist-description { margin: 14px 0 21px; color: #828a80; font-size: 12px; line-height: 1.8; }
+.checklist-items { display: flex; flex-direction: column; }
 
-.participation-highlight {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 31px;
-  padding: 18px;
-  border: 1px solid #e6e9e0;
-  border-radius: 4px;
-  background: #f8f9f5;
-  color: var(--project-green);
-}
+.commitment-item { display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px 0; border: 0; border-top: 1px solid #eff0eb; background: transparent; text-align: left; font-family: inherit; cursor: pointer; }
 
-.participation-highlight > svg {
-  flex-shrink: 0;
-}
+.commitment-icon { display: grid; place-items: center; flex-shrink: 0; width: 39px; height: 39px; border-radius: 4px; background: #f3f5ef; color: #527254; transition: background .2s ease, color .2s ease; }
+.commitment-text { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
+.commitment-text strong { color: #354137; font-size: 12px; font-weight: 700; }
+.commitment-text small { color: #899087; font-size: 10px; line-height: 1.7; }
+.commitment-check { display: grid; place-items: center; flex-shrink: 0; width: 23px; height: 23px; border: 1px solid #d9dfd5; border-radius: 50%; color: white; transition: background .2s ease, border-color .2s ease; }
 
-.participation-highlight div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.commitment-checked .commitment-icon { background: var(--project-green); color: white; }
+.commitment-checked .commitment-check { border-color: var(--project-green); background: var(--project-green); }
+.commitment-checked .commitment-text strong { color: var(--project-green); }
 
-.participation-highlight strong {
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.participation-highlight span {
-  color: #838b80;
-  font-size: 11px;
-  line-height: 1.7;
-}
-
-.participation-checklist {
-  padding: 28px;
-  border: 1px solid #e7eae2;
-  border-radius: 5px;
-  background: #fff;
-  box-shadow: 0 15px 45px rgba(39, 57, 41, .045);
-}
-
-.checklist-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.checklist-kicker {
-  color: #9a9f94;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .13em;
-}
-
-.checklist-header h3 {
-  margin: 8px 0 0;
-  color: #2b382e;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.checklist-icon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 4px;
-  background: #eaf1e6;
-  color: var(--project-green);
-}
-
-.checklist-description {
-  margin: 14px 0 21px;
-  color: #828a80;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.checklist-items {
-  display: flex;
-  flex-direction: column;
-}
-
-.commitment-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  width: 100%;
-  padding: 15px 0;
-  border: 0;
-  border-top: 1px solid #eff0eb;
-  background: transparent;
-  text-align: left;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.commitment-icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 39px;
-  height: 39px;
-  border-radius: 4px;
-  background: #f3f5ef;
-  color: #527254;
-  transition: background .2s ease, color .2s ease;
-}
-
-.commitment-text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.commitment-text strong {
-  color: #354137;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.commitment-text small {
-  color: #899087;
-  font-size: 10px;
-  line-height: 1.7;
-}
-
-.commitment-check {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 23px;
-  height: 23px;
-  border: 1px solid #d9dfd5;
-  border-radius: 50%;
-  color: white;
-  transition: background .2s ease, border-color .2s ease;
-}
-
-.commitment-checked .commitment-icon {
-  background: var(--project-green);
-  color: white;
-}
-
-.commitment-checked .commitment-check {
-  border-color: var(--project-green);
-  background: var(--project-green);
-}
-
-.commitment-checked .commitment-text strong {
-  color: var(--project-green);
-}
-
-.checklist-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-  padding-top: 17px;
-  border-top: 1px solid #eff0eb;
-  color: #818a7e;
-  font-size: 10px;
-}
-
-.checklist-progress-track {
-  width: 100%;
-  height: 5px;
-  border-radius: 5px;
-  background: #edf0e9;
-  overflow: hidden;
-}
-
-.checklist-progress-track > span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--project-green);
-  transition: width .3s ease;
-}
+.checklist-footer { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; padding-top: 17px; border-top: 1px solid #eff0eb; color: #818a7e; font-size: 10px; }
+.checklist-progress-track { width: 100%; height: 5px; border-radius: 5px; background: #edf0e9; overflow: hidden; }
+.checklist-progress-track > span { display: block; height: 100%; border-radius: inherit; background: var(--project-green); transition: width .3s ease; }
 
 /* CLOSING BANNER */
+.projects-closing-section { padding: 0 0 90px; background: #fff; }
 
-.projects-closing-section {
-  padding: 0 0 90px;
-  background: #fff;
-}
+.projects-closing-banner { position: relative; display: flex; align-items: center; gap: 25px; padding: 42px; border-radius: 5px; background: #294c37; overflow: hidden; isolation: isolate; }
 
-.projects-closing-banner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  padding: 42px;
-  border-radius: 5px;
-  background: #294c37;
-  overflow: hidden;
-  isolation: isolate;
-}
+.closing-decoration { position: absolute; z-index: -1; border: 1px solid rgba(255, 255, 255, .09); border-radius: 50%; pointer-events: none; }
+.closing-decoration-one { width: 300px; height: 300px; top: -190px; right: 140px; }
+.closing-decoration-two { width: 230px; height: 230px; right: -80px; bottom: -150px; }
 
-.closing-decoration {
-  position: absolute;
-  z-index: -1;
-  border: 1px solid rgba(255, 255, 255, .09);
-  border-radius: 50%;
-  pointer-events: none;
-}
+.closing-icon { display: grid; place-items: center; flex-shrink: 0; width: 68px; height: 68px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 50%; color: #e6b98e; }
+.closing-copy { flex: 1; min-width: 0; }
+.closing-copy > span { color: #e5bb93; font-size: 11px; font-weight: 700; }
+.closing-copy h2 { max-width: 570px; margin: 11px 0; color: #fff; font-size: clamp(21px, 2.5vw, 30px); line-height: 1.55; font-weight: 800; }
+.closing-copy p { max-width: 550px; margin: 0; color: #d1ddd0; font-size: 12px; line-height: 1.9; }
 
-.closing-decoration-one {
-  width: 300px;
-  height: 300px;
-  top: -190px;
-  right: 140px;
-}
-
-.closing-decoration-two {
-  width: 230px;
-  height: 230px;
-  right: -80px;
-  bottom: -150px;
-}
-
-.closing-icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 68px;
-  height: 68px;
-  border: 1px solid rgba(255, 255, 255, .2);
-  border-radius: 50%;
-  color: #e6b98e;
-}
-
-.closing-copy {
-  flex: 1;
-  min-width: 0;
-}
-
-.closing-copy > span {
-  color: #e5bb93;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.closing-copy h2 {
-  max-width: 570px;
-  margin: 11px 0;
-  color: #fff;
-  font-size: clamp(21px, 2.5vw, 30px);
-  line-height: 1.55;
-  font-weight: 800;
-}
-
-.closing-copy p {
-  max-width: 550px;
-  margin: 0;
-  color: #d1ddd0;
-  font-size: 12px;
-  line-height: 1.9;
-}
-
-.closing-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  gap: 12px;
-  min-height: 48px;
-  padding: 0 18px;
-  border-radius: 3px;
-  background: #f2eee3;
-  color: #294c37 !important;
-  font-size: 12px;
-  font-weight: 800;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.closing-button:hover {
-  background: #fff;
-  transform: translateY(-2px);
-}
+.closing-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 12px; min-height: 48px; padding: 0 18px; border-radius: 3px; background: #f2eee3; color: #294c37 !important; font-size: 12px; font-weight: 800; transition: background .2s ease, transform .2s ease; }
+.closing-button:hover { background: #fff; transform: translateY(-2px); }
 
 /* RESPONSIVE */
-
 @media (max-width: 1000px) {
-  .projects-container {
-    width: min(100% - 44px, 1180px);
-  }
-
-  .introduction-grid,
-  .participation-grid {
-    gap: 45px;
-  }
-
-  .development-project-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .project-gallery-grid {
-    grid-template-rows: 200px 200px;
-  }
-
-  .projects-closing-banner {
-    padding: 32px;
-    gap: 19px;
-  }
+  .projects-container { width: min(100% - 44px, 1180px); }
+  .introduction-grid, .participation-grid { gap: 45px; }
+  .development-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-gallery-grid { grid-template-rows: 200px 200px; }
+  .projects-closing-banner { padding: 32px; gap: 19px; }
 }
 
 @media (max-width: 700px) {
-  .projects-container {
-    width: calc(100% - 36px);
-  }
-
-  .development-hero {
-    padding: 20px 0 26px;
-  }
-
-  .simple-hero h1 {
-    font-size: 34px;
-  }
-
-  .projects-introduction,
-  .project-overview-section,
-  .development-projects-section,
-  .project-gallery-section,
-  .citizen-participation-section {
-    padding: 65px 0;
-  }
-
-  .introduction-grid,
-  .participation-grid {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .introduction-heading h2,
-  .participation-copy h2 {
-    font-size: 35px;
-  }
-
-  .introduction-content {
-    padding-left: 18px;
-  }
-
-  .introduction-content > p {
-    font-size: 13px;
-  }
-
-  .overview-heading-row,
-  .gallery-heading-row {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 27px;
-  }
-
-  .project-overview-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .overview-card {
-    min-height: 0;
-    padding: 21px;
-  }
-
-  .overview-value {
-    font-size: 34px;
-  }
-
-  .development-project-grid {
-    grid-template-columns: 1fr;
-    gap: 13px;
-  }
-
-  .development-project-card {
-    min-height: 320px;
-    padding: 21px;
-  }
-
-  .project-filters {
-    gap: 7px;
-  }
-
-  .project-filter {
-    min-height: 36px;
-    padding: 0 10px;
-    font-size: 10px;
-  }
-
-  .project-gallery-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 230px 170px 170px;
-    gap: 10px;
-  }
-
-  .gallery-tall {
-    grid-column: span 2;
-    grid-row: auto;
-  }
-
-  .gallery-wide {
-    grid-column: span 2;
-  }
-
-  .gallery-image-caption {
-    right: 12px;
-    bottom: 15px;
-    left: 12px;
-  }
-
-  .gallery-image-caption h3 {
-    font-size: 15px;
-  }
-
-  .gallery-image-caption span {
-    font-size: 9px;
-  }
-
-  .gallery-image-arrow {
-    display: none;
-  }
-
-  .participation-checklist {
-    padding: 20px;
-  }
-
-  .commitment-text small {
-    font-size: 9px;
-  }
-
-  .projects-closing-section {
-    padding-bottom: 55px;
-  }
-
-  .projects-closing-banner {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 20px;
-    padding: 27px 22px;
-  }
-
-  .closing-icon {
-    width: 52px;
-    height: 52px;
-  }
-
-  .closing-copy h2 {
-    font-size: 23px;
-  }
-
-  .closing-button {
-    width: 100%;
-  }
+  .projects-container { width: calc(100% - 36px); }
+  .projects-introduction, .project-overview-section, .development-projects-section, .project-gallery-section, .citizen-participation-section { padding: 65px 0; }
+  .introduction-grid, .participation-grid { grid-template-columns: 1fr; gap: 28px; }
+  .introduction-heading h2, .participation-copy h2 { font-size: 35px; }
+  .introduction-content { padding-left: 18px; }
+  .introduction-content > p { font-size: 13px; }
+  .overview-heading-row, .gallery-heading-row { align-items: flex-start; flex-direction: column; gap: 15px; margin-bottom: 27px; }
+  .project-overview-grid { grid-template-columns: 1fr; gap: 12px; }
+  .overview-card { min-height: 0; padding: 21px; }
+  .overview-value { font-size: 34px; }
+  .development-project-grid { grid-template-columns: 1fr; gap: 13px; }
+  .development-project-card { min-height: 320px; padding: 21px; }
+  .project-filters { gap: 7px; }
+  .project-filter { min-height: 36px; padding: 0 10px; font-size: 10px; }
+  .project-gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 230px 170px 170px; gap: 10px; }
+  .gallery-tall { grid-column: span 2; grid-row: auto; }
+  .gallery-wide { grid-column: span 2; }
+  .gallery-image-caption { right: 12px; bottom: 15px; left: 12px; }
+  .gallery-image-caption h3 { font-size: 15px; }
+  .gallery-image-caption span { font-size: 9px; }
+  .gallery-image-arrow { display: none; }
+  .participation-checklist { padding: 20px; }
+  .commitment-text small { font-size: 9px; }
+  .projects-closing-section { padding-bottom: 55px; }
+  .projects-closing-banner { align-items: flex-start; flex-direction: column; gap: 20px; padding: 27px 22px; }
+  .closing-icon { width: 52px; height: 52px; }
+  .closing-copy h2 { font-size: 23px; }
+  .closing-button { width: 100%; }
 }
 
 @media (max-width: 380px) {
-  .projects-container {
-    width: calc(100% - 28px);
-  }
-
-  .simple-hero h1 {
-    font-size: 31px;
-  }
-
-  .project-gallery-grid {
-    grid-template-rows: 205px 155px 155px;
-  }
-
-  .commitment-item {
-    gap: 9px;
-  }
-
-  .commitment-icon {
-    width: 34px;
-    height: 34px;
-  }
-
-  .commitment-text strong {
-    font-size: 11px;
-  }
+  .projects-container { width: calc(100% - 28px); }
+  .project-gallery-grid { grid-template-rows: 205px 155px 155px; }
+  .commitment-item { gap: 9px; }
+  .commitment-icon { width: 34px; height: 34px; }
+  .commitment-text strong { font-size: 11px; }
 }
 `;

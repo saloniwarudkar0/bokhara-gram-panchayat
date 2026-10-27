@@ -1,34 +1,99 @@
+
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
 
 const photos = [
   {
     src: "https://tse4.mm.bing.net/th/id/OIP.wc29H55Pv3Ix71wUteqpxAHaEa?r=0&pid=Api&h=220&P=0",
-    alt: "गावातील निसर्ग",
+    alt: {
+      mr: "गावातील निसर्ग",
+      hi: "गाँव की प्राकृतिक सुंदरता",
+      en: "Village scenery",
+    },
   },
   {
     src: "https://tse2.mm.bing.net/th/id/OIP.avx6P-EDfggmLX7esHD_ugHaEK?r=0&pid=Api&h=220&P=0",
-    alt: "हिरवीगार शेती",
+    alt: {
+      mr: "हिरवीगार शेती",
+      hi: "हरी-भरी खेती",
+      en: "Green agricultural fields",
+    },
   },
   {
     src: "https://tse2.mm.bing.net/th/id/OIP.HOe1D92ev1M_rdn7zMkTBAHaFj?r=0&pid=Api&h=220&P=0",
-    alt: "निसर्गरम्य परिसर",
+    alt: {
+      mr: "निसर्गरम्य परिसर",
+      hi: "प्राकृतिक सुंदरता से भरपूर क्षेत्र",
+      en: "Scenic surroundings",
+    },
   },
   {
     src: "https://tse1.mm.bing.net/th/id/OIP.SkYZf0c8GBndWIVvaTCy_gHaDU?r=0&pid=Api&h=220&P=0",
-    alt: "झाडांनी वेढलेला परिसर",
+    alt: {
+      mr: "झाडांनी वेढलेला परिसर",
+      hi: "पेड़ों से घिरा क्षेत्र",
+      en: "Tree-lined surroundings",
+    },
   },
   {
     src: "https://tse3.mm.bing.net/th/id/OIP.qrpT2hppqgAVsB4LI5KEqgHaEK?r=0&pid=Api&h=220&P=0",
-    alt: "गावाकडील हिरवळ",
+    alt: {
+      mr: "गावाकडील हिरवळ",
+      hi: "गाँव की हरियाली",
+      en: "Green village landscape",
+    },
   },
   {
     src: "https://tse2.mm.bing.net/th/id/OIP.5ktReEVIoW6TuUP1sHlYygHaFj?r=0&pid=Api&h=220&P=0",
-    alt: "निसर्ग",
+    alt: {
+      mr: "निसर्ग",
+      hi: "प्रकृति",
+      en: "Nature",
+    },
   },
 ];
 
+const translations = {
+  mr: {
+    eyebrow: "ग्रामपंचायत बोखारा",
+    title: "फोटो गॅलरी",
+    subtitle: "आपल्या गावाची सुंदर झलक",
+    galleryLabel: "फोटो गॅलरी",
+    viewPhoto: (number) => `फोटो ${number} मोठा पाहा`,
+    largePhoto: "मोठा फोटो",
+    close: "बंद करा",
+    previous: "मागील फोटो",
+    next: "पुढील फोटो",
+  },
+  hi: {
+    eyebrow: "ग्राम पंचायत बोखारा",
+    title: "फोटो गैलरी",
+    subtitle: "हमारे गाँव की सुंदर झलक",
+    galleryLabel: "फोटो गैलरी",
+    viewPhoto: (number) => `फोटो ${number} बड़ा देखें`,
+    largePhoto: "बड़ा फोटो",
+    close: "बंद करें",
+    previous: "पिछला फोटो",
+    next: "अगला फोटो",
+  },
+  en: {
+    eyebrow: "Gram Panchayat Bokhara",
+    title: "Photo Gallery",
+    subtitle: "A beautiful glimpse of our village",
+    galleryLabel: "Photo Gallery",
+    viewPhoto: (number) => `View photo ${number} enlarged`,
+    largePhoto: "Enlarged photo",
+    close: "Close",
+    previous: "Previous photo",
+    next: "Next photo",
+  },
+};
+
 export default function Gallery() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const closeLightbox = () => setSelectedIndex(null);
@@ -48,21 +113,25 @@ export default function Gallery() {
   return (
     <main className="gallery-page">
       <section className="gallery-heading">
-        <span className="gallery-eyebrow">ग्रामपंचायत बोखारा</span>
-        <h1>फोटो गॅलरी</h1>
-        <p>आपल्या गावाची सुंदर झलक</p>
+        <span className="gallery-eyebrow">{t.eyebrow}</span>
+        <h1>{t.title}</h1>
+        <p>{t.subtitle}</p>
       </section>
 
-      <section className="gallery-grid" aria-label="फोटो गॅलरी">
+      <section className="gallery-grid" aria-label={t.galleryLabel}>
         {photos.map((photo, index) => (
           <button
             className="gallery-photo"
             key={`${photo.src}-${index}`}
             type="button"
             onClick={() => setSelectedIndex(index)}
-            aria-label={`फोटो ${index + 1} मोठा पाहा`}
+            aria-label={t.viewPhoto(index + 1)}
           >
-            <img src={photo.src} alt={photo.alt} loading="lazy" />
+            <img
+              src={photo.src}
+              alt={photo.alt[language] || photo.alt.mr}
+              loading="lazy"
+            />
           </button>
         ))}
       </section>
@@ -72,14 +141,14 @@ export default function Gallery() {
           className="gallery-lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label="मोठा फोटो"
+          aria-label={t.largePhoto}
           onClick={closeLightbox}
         >
           <button
             className="gallery-close"
             type="button"
             onClick={closeLightbox}
-            aria-label="बंद करा"
+            aria-label={t.close}
           >
             <X size={28} />
           </button>
@@ -91,7 +160,7 @@ export default function Gallery() {
               event.stopPropagation();
               showPrevious();
             }}
-            aria-label="मागील फोटो"
+            aria-label={t.previous}
           >
             <ChevronLeft size={32} />
           </button>
@@ -99,7 +168,10 @@ export default function Gallery() {
           <img
             className="gallery-large-image"
             src={photos[selectedIndex].src}
-            alt={photos[selectedIndex].alt}
+            alt={
+              photos[selectedIndex].alt[language] ||
+              photos[selectedIndex].alt.mr
+            }
             onClick={(event) => event.stopPropagation()}
           />
 
@@ -110,7 +182,7 @@ export default function Gallery() {
               event.stopPropagation();
               showNext();
             }}
-            aria-label="पुढील फोटो"
+            aria-label={t.next}
           >
             <ChevronRight size={32} />
           </button>

@@ -13,140 +13,332 @@ import {
   Droplets,
   House,
   ArrowRight,
-  ExternalLink,
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
 
-const schemes = [
-  {
-    category: "केंद्र शासन",
-    title: "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार हमी योजना",
-    short: "मनरेगा · MGNREGA",
-    description:
-      "ग्रामीण कुटुंबांना नियमानुसार अकुशल मजुरीचे रोजगार उपलब्ध करून देणारी योजना.",
-    image:
-      "https://tse2.mm.bing.net/th/id/OIP.foTpbcubm6t9HtXPI87WAwHaDD?r=0&pid=Api&h=220&P=0",
-    alt: "ग्रामीण शेती आणि परिसर",
-    icon: Sprout,
-    accent: "#547b51",
-    eligibility: [
-      "ग्रामीण कुटुंबातील प्रौढ सदस्य",
-      "अकुशल शारीरिक काम करण्याची तयारी",
-      "जॉब कार्ड आणि योजनेचे लागू नियम",
+const translations = {
+  mr: {
+    eyebrow: "ग्रामपंचायत बोखारा · जनकल्याण",
+    title: "शासकीय योजना आणि लाभार्थी माहिती",
+    intro: "ग्रामस्थांसाठी उपलब्ध शासकीय योजना, प्राथमिक पात्रता, आवश्यक कागदपत्रे आणि ग्रामीण विकास उपक्रमांची माहिती एकाच ठिकाणी.",
+    centralState: "केंद्र व राज्य शासन",
+    applications: "अर्ज व कागदपत्रे",
+    guidance: "नागरिक मार्गदर्शन",
+    directory: "योजना निर्देशिका",
+    available: "आपल्यासाठी उपलब्ध योजना",
+    directoryInfo: "योजनेची प्राथमिक माहिती पाहण्यासाठी संबंधित विभाग निवडा किंवा योजनेचे नाव शोधा.",
+    all: "सर्व योजना",
+    central: "केंद्र शासन",
+    local: "राज्य / जिल्हा",
+    search: "योजना शोधा...",
+    searchAria: "योजना शोधा",
+    close: "माहिती बंद करा",
+    details: "पात्रता व कागदपत्रे पाहा",
+    eligibility: "प्राथमिक पात्रता",
+    documents: "आवश्यक कागदपत्रे",
+    noResults: "या शोधासाठी कोणतीही योजना सापडली नाही. दुसरे नाव टाकून पुन्हा शोधा.",
+    notice: "सूचना: येथे दिलेली माहिती प्राथमिक मार्गदर्शनासाठी आहे. योजनेचे चालू नियम, पात्रता, कागदपत्रे आणि अर्जाची प्रक्रिया संबंधित अधिकृत विभाग किंवा ग्रामपंचायत कार्यालयातून तपासा.",
+    wardEyebrow: "प्रभागनिहाय माहिती",
+    coverage: "योजना कव्हरेज",
+    coverageInfo: "प्रभाग निवडून त्याची माहिती पाहा. अधिकृत आकडेवारी उपलब्ध झाल्यानंतर हा विभाग अद्ययावत करता येईल.",
+    waiting: "अधिकृत माहिती प्रतीक्षेत",
+    coverageDetails: "निवडलेल्या प्रभागाची योजना-कव्हरेज माहिती येथे उपलब्ध केली जाईल.",
+    beneficiaries: "नोंदवलेली लाभार्थी घरे",
+    noNumbers: "अधिकृत आकडेवारी मिळेपर्यंत संख्या प्रदर्शित केलेली नाही.",
+    chooseScheme: "योजना निवडा",
+    storiesEyebrow: "ग्रामस्थांचे अनुभव",
+    storiesTitle: "लाभार्थी अनुभव व प्रेरणादायी कथा",
+    storiesInfo: "योजनेमुळे ग्रामस्थांच्या जीवनात झालेला बदल त्यांच्या स्वतःच्या अनुभवातून जाणून घ्या.",
+    helpTitle: "योजनेबाबत अधिक माहिती हवी आहे?",
+    helpInfo: "पात्रता, अर्ज प्रक्रिया आणि आवश्यक कागदपत्रांबाबत मार्गदर्शनासाठी ग्रामपंचायत कार्यालयाशी संपर्क साधा.",
+    categories: {
+      central: "केंद्र शासन",
+      local: "राज्य / जिल्हा स्तर",
+    },
+    schemes: [
+      {
+        category: "केंद्र शासन",
+        title: "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार हमी योजना",
+        short: "मनरेगा · MGNREGA",
+        description: "ग्रामीण कुटुंबांना नियमानुसार अकुशल मजुरीचे रोजगार उपलब्ध करून देणारी योजना.",
+        alt: "ग्रामीण शेती आणि परिसर",
+        eligibility: ["ग्रामीण कुटुंबातील प्रौढ सदस्य", "अकुशल शारीरिक काम करण्याची तयारी", "जॉब कार्ड आणि योजनेचे लागू नियम"],
+        documents: ["आधार कार्ड", "रहिवासाचा पुरावा", "बँक खाते तपशील", "जॉब कार्डसाठी आवश्यक माहिती"],
+      },
+      {
+        category: "केंद्र शासन",
+        title: "प्रधानमंत्री आवास योजना – ग्रामीण",
+        short: "ग्रामीण घरकुल · PMAY-G",
+        description: "पात्र ग्रामीण कुटुंबांना पक्के घर बांधण्यासाठी नियमानुसार आर्थिक सहाय्य.",
+        alt: "घर आणि ग्रामीण परिसर",
+        eligibility: ["लागू शासकीय निकषांनुसार पात्र ग्रामीण कुटुंब", "संबंधित अधिकृत यादी व पडताळणी"],
+        documents: ["आधार कार्ड", "बँक खाते तपशील", "रहिवासाची माहिती", "योजनेनुसार आवश्यक कागदपत्रे"],
+      },
+      {
+        category: "केंद्र शासन",
+        title: "जल जीवन मिशन",
+        short: "ग्रामीण नळ पाणीपुरवठा",
+        description: "ग्रामीण घरांना सुरक्षित आणि पुरेसे नळाद्वारे पाणी उपलब्ध करून देण्याच्या उद्देशाने राबवले जाणारे अभियान.",
+        alt: "स्वच्छ पाणी",
+        eligibility: ["ग्रामपंचायत क्षेत्रातील संबंधित ग्रामीण घरे", "स्थानिक पाणीपुरवठा योजनेचे लागू निकष"],
+        documents: ["घराचा व रहिवासाचा तपशील", "संबंधित विभागाने मागितलेली कागदपत्रे"],
+      },
+      {
+        category: "राज्य / जिल्हा स्तर",
+        title: "राज्य व जिल्हास्तरीय विकास योजना",
+        short: "स्थानिक विकास उपक्रम",
+        description: "राज्य शासन, जिल्हा परिषद आणि संबंधित विभागांच्या विकास योजनांची माहिती.",
+        alt: "निसर्ग आणि परिसर",
+        eligibility: ["प्रत्येक योजनेनुसार पात्रता वेगळी असते", "संबंधित विभागाच्या अधिकृत नियमांची पडताळणी"],
+        documents: ["योजनेनुसार आवश्यक कागदपत्रे", "ओळख व रहिवासाचा पुरावा, लागू असल्यास"],
+      },
     ],
-    documents: [
-      "आधार कार्ड",
-      "रहिवासाचा पुरावा",
-      "बँक खाते तपशील",
-      "जॉब कार्डसाठी आवश्यक माहिती",
+    stories: [
+      {
+        scheme: "मनरेगा",
+        quote: "योजनेचा लाभ घेतलेल्या ग्रामस्थांचा प्रत्यक्ष अनुभव आणि कामाची माहिती येथे प्रकाशित केली जाईल.",
+        note: "लाभार्थ्याची संमती आणि माहिती मिळाल्यानंतर हा अनुभव प्रसिद्ध केला जाईल.",
+      },
+      {
+        scheme: "ग्रामीण घरकुल योजना",
+        quote: "घरकुल योजनेमुळे झालेल्या बदलांची माहिती आणि लाभार्थ्यांचा अनुभव येथे मांडला जाईल.",
+        note: "प्रकाशित करण्यापूर्वी लाभार्थ्याची माहिती पडताळली जाईल.",
+      },
     ],
   },
-  {
-    category: "केंद्र शासन",
-    title: "प्रधानमंत्री आवास योजना – ग्रामीण",
-    short: "ग्रामीण घरकुल · PMAY-G",
-    description:
-      "पात्र ग्रामीण कुटुंबांना पक्के घर बांधण्यासाठी नियमानुसार आर्थिक सहाय्य.",
-    image:
-      "https://tse2.mm.bing.net/th/id/OIP.8zU_YrMasVprQvvIh-Gz6gHaDy?r=0&pid=Api&h=220&P=0",
-    alt: "घर आणि ग्रामीण परिसर",
-    icon: House,
-    accent: "#bd8048",
-    eligibility: [
-      "लागू शासकीय निकषांनुसार पात्र ग्रामीण कुटुंब",
-      "संबंधित अधिकृत यादी व पडताळणी",
+  hi: {
+    eyebrow: "ग्राम पंचायत बोखारा · जनकल्याण",
+    title: "सरकारी योजनाएँ और लाभार्थी जानकारी",
+    intro: "ग्रामीण नागरिकों के लिए उपलब्ध सरकारी योजनाओं, प्रारंभिक पात्रता, आवश्यक दस्तावेज़ों और ग्रामीण विकास पहलों की जानकारी एक ही स्थान पर।",
+    centralState: "केंद्र और राज्य सरकार",
+    applications: "आवेदन और दस्तावेज़",
+    guidance: "नागरिक मार्गदर्शन",
+    directory: "योजना निर्देशिका",
+    available: "आपके लिए उपलब्ध योजनाएँ",
+    directoryInfo: "योजना की प्रारंभिक जानकारी देखने के लिए विभाग चुनें या योजना का नाम खोजें।",
+    all: "सभी योजनाएँ",
+    central: "केंद्र सरकार",
+    local: "राज्य / जिला",
+    search: "योजना खोजें...",
+    searchAria: "योजना खोजें",
+    close: "जानकारी बंद करें",
+    details: "पात्रता और दस्तावेज़ देखें",
+    eligibility: "प्रारंभिक पात्रता",
+    documents: "आवश्यक दस्तावेज़",
+    noResults: "इस खोज में कोई योजना नहीं मिली। कोई दूसरा नाम डालकर फिर खोजें।",
+    notice: "सूचना: यहाँ दी गई जानकारी प्रारंभिक मार्गदर्शन के लिए है। योजना के वर्तमान नियम, पात्रता, दस्तावेज़ और आवेदन प्रक्रिया संबंधित आधिकारिक विभाग या ग्राम पंचायत कार्यालय से जाँचें।",
+    wardEyebrow: "वार्ड के अनुसार जानकारी",
+    coverage: "योजना कवरेज",
+    coverageInfo: "वार्ड चुनकर उसकी जानकारी देखें। आधिकारिक आँकड़े उपलब्ध होने पर इस भाग को अपडेट किया जा सकता है।",
+    waiting: "आधिकारिक जानकारी की प्रतीक्षा",
+    coverageDetails: "चुने गए वार्ड की योजना-कवरेज जानकारी यहाँ उपलब्ध कराई जाएगी।",
+    beneficiaries: "दर्ज लाभार्थी परिवार",
+    noNumbers: "आधिकारिक आँकड़े मिलने तक संख्या प्रदर्शित नहीं की गई है।",
+    chooseScheme: "योजना चुनें",
+    storiesEyebrow: "ग्रामीणों के अनुभव",
+    storiesTitle: "लाभार्थियों के अनुभव और प्रेरक कहानियाँ",
+    storiesInfo: "योजनाओं से ग्रामीणों के जीवन में आए बदलाव उनके अपने अनुभवों के माध्यम से जानें।",
+    helpTitle: "योजना के बारे में अधिक जानकारी चाहिए?",
+    helpInfo: "पात्रता, आवेदन प्रक्रिया और आवश्यक दस्तावेज़ों के मार्गदर्शन के लिए ग्राम पंचायत कार्यालय से संपर्क करें।",
+    categories: {
+      central: "केंद्र सरकार",
+      local: "राज्य / जिला स्तर",
+    },
+    schemes: [
+      {
+        category: "केंद्र सरकार",
+        title: "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी योजना",
+        short: "मनरेगा · MGNREGA",
+        description: "ग्रामीण परिवारों को नियमानुसार अकुशल मजदूरी वाला रोजगार उपलब्ध कराने वाली योजना।",
+        alt: "ग्रामीण खेती और आसपास का क्षेत्र",
+        eligibility: ["ग्रामीण परिवार के वयस्क सदस्य", "अकुशल शारीरिक काम करने की तैयारी", "जॉब कार्ड और योजना के लागू नियम"],
+        documents: ["आधार कार्ड", "निवास प्रमाण", "बैंक खाते का विवरण", "जॉब कार्ड के लिए आवश्यक जानकारी"],
+      },
+      {
+        category: "केंद्र सरकार",
+        title: "प्रधानमंत्री आवास योजना – ग्रामीण",
+        short: "ग्रामीण आवास · PMAY-G",
+        description: "पात्र ग्रामीण परिवारों को पक्का घर बनाने के लिए नियमानुसार वित्तीय सहायता।",
+        alt: "घर और ग्रामीण क्षेत्र",
+        eligibility: ["लागू सरकारी मानदंडों के अनुसार पात्र ग्रामीण परिवार", "संबंधित आधिकारिक सूची और सत्यापन"],
+        documents: ["आधार कार्ड", "बैंक खाते का विवरण", "निवास की जानकारी", "योजना के अनुसार आवश्यक दस्तावेज़"],
+      },
+      {
+        category: "केंद्र सरकार",
+        title: "जल जीवन मिशन",
+        short: "ग्रामीण नल जल आपूर्ति",
+        description: "ग्रामीण घरों तक सुरक्षित और पर्याप्त नल के पानी की सुविधा पहुँचाने के उद्देश्य से चलाया जाने वाला अभियान।",
+        alt: "स्वच्छ पानी",
+        eligibility: ["ग्राम पंचायत क्षेत्र के संबंधित ग्रामीण घर", "स्थानीय जलापूर्ति योजना के लागू मानदंड"],
+        documents: ["घर और निवास का विवरण", "संबंधित विभाग द्वारा माँगे गए दस्तावेज़"],
+      },
+      {
+        category: "राज्य / जिला स्तर",
+        title: "राज्य और जिला स्तरीय विकास योजनाएँ",
+        short: "स्थानीय विकास पहल",
+        description: "राज्य सरकार, जिला परिषद और संबंधित विभागों की विकास योजनाओं की जानकारी।",
+        alt: "प्रकृति और आसपास का क्षेत्र",
+        eligibility: ["हर योजना के अनुसार पात्रता अलग होती है", "संबंधित विभाग के आधिकारिक नियमों की जाँच"],
+        documents: ["योजना के अनुसार आवश्यक दस्तावेज़", "जहाँ लागू हो, पहचान और निवास प्रमाण"],
+      },
     ],
-    documents: [
-      "आधार कार्ड",
-      "बँक खाते तपशील",
-      "रहिवासाची माहिती",
-      "योजनेनुसार आवश्यक कागदपत्रे",
+    stories: [
+      {
+        scheme: "मनरेगा",
+        quote: "योजना का लाभ लेने वाले ग्रामीणों के वास्तविक अनुभव और काम की जानकारी यहाँ प्रकाशित की जाएगी।",
+        note: "लाभार्थी की सहमति और जानकारी मिलने के बाद अनुभव प्रकाशित किया जाएगा।",
+      },
+      {
+        scheme: "ग्रामीण आवास योजना",
+        quote: "आवास योजना से हुए बदलावों और लाभार्थियों के अनुभव यहाँ साझा किए जाएँगे।",
+        note: "प्रकाशित करने से पहले लाभार्थी की जानकारी सत्यापित की जाएगी।",
+      },
     ],
   },
-  {
-    category: "केंद्र शासन",
-    title: "जल जीवन मिशन",
-    short: "ग्रामीण नळ पाणीपुरवठा",
-    description:
-      "ग्रामीण घरांना सुरक्षित आणि पुरेसे नळाद्वारे पाणी उपलब्ध करून देण्याच्या उद्देशाने राबवले जाणारे अभियान.",
-    image:
-      "https://tse4.mm.bing.net/th/id/OIP.nyLp3JA1DLtIpmH1kUwxwQHaEK?r=0&pid=Api&h=220&P=0",
-    alt: "स्वच्छ पाणी",
-    icon: Droplets,
-    accent: "#547b91",
-    eligibility: [
-      "ग्रामपंचायत क्षेत्रातील संबंधित ग्रामीण घरे",
-      "स्थानिक पाणीपुरवठा योजनेचे लागू निकष",
+  en: {
+    eyebrow: "Gram Panchayat Bokhara · Public Welfare",
+    title: "Government Schemes and Beneficiary Information",
+    intro: "Find information about government schemes for villagers, initial eligibility, required documents, and rural development initiatives in one place.",
+    centralState: "Central and State Government",
+    applications: "Applications and Documents",
+    guidance: "Citizen Guidance",
+    directory: "Scheme Directory",
+    available: "Schemes Available to You",
+    directoryInfo: "Choose a category or search for a scheme to view its basic information.",
+    all: "All Schemes",
+    central: "Central Government",
+    local: "State / District",
+    search: "Search schemes...",
+    searchAria: "Search schemes",
+    close: "Hide details",
+    details: "View eligibility and documents",
+    eligibility: "Basic Eligibility",
+    documents: "Required Documents",
+    noResults: "No schemes matched your search. Try another name.",
+    notice: "Notice: This information is for initial guidance only. Check current scheme rules, eligibility, documents, and application procedures with the relevant official department or Gram Panchayat office.",
+    wardEyebrow: "Ward-wise Information",
+    coverage: "Scheme Coverage",
+    coverageInfo: "Select a ward to view its information. This section can be updated when official statistics become available.",
+    waiting: "Official information pending",
+    coverageDetails: "Scheme coverage information for the selected ward will be published here.",
+    beneficiaries: "Recorded beneficiary households",
+    noNumbers: "Figures are not displayed until official statistics are available.",
+    chooseScheme: "Select a scheme",
+    storiesEyebrow: "Villagers' Experiences",
+    storiesTitle: "Beneficiary Experiences and Inspiring Stories",
+    storiesInfo: "Learn about changes in villagers' lives through their own experiences.",
+    helpTitle: "Need more information about a scheme?",
+    helpInfo: "Contact the Gram Panchayat office for guidance on eligibility, application procedures, and required documents.",
+    categories: {
+      central: "Central Government",
+      local: "State / District Level",
+    },
+    schemes: [
+      {
+        category: "Central Government",
+        title: "Mahatma Gandhi National Rural Employment Guarantee Scheme",
+        short: "MGNREGA",
+        description: "A scheme that provides rural households with unskilled wage employment according to applicable rules.",
+        alt: "Rural farming and surroundings",
+        eligibility: ["Adult members of a rural household", "Willingness to undertake unskilled manual work", "Job card and applicable scheme rules"],
+        documents: ["Aadhaar card", "Proof of residence", "Bank account details", "Information required for a job card"],
+      },
+      {
+        category: "Central Government",
+        title: "Pradhan Mantri Awaas Yojana – Gramin",
+        short: "Rural Housing · PMAY-G",
+        description: "Financial assistance, subject to applicable rules, for eligible rural households to build a permanent house.",
+        alt: "House and rural surroundings",
+        eligibility: ["Eligible rural household under applicable government criteria", "Verification against the relevant official list"],
+        documents: ["Aadhaar card", "Bank account details", "Residence information", "Documents required under the scheme"],
+      },
+      {
+        category: "Central Government",
+        title: "Jal Jeevan Mission",
+        short: "Rural Tap Water Supply",
+        description: "An initiative aimed at providing safe and adequate piped water to rural households.",
+        alt: "Clean water",
+        eligibility: ["Relevant rural households within the Gram Panchayat area", "Applicable criteria of the local water supply scheme"],
+        documents: ["Household and residence details", "Documents requested by the relevant department"],
+      },
+      {
+        category: "State / District Level",
+        title: "State and District Development Schemes",
+        short: "Local Development Initiatives",
+        description: "Information about development schemes run by the state government, Zilla Parishad, and relevant departments.",
+        alt: "Nature and surroundings",
+        eligibility: ["Eligibility varies by scheme", "Check the official rules of the relevant department"],
+        documents: ["Documents required for the specific scheme", "Identity and residence proof, where applicable"],
+      },
     ],
-    documents: [
-      "घराचा व रहिवासाचा तपशील",
-      "संबंधित विभागाने मागितलेली कागदपत्रे",
+    stories: [
+      {
+        scheme: "MGNREGA",
+        quote: "First-hand experiences of villagers who have benefited from the scheme and information about their work will be published here.",
+        note: "Stories will be published after obtaining the beneficiary's consent and information.",
+      },
+      {
+        scheme: "Rural Housing Scheme",
+        quote: "Information about changes brought by the housing scheme and beneficiary experiences will be shared here.",
+        note: "Beneficiary information will be verified before publication.",
+      },
     ],
   },
-  {
-    category: "राज्य / जिल्हा स्तर",
-    title: "राज्य व जिल्हास्तरीय विकास योजना",
-    short: "स्थानिक विकास उपक्रम",
-    description:
-      "राज्य शासन, जिल्हा परिषद आणि संबंधित विभागांच्या विकास योजनांची माहिती.",
-    image:
-      "https://tse2.mm.bing.net/th/id/OIP.huxyYWbwmmRxsWel3e6eQgHaER?r=0&pid=Api&h=220&P=0",
-    alt: "निसर्ग आणि परिसर",
-    icon: Landmark,
-    accent: "#88745b",
-    eligibility: [
-      "प्रत्येक योजनेनुसार पात्रता वेगळी असते",
-      "संबंधित विभागाच्या अधिकृत नियमांची पडताळणी",
-    ],
-    documents: [
-      "योजनेनुसार आवश्यक कागदपत्रे",
-      "ओळख व रहिवासाचा पुरावा, लागू असल्यास",
-    ],
-  },
+};
+
+const schemeImages = [
+  "https://tse2.mm.bing.net/th/id/OIP.foTpbcubm6t9HtXPI87WAwHaDD?r=0&pid=Api&h=220&P=0",
+  "https://tse2.mm.bing.net/th/id/OIP.8zU_YrMasVprQvvIh-Gz6gHaDy?r=0&pid=Api&h=220&P=0",
+  "https://tse4.mm.bing.net/th/id/OIP.nyLp3JA1DLtIpmH1kUwxwQHaEK?r=0&pid=Api&h=220&P=0",
+  "https://tse2.mm.bing.net/th/id/OIP.huxyYWbwmmRxsWel3e6eQgHaER?r=0&pid=Api&h=220&P=0",
 ];
+
+const schemeIcons = [Sprout, House, Droplets, Landmark];
 
 const wardData = [
-  { id: 1, name: "प्रभाग १", homes: null },
-  { id: 2, name: "प्रभाग २", homes: null },
-  { id: 3, name: "प्रभाग ३", homes: null },
-  { id: 4, name: "प्रभाग ४", homes: null },
-];
-
-const stories = [
-  {
-    scheme: "मनरेगा",
-    quote:
-      "योजनेचा लाभ घेतलेल्या ग्रामस्थांचा प्रत्यक्ष अनुभव आणि कामाची माहिती येथे प्रकाशित केली जाईल.",
-    note: "लाभार्थ्याची संमती आणि माहिती मिळाल्यानंतर हा अनुभव प्रसिद्ध केला जाईल.",
-  },
-  {
-    scheme: "ग्रामीण घरकुल योजना",
-    quote:
-      "घरकुल योजनेमुळे झालेल्या बदलांची माहिती आणि लाभार्थ्यांचा अनुभव येथे मांडला जाईल.",
-    note: "प्रकाशित करण्यापूर्वी लाभार्थ्याची माहिती पडताळली जाईल.",
-  },
+  { id: 1, name: { mr: "प्रभाग १", hi: "वार्ड १", en: "Ward 1" }, homes: null },
+  { id: 2, name: { mr: "प्रभाग २", hi: "वार्ड २", en: "Ward 2" }, homes: null },
+  { id: 3, name: { mr: "प्रभाग ३", hi: "वार्ड ३", en: "Ward 3" }, homes: null },
+  { id: 4, name: { mr: "प्रभाग ४", hi: "वार्ड ४", en: "Ward 4" }, homes: null },
 ];
 
 export default function Schemes() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
   const [activeTab, setActiveTab] = useState("all");
   const [selectedWard, setSelectedWard] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [openScheme, setOpenScheme] = useState(null);
-  const [selectedScheme, setSelectedScheme] = useState(schemes[0].short);
+  const [selectedScheme, setSelectedScheme] = useState(t.schemes[0].short);
+
+  const schemes = t.schemes.map((scheme, index) => ({
+    ...scheme,
+    image: schemeImages[index],
+    icon: schemeIcons[index],
+    id: index,
+    eligibility: scheme.eligibility,
+    documents: scheme.documents,
+    accent: ["#547b51", "#bd8048", "#547b91", "#88745b"][index],
+  }));
 
   const filteredSchemes = schemes.filter((scheme) => {
     const matchesTab =
       activeTab === "all" ||
-      (activeTab === "central" && scheme.category === "केंद्र शासन") ||
-      (activeTab === "local" && scheme.category !== "केंद्र शासन");
+      (activeTab === "central" && scheme.category === t.categories.central) ||
+      (activeTab === "local" && scheme.category === t.categories.local);
 
     const search = searchTerm.trim().toLowerCase();
-    const matchesSearch =
-      !search ||
-      `${scheme.title} ${scheme.short} ${scheme.description} ${scheme.category}`
-        .toLowerCase()
-        .includes(search);
+    const searchableText = [
+      scheme.title,
+      scheme.short,
+      scheme.description,
+      scheme.category,
+      ...scheme.eligibility,
+      ...scheme.documents,
+    ].join(" ").toLowerCase();
 
-    return matchesTab && matchesSearch;
+    return matchesTab && (!search || searchableText.includes(search));
   });
 
   const currentWard = wardData.find((ward) => ward.id === selectedWard);
@@ -737,19 +929,13 @@ export default function Schemes() {
 
       <section className="sp-hero">
         <div className="sp-container">
-          <div className="sp-eyebrow">
-            ग्रामपंचायत बोकार · जनकल्याण
-          </div>
-          <h1>शासकीय योजना आणि लाभार्थी माहिती</h1>
-          <p>
-            ग्रामस्थांसाठी उपलब्ध शासकीय योजना, प्राथमिक पात्रता,
-            आवश्यक कागदपत्रे आणि ग्रामीण विकास उपक्रमांची माहिती
-            एकाच ठिकाणी.
-          </p>
+          <div className="sp-eyebrow">{t.eyebrow}</div>
+          <h1>{t.title}</h1>
+          <p>{t.intro}</p>
           <div className="sp-hero-meta">
-            <span><Landmark size={15} /> केंद्र व राज्य शासन</span>
-            <span><FileText size={15} /> अर्ज व कागदपत्रे</span>
-            <span><Users size={15} /> नागरिक मार्गदर्शन</span>
+            <span><Landmark size={15} /> {t.centralState}</span>
+            <span><FileText size={15} /> {t.applications}</span>
+            <span><Users size={15} /> {t.guidance}</span>
           </div>
         </div>
       </section>
@@ -757,12 +943,9 @@ export default function Schemes() {
       <section className="sp-section">
         <div className="sp-container">
           <div className="sp-heading">
-            <span>योजना निर्देशिका</span>
-            <h2>आपल्यासाठी उपलब्ध योजना</h2>
-            <p>
-              योजनेची प्राथमिक माहिती पाहण्यासाठी संबंधित विभाग
-              निवडा किंवा योजनेचे नाव शोधा.
-            </p>
+            <span>{t.directory}</span>
+            <h2>{t.available}</h2>
+            <p>{t.directoryInfo}</p>
           </div>
 
           <div className="sp-toolbar">
@@ -774,7 +957,7 @@ export default function Schemes() {
                   setOpenScheme(null);
                 }}
               >
-                सर्व योजना
+                {t.all}
               </button>
               <button
                 className={activeTab === "central" ? "active" : ""}
@@ -783,7 +966,7 @@ export default function Schemes() {
                   setOpenScheme(null);
                 }}
               >
-                केंद्र शासन
+                {t.central}
               </button>
               <button
                 className={activeTab === "local" ? "active" : ""}
@@ -792,7 +975,7 @@ export default function Schemes() {
                   setOpenScheme(null);
                 }}
               >
-                राज्य / जिल्हा
+                {t.local}
               </button>
             </div>
 
@@ -804,8 +987,8 @@ export default function Schemes() {
                   setSearchTerm(event.target.value);
                   setOpenScheme(null);
                 }}
-                placeholder="योजना शोधा..."
-                aria-label="योजना शोधा"
+                placeholder={t.search}
+                aria-label={t.searchAria}
               />
             </label>
           </div>
@@ -813,10 +996,10 @@ export default function Schemes() {
           <div className="sp-scheme-grid">
             {filteredSchemes.map((scheme) => {
               const Icon = scheme.icon;
-              const isOpen = openScheme === scheme.short;
+              const isOpen = openScheme === scheme.id;
 
               return (
-                <article className="sp-scheme" key={scheme.short}>
+                <article className="sp-scheme" key={scheme.id}>
                   <div className="sp-photo-wrap">
                     <img
                       className="sp-photo"
@@ -827,9 +1010,7 @@ export default function Schemes() {
                         event.currentTarget.style.display = "none";
                       }}
                     />
-                    <span className="sp-photo-label">
-                      {scheme.category}
-                    </span>
+                    <span className="sp-photo-label">{scheme.category}</span>
                   </div>
 
                   <div className="sp-scheme-body">
@@ -839,20 +1020,14 @@ export default function Schemes() {
                     </span>
                     <h3 className="sp-scheme-title">{scheme.title}</h3>
                     <div className="sp-scheme-short">{scheme.short}</div>
-                    <p className="sp-scheme-description">
-                      {scheme.description}
-                    </p>
+                    <p className="sp-scheme-description">{scheme.description}</p>
 
                     <button
                       className="sp-expand"
-                      onClick={() =>
-                        setOpenScheme(isOpen ? null : scheme.short)
-                      }
+                      onClick={() => setOpenScheme(isOpen ? null : scheme.id)}
                       aria-expanded={isOpen}
                     >
-                      {isOpen
-                        ? "माहिती बंद करा"
-                        : "पात्रता व कागदपत्रे पाहा"}
+                      {isOpen ? t.close : t.details}
                       <ChevronDown
                         size={16}
                         className={isOpen ? "rotated" : ""}
@@ -861,7 +1036,7 @@ export default function Schemes() {
 
                     {isOpen && (
                       <div className="sp-details">
-                        <h4>प्राथमिक पात्रता</h4>
+                        <h4>{t.eligibility}</h4>
                         <ul>
                           {scheme.eligibility.map((item) => (
                             <li key={item}>
@@ -871,7 +1046,7 @@ export default function Schemes() {
                           ))}
                         </ul>
 
-                        <h4>आवश्यक कागदपत्रे</h4>
+                        <h4>{t.documents}</h4>
                         <ul>
                           {scheme.documents.map((item) => (
                             <li key={item}>
@@ -889,29 +1064,19 @@ export default function Schemes() {
           </div>
 
           {filteredSchemes.length === 0 && (
-            <div className="sp-empty">
-              या शोधासाठी कोणतीही योजना सापडली नाही. दुसरे नाव टाकून
-              पुन्हा शोधा.
-            </div>
+            <div className="sp-empty">{t.noResults}</div>
           )}
 
-          <div className="sp-notice">
-            सूचना: येथे दिलेली माहिती प्राथमिक मार्गदर्शनासाठी आहे.
-            योजनेचे चालू नियम, पात्रता, कागदपत्रे आणि अर्जाची प्रक्रिया
-            संबंधित अधिकृत विभाग किंवा ग्रामपंचायत कार्यालयातून तपासा.
-          </div>
+          <div className="sp-notice">{t.notice}</div>
         </div>
       </section>
 
       <section className="sp-section sp-coverage">
         <div className="sp-container">
           <div className="sp-heading">
-            <span>प्रभागनिहाय माहिती</span>
-            <h2>योजना कव्हरेज</h2>
-            <p>
-              प्रभाग निवडून त्याची माहिती पाहा. अधिकृत आकडेवारी
-              उपलब्ध झाल्यानंतर हा विभाग अद्ययावत करता येईल.
-            </p>
+            <span>{t.wardEyebrow}</span>
+            <h2>{t.coverage}</h2>
+            <p>{t.coverageInfo}</p>
           </div>
 
           <div className="sp-coverage-layout">
@@ -926,38 +1091,31 @@ export default function Schemes() {
                     <MapPin size={17} />
                   </span>
                   <span>
-                    <strong>{ward.name}</strong>
-                    <small>अधिकृत माहिती प्रतीक्षेत</small>
+                    <strong>{ward.name[language] || ward.name.mr}</strong>
+                    <small>{t.waiting}</small>
                   </span>
                 </button>
               ))}
             </div>
 
             <div className="sp-coverage-info">
-              <h3>{currentWard?.name}</h3>
-              <p>
-                निवडलेल्या प्रभागाची योजना-कव्हरेज माहिती येथे
-                उपलब्ध केली जाईल.
-              </p>
+              <h3>{currentWard?.name[language] || currentWard?.name.mr}</h3>
+              <p>{t.coverageDetails}</p>
 
               <div className="sp-coverage-stat">
-                <span>नोंदवलेली लाभार्थी घरे</span>
-                <strong>
-                  {currentWard?.homes ?? "—"}
-                </strong>
-                <small>
-                  अधिकृत आकडेवारी मिळेपर्यंत संख्या प्रदर्शित केलेली नाही.
-                </small>
+                <span>{t.beneficiaries}</span>
+                <strong>{currentWard?.homes ?? "—"}</strong>
+                <small>{t.noNumbers}</small>
               </div>
 
-              <label htmlFor="sp-scheme-select">योजना निवडा</label>
+              <label htmlFor="sp-scheme-select">{t.chooseScheme}</label>
               <select
                 id="sp-scheme-select"
                 value={selectedScheme}
                 onChange={(event) => setSelectedScheme(event.target.value)}
               >
                 {schemes.map((scheme) => (
-                  <option key={scheme.short} value={scheme.short}>
+                  <option key={scheme.id} value={scheme.short}>
                     {scheme.short}
                   </option>
                 ))}
@@ -970,16 +1128,13 @@ export default function Schemes() {
       <section className="sp-section">
         <div className="sp-container">
           <div className="sp-heading">
-            <span>ग्रामस्थांचे अनुभव</span>
-            <h2>लाभार्थी अनुभव व प्रेरणादायी कथा</h2>
-            <p>
-              योजनेमुळे ग्रामस्थांच्या जीवनात झालेला बदल त्यांच्या
-              स्वतःच्या अनुभवातून जाणून घ्या.
-            </p>
+            <span>{t.storiesEyebrow}</span>
+            <h2>{t.storiesTitle}</h2>
+            <p>{t.storiesInfo}</p>
           </div>
 
           <div className="sp-stories-grid">
-            {stories.map((story) => (
+            {t.stories.map((story) => (
               <article className="sp-story" key={story.scheme}>
                 <div className="sp-story-label">
                   <Heart size={15} />
@@ -997,11 +1152,8 @@ export default function Schemes() {
         <div className="sp-container">
           <div className="sp-help-content">
             <div>
-              <h2>योजनेबाबत अधिक माहिती हवी आहे?</h2>
-              <p>
-                पात्रता, अर्ज प्रक्रिया आणि आवश्यक कागदपत्रांबाबत
-                मार्गदर्शनासाठी ग्रामपंचायत कार्यालयाशी संपर्क साधा.
-              </p>
+              <h2>{t.helpTitle}</h2>
+              <p>{t.helpInfo}</p>
             </div>
             <ArrowRight className="sp-help-mark" size={28} />
           </div>

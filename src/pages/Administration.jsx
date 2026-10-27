@@ -1,29 +1,137 @@
+
 import {
   Users,
   UserRound,
   ShieldCheck,
   MapPin,
-  ArrowUpRight,
   Landmark,
 } from "lucide-react";
+import { useLanguage } from "./LanguageContext.jsx";
+
+const translations = {
+  mr: {
+    village: "ग्रामपंचायत बोखारा",
+    heroTitle: "गावाच्या विकासासाठी, एकत्रित नेतृत्व",
+    heroDescription:
+      "ग्रामपंचायतीचे प्रशासन म्हणजे नागरिकांचे प्रश्न समजून घेणे, स्थानिक गरजांना प्राधान्य देणे आणि गावाच्या सर्वांगीण विकासासाठी एकत्र काम करणे.",
+    heroBottom: "स्थानिक प्रशासन · लोकसहभाग · विकास",
+    imageCaption: "नागरिकांचा सहभाग, गावाचा विकास",
+    sectionOne: "०१ / स्थानिक प्रशासन",
+    mainTitle: "प्रमुख पदाधिकारी",
+    mainDescription:
+      "ग्रामपंचायतीतील प्रमुख पदांची माहिती. अधिकृत नावे व संबंधित छायाचित्रे उपलब्ध झाल्यावर ती येथे समाविष्ट केली जातील.",
+    sarpanch: "सरपंच",
+    sarpanchDescription:
+      "गावाच्या विकासाचे नेतृत्व आणि नागरिकांचे प्रतिनिधित्व",
+    deputy: "उपसरपंच",
+    deputyDescription:
+      "ग्रामपंचायतीच्या कामकाजात सहकार्य आणि समन्वय",
+    member: "ग्रामपंचायत सदस्य",
+    memberDescription:
+      "स्थानिक प्रश्न मांडणे आणि गावाच्या विकासासाठी सहभाग",
+    photoUnavailable: "छायाचित्र उपलब्ध नाही",
+    infoPending: "अधिकृत माहिती अद्ययावत करणे बाकी",
+    sectionTwo: "०२ / लोकप्रतिनिधी",
+    membersTitle: "ग्रामपंचायत सदस्य",
+    memberRecords: "सदस्य नोंदी",
+    namePending: "नाव अद्याप उपलब्ध नाही",
+    ward: "प्रभाग क्रमांक",
+    noteTitle: "अधिकृत माहितीबाबत सूचना",
+    note:
+      "पदाधिकारी आणि सदस्यांची अधिकृत नावे, छायाचित्रे व प्रभाग क्रमांक ग्रामपंचायतीकडून पुष्टी झाल्यानंतर अद्ययावत केले जातील.",
+    footer: "ग्रामपंचायत बोखारा · प्रशासन",
+    imageAlt: "समुदायातील लोक एकत्र येऊन सहभाग घेताना",
+    ourVoice: "OUR VILLAGE · OUR VOICE",
+  },
+
+  hi: {
+    village: "ग्राम पंचायत बोखारा",
+    heroTitle: "गाँव के विकास के लिए, एकजुट नेतृत्व",
+    heroDescription:
+      "ग्राम पंचायत का प्रशासन नागरिकों की समस्याओं को समझने, स्थानीय जरूरतों को प्राथमिकता देने और गाँव के समग्र विकास के लिए मिलकर काम करने का माध्यम है।",
+    heroBottom: "स्थानीय प्रशासन · जनभागीदारी · विकास",
+    imageCaption: "नागरिकों की भागीदारी, गाँव का विकास",
+    sectionOne: "०१ / स्थानीय प्रशासन",
+    mainTitle: "प्रमुख पदाधिकारी",
+    mainDescription:
+      "ग्राम पंचायत के प्रमुख पदों की जानकारी। आधिकारिक नाम और संबंधित तस्वीरें उपलब्ध होने पर यहाँ जोड़ी जाएँगी।",
+    sarpanch: "सरपंच",
+    sarpanchDescription:
+      "गाँव के विकास का नेतृत्व और नागरिकों का प्रतिनिधित्व",
+    deputy: "उपसरपंच",
+    deputyDescription:
+      "ग्राम पंचायत के कार्यों में सहयोग और समन्वय",
+    member: "ग्राम पंचायत सदस्य",
+    memberDescription:
+      "स्थानीय समस्याएँ उठाना और गाँव के विकास में भाग लेना",
+    photoUnavailable: "फोटो उपलब्ध नहीं है",
+    infoPending: "आधिकारिक जानकारी अपडेट होना बाकी है",
+    sectionTwo: "०२ / जनप्रतिनिधि",
+    membersTitle: "ग्राम पंचायत सदस्य",
+    memberRecords: "सदस्य रिकॉर्ड",
+    namePending: "नाम अभी उपलब्ध नहीं है",
+    ward: "वार्ड क्रमांक",
+    noteTitle: "आधिकारिक जानकारी के संबंध में सूचना",
+    note:
+      "पदाधिकारियों और सदस्यों के आधिकारिक नाम, तस्वीरें और वार्ड क्रमांक ग्राम पंचायत से पुष्टि होने के बाद अपडेट किए जाएँगे।",
+    footer: "ग्राम पंचायत बोखारा · प्रशासन",
+    imageAlt: "समुदाय के लोग एक साथ भागीदारी करते हुए",
+    ourVoice: "OUR VILLAGE · OUR VOICE",
+  },
+
+  en: {
+    village: "GRAM PANCHAYAT BOKHARA",
+    heroTitle: "United Leadership for Village Development",
+    heroDescription:
+      "Gram Panchayat administration means understanding citizens' concerns, prioritising local needs, and working together for the overall development of the village.",
+    heroBottom: "Local Governance · Public Participation · Development",
+    imageCaption: "Citizen Participation, Village Development",
+    sectionOne: "01 / LOCAL GOVERNANCE",
+    mainTitle: "Key Office Bearers",
+    mainDescription:
+      "Information about key Gram Panchayat positions. Official names and photographs will be added here once available.",
+    sarpanch: "Sarpanch",
+    sarpanchDescription:
+      "Leading village development and representing citizens",
+    deputy: "Deputy Sarpanch",
+    deputyDescription:
+      "Supporting and coordinating Gram Panchayat activities",
+    member: "Gram Panchayat Member",
+    memberDescription:
+      "Raising local issues and participating in village development",
+    photoUnavailable: "Photograph not available",
+    infoPending: "Official information pending update",
+    sectionTwo: "02 / ELECTED REPRESENTATIVES",
+    membersTitle: "Gram Panchayat Members",
+    memberRecords: "Member records",
+    namePending: "Name not available yet",
+    ward: "Ward No.",
+    noteTitle: "Notice Regarding Official Information",
+    note:
+      "Official names, photographs, and ward numbers of office bearers and members will be updated after confirmation by the Gram Panchayat.",
+    footer: "BOKHARA GRAM PANCHAYAT · ADMINISTRATION",
+    imageAlt: "Community members participating together",
+    ourVoice: "OUR VILLAGE · OUR VOICE",
+  },
+};
 
 const mainMembers = [
   {
     number: "01",
-    role: "सरपंच",
-    description: "गावाच्या विकासाचे नेतृत्व आणि नागरिकांचे प्रतिनिधित्व",
+    roleKey: "sarpanch",
+    descriptionKey: "sarpanchDescription",
     image: "",
   },
   {
     number: "02",
-    role: "उपसरपंच",
-    description: "ग्रामपंचायतीच्या कामकाजात सहकार्य आणि समन्वय",
+    roleKey: "deputy",
+    descriptionKey: "deputyDescription",
     image: "",
   },
   {
     number: "03",
-    role: "ग्रामपंचायत सदस्य",
-    description: "स्थानिक प्रश्न मांडणे आणि गावाच्या विकासासाठी सहभाग",
+    roleKey: "member",
+    descriptionKey: "memberDescription",
     image: "",
   },
 ];
@@ -34,6 +142,9 @@ const otherMembers = Array.from({ length: 6 }, (_, index) => ({
 }));
 
 export default function Administration() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations.mr;
+
   return (
     <>
       <style>{`
@@ -48,19 +159,13 @@ export default function Administration() {
           padding-bottom: 90px;
           overflow: hidden;
         }
-
-        .admin-page * {
-          box-sizing: border-box;
-        }
-
-        /* HERO — intentionally different from other pages */
+        .admin-page * { box-sizing: border-box; }
         .admin-hero {
           position: relative;
           padding: 66px 0 74px;
           background: #f0ede5;
           overflow: hidden;
         }
-
         .admin-hero::after {
           content: "प्रशासन";
           position: absolute;
@@ -72,7 +177,6 @@ export default function Administration() {
           white-space: nowrap;
           pointer-events: none;
         }
-
         .admin-hero-inner {
           position: relative;
           z-index: 1;
@@ -83,7 +187,6 @@ export default function Administration() {
           align-items: center;
           gap: 56px;
         }
-
         .admin-eyebrow {
           display: flex;
           align-items: center;
@@ -94,13 +197,11 @@ export default function Administration() {
           letter-spacing: 1.4px;
           margin-bottom: 24px;
         }
-
         .admin-eyebrow-line {
           width: 34px;
           height: 2px;
           background: var(--admin-accent);
         }
-
         .admin-hero h1 {
           margin: 0;
           max-width: 570px;
@@ -111,7 +212,6 @@ export default function Administration() {
           line-height: 1.35;
           letter-spacing: -1.2px;
         }
-
         .admin-hero-copy {
           max-width: 500px;
           margin: 22px 0 0;
@@ -119,7 +219,6 @@ export default function Administration() {
           font-size: 15px;
           line-height: 2;
         }
-
         .admin-hero-bottom {
           display: flex;
           align-items: center;
@@ -129,17 +228,12 @@ export default function Administration() {
           font-size: 12px;
           font-weight: 700;
         }
-
-        .admin-hero-bottom svg {
-          color: var(--admin-accent);
-        }
-
+        .admin-hero-bottom svg { color: var(--admin-accent); }
         .admin-hero-visual {
           position: relative;
           min-width: 0;
           padding: 0 0 30px 28px;
         }
-
         .admin-hero-image {
           display: block;
           width: 100%;
@@ -149,7 +243,6 @@ export default function Administration() {
           border-radius: 46% 46% 5px 5px;
           background: #d7d8ce;
         }
-
         .admin-image-caption {
           position: absolute;
           left: 0;
@@ -160,7 +253,6 @@ export default function Administration() {
           border-left: 3px solid var(--admin-accent);
           box-shadow: 0 9px 28px rgba(36, 43, 35, 0.08);
         }
-
         .admin-image-caption span {
           display: block;
           color: var(--admin-accent);
@@ -169,20 +261,16 @@ export default function Administration() {
           letter-spacing: 1.2px;
           margin-bottom: 7px;
         }
-
         .admin-image-caption strong {
           display: block;
           color: #303b31;
           font-size: 15px;
           line-height: 1.7;
         }
-
         .admin-container {
           width: min(1120px, calc(100% - 48px));
           margin: 0 auto;
         }
-
-        /* SECTION INTRO */
         .admin-section-heading {
           display: grid;
           grid-template-columns: 1fr 0.85fr;
@@ -190,7 +278,6 @@ export default function Administration() {
           gap: 35px;
           margin: 76px 0 35px;
         }
-
         .admin-section-heading > div > span,
         .admin-members-heading span {
           display: block;
@@ -200,7 +287,6 @@ export default function Administration() {
           font-weight: 800;
           letter-spacing: 1.4px;
         }
-
         .admin-section-heading h2 {
           margin: 0;
           color: #2b3930;
@@ -209,22 +295,18 @@ export default function Administration() {
           line-height: 1.45;
           font-weight: 700;
         }
-
         .admin-section-heading p {
           margin: 0 0 4px;
           color: var(--admin-muted);
           font-size: 13px;
           line-height: 2;
         }
-
-        /* LEADERS — open editorial layout, not boxed cards */
         .admin-main-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
           border-top: 1px solid var(--admin-line);
           border-bottom: 1px solid var(--admin-line);
         }
-
         .admin-main-card {
           position: relative;
           min-width: 0;
@@ -232,20 +314,12 @@ export default function Administration() {
           border-right: 1px solid var(--admin-line);
           transition: background 0.25s ease;
         }
-
-        .admin-main-card:first-child {
-          padding-left: 0;
-        }
-
+        .admin-main-card:first-child { padding-left: 0; }
         .admin-main-card:last-child {
           border-right: 0;
           padding-right: 0;
         }
-
-        .admin-main-card:hover {
-          background: rgba(236, 231, 219, 0.42);
-        }
-
+        .admin-main-card:hover { background: rgba(236, 231, 219, 0.42); }
         .admin-photo {
           position: relative;
           height: 210px;
@@ -253,7 +327,6 @@ export default function Administration() {
           overflow: hidden;
           background: #e7e2d8;
         }
-
         .admin-photo img {
           width: 100%;
           height: 100%;
@@ -261,11 +334,7 @@ export default function Administration() {
           object-fit: cover;
           transition: transform 0.5s ease;
         }
-
-        .admin-main-card:hover .admin-photo img {
-          transform: scale(1.045);
-        }
-
+        .admin-main-card:hover .admin-photo img { transform: scale(1.045); }
         .admin-photo-placeholder {
           position: absolute;
           inset: 0;
@@ -278,12 +347,7 @@ export default function Administration() {
           color: #6c796a;
           text-align: center;
         }
-
-        .admin-photo-placeholder span {
-          font-size: 11px;
-          font-weight: 650;
-        }
-
+        .admin-photo-placeholder span { font-size: 11px; font-weight: 650; }
         .admin-member-number {
           display: flex;
           align-items: center;
@@ -294,14 +358,12 @@ export default function Administration() {
           font-weight: 800;
           letter-spacing: 1px;
         }
-
         .admin-member-number::after {
           content: "";
           width: 34px;
           height: 1px;
           background: #d8bca7;
         }
-
         .admin-main-card h3 {
           margin: 0;
           color: #2c3b30;
@@ -310,7 +372,6 @@ export default function Administration() {
           line-height: 1.6;
           font-weight: 700;
         }
-
         .admin-main-card p {
           min-height: 49px;
           margin: 10px 0 18px;
@@ -318,7 +379,6 @@ export default function Administration() {
           font-size: 12px;
           line-height: 1.9;
         }
-
         .admin-info-status {
           display: inline-flex;
           align-items: center;
@@ -328,17 +388,8 @@ export default function Administration() {
           font-weight: 650;
           line-height: 1.6;
         }
-
-        .admin-info-status svg {
-          flex-shrink: 0;
-          color: #a16a47;
-        }
-
-        /* MEMBER LIST */
-        .admin-members-section {
-          margin-top: 86px;
-        }
-
+        .admin-info-status svg { flex-shrink: 0; color: #a16a47; }
+        .admin-members-section { margin-top: 86px; }
         .admin-members-heading {
           display: flex;
           align-items: end;
@@ -347,7 +398,6 @@ export default function Administration() {
           padding-bottom: 22px;
           border-bottom: 1px solid var(--admin-line);
         }
-
         .admin-members-heading h3 {
           margin: 0;
           color: #2b3930;
@@ -355,7 +405,6 @@ export default function Administration() {
           font-size: clamp(26px, 3vw, 36px);
           line-height: 1.5;
         }
-
         .admin-count {
           display: flex !important;
           align-items: center;
@@ -368,19 +417,16 @@ export default function Administration() {
           letter-spacing: 0 !important;
           white-space: nowrap;
         }
-
         .admin-count strong {
           color: var(--admin-accent);
           font-size: 26px;
           font-weight: 700;
         }
-
         .admin-small-grid {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           column-gap: 48px;
         }
-
         .admin-small-card {
           display: flex;
           align-items: center;
@@ -389,7 +435,6 @@ export default function Administration() {
           padding: 24px 0;
           border-bottom: 1px solid var(--admin-line);
         }
-
         .admin-small-photo {
           display: flex;
           flex: 0 0 76px;
@@ -400,18 +445,13 @@ export default function Administration() {
           background: #eae6dc;
           color: #74806f;
         }
-
-        .admin-small-details {
-          min-width: 0;
-        }
-
+        .admin-small-details { min-width: 0; }
         .admin-small-number {
           color: var(--admin-accent);
           font-size: 10px;
           font-weight: 800;
           letter-spacing: 0.5px;
         }
-
         .admin-small-details h4 {
           margin: 6px 0 8px;
           color: #303c32;
@@ -420,7 +460,6 @@ export default function Administration() {
           line-height: 1.5;
           font-weight: 700;
         }
-
         .admin-small-details p {
           display: flex;
           align-items: center;
@@ -430,13 +469,7 @@ export default function Administration() {
           font-size: 11px;
           line-height: 1.7;
         }
-
-        .admin-small-details p svg {
-          flex-shrink: 0;
-          color: var(--admin-accent);
-        }
-
-        /* FOOTNOTE */
+        .admin-small-details p svg { flex-shrink: 0; color: var(--admin-accent); }
         .admin-note {
           display: flex;
           align-items: flex-start;
@@ -447,7 +480,6 @@ export default function Administration() {
           border-bottom: 1px solid #d9cbb9;
           color: #6e7166;
         }
-
         .admin-note-icon {
           display: flex;
           align-items: center;
@@ -458,20 +490,13 @@ export default function Administration() {
           background: #eee7db;
           color: var(--admin-accent);
         }
-
-        .admin-note p {
-          margin: 0;
-          font-size: 12px;
-          line-height: 2;
-        }
-
+        .admin-note p { margin: 0; font-size: 12px; line-height: 2; }
         .admin-note strong {
           display: block;
           margin-bottom: 4px;
           color: #3a453a;
           font-size: 13px;
         }
-
         .admin-bottom-line {
           display: flex;
           align-items: center;
@@ -482,120 +507,51 @@ export default function Administration() {
           font-weight: 750;
           letter-spacing: 1.2px;
         }
-
         .admin-bottom-line::before {
           content: "";
           width: 34px;
           height: 1px;
           background: var(--admin-accent);
         }
-
         @media (max-width: 850px) {
-          .admin-hero-inner {
-            gap: 30px;
-          }
-
-          .admin-hero-image {
-            height: 330px;
-          }
-
-          .admin-main-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-
-          .admin-main-card {
-            padding: 22px;
-            border-bottom: 1px solid var(--admin-line);
-          }
-
-          .admin-main-card:first-child {
-            padding-left: 22px;
-          }
-
-          .admin-main-card:last-child {
-            padding-right: 22px;
-          }
-
-          .admin-main-card:nth-child(2) {
-            border-right: 0;
-          }
-
+          .admin-hero-inner { gap: 30px; }
+          .admin-hero-image { height: 330px; }
+          .admin-main-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .admin-main-card { padding: 22px; border-bottom: 1px solid var(--admin-line); }
+          .admin-main-card:first-child { padding-left: 22px; }
+          .admin-main-card:last-child { padding-right: 22px; }
+          .admin-main-card:nth-child(2) { border-right: 0; }
           .admin-main-card:last-child {
             grid-column: 1 / -1;
             border-right: 0;
             width: 50%;
             justify-self: center;
           }
-
-          .admin-photo {
-            height: 190px;
-          }
-
-          .admin-small-grid {
-            column-gap: 28px;
-          }
+          .admin-photo { height: 190px; }
+          .admin-small-grid { column-gap: 28px; }
         }
-
         @media (max-width: 600px) {
-          .admin-hero {
-            padding: 45px 0 48px;
-          }
-
+          .admin-hero { padding: 45px 0 48px; }
           .admin-hero-inner {
             width: calc(100% - 32px);
             grid-template-columns: 1fr;
             gap: 30px;
           }
-
-          .admin-eyebrow {
-            margin-bottom: 17px;
-          }
-
-          .admin-hero h1 {
-            font-size: clamp(34px, 9vw, 44px);
-          }
-
-          .admin-hero-copy {
-            margin-top: 15px;
-            font-size: 13px;
-          }
-
-          .admin-hero-visual {
-            padding-left: 15px;
-            padding-bottom: 22px;
-          }
-
-          .admin-hero-image {
-            height: 280px;
-            border-radius: 44% 44% 4px 4px;
-          }
-
-          .admin-image-caption {
-            padding: 14px 16px;
-          }
-
-          .admin-image-caption strong {
-            font-size: 13px;
-          }
-
-          .admin-container {
-            width: calc(100% - 32px);
-          }
-
+          .admin-eyebrow { margin-bottom: 17px; }
+          .admin-hero h1 { font-size: clamp(34px, 9vw, 44px); }
+          .admin-hero-copy { margin-top: 15px; font-size: 13px; }
+          .admin-hero-visual { padding-left: 15px; padding-bottom: 22px; }
+          .admin-hero-image { height: 280px; border-radius: 44% 44% 4px 4px; }
+          .admin-image-caption { padding: 14px 16px; }
+          .admin-image-caption strong { font-size: 13px; }
+          .admin-container { width: calc(100% - 32px); }
           .admin-section-heading {
             grid-template-columns: 1fr;
             gap: 12px;
             margin: 52px 0 24px;
           }
-
-          .admin-section-heading h2 {
-            font-size: 30px;
-          }
-
-          .admin-main-grid {
-            grid-template-columns: 1fr;
-          }
-
+          .admin-section-heading h2 { font-size: 30px; }
+          .admin-main-grid { grid-template-columns: 1fr; }
           .admin-main-card,
           .admin-main-card:first-child,
           .admin-main-card:last-child {
@@ -606,74 +562,30 @@ export default function Administration() {
             padding: 20px 0;
             border-right: 0;
           }
-
           .admin-main-card:last-child {
             grid-column: auto;
             width: 100%;
             justify-self: stretch;
           }
-
           .admin-photo {
             grid-row: 1 / span 4;
             height: 150px;
             margin: 0;
           }
-
-          .admin-member-number {
-            margin: 3px 0 7px;
-            font-size: 9px;
-          }
-
-          .admin-main-card h3 {
-            font-size: 18px;
-          }
-
-          .admin-main-card p {
-            min-height: 0;
-            margin: 6px 0 10px;
-            font-size: 11px;
-          }
-
-          .admin-info-status {
-            align-items: flex-start;
-            font-size: 9px;
-          }
-
-          .admin-members-section {
-            margin-top: 58px;
-          }
-
-          .admin-members-heading h3 {
-            font-size: 25px;
-          }
-
-          .admin-count strong {
-            font-size: 22px;
-          }
-
-          .admin-small-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .admin-small-card {
-            padding: 17px 0;
-          }
-
-          .admin-small-photo {
-            flex-basis: 65px;
-            width: 65px;
-            height: 72px;
-          }
-
-          .admin-note {
-            margin-top: 27px;
-          }
+          .admin-member-number { margin: 3px 0 7px; font-size: 9px; }
+          .admin-main-card h3 { font-size: 18px; }
+          .admin-main-card p { min-height: 0; margin: 6px 0 10px; font-size: 11px; }
+          .admin-info-status { align-items: flex-start; font-size: 9px; }
+          .admin-members-section { margin-top: 58px; }
+          .admin-members-heading h3 { font-size: 25px; }
+          .admin-count strong { font-size: 22px; }
+          .admin-small-grid { grid-template-columns: 1fr; }
+          .admin-small-card { padding: 17px 0; }
+          .admin-small-photo { flex-basis: 65px; width: 65px; height: 72px; }
+          .admin-note { margin-top: 27px; }
         }
-
         @media (prefers-reduced-motion: reduce) {
-          .admin-page *,
-          .admin-page *::before,
-          .admin-page *::after {
+          .admin-page *, .admin-page *::before, .admin-page *::after {
             transition: none !important;
             scroll-behavior: auto !important;
           }
@@ -686,20 +598,15 @@ export default function Administration() {
             <div className="admin-hero-text">
               <div className="admin-eyebrow">
                 <span className="admin-eyebrow-line" />
-                ग्रामपंचायत बोकार
+                {t.village}
               </div>
 
-              <h1>गावाच्या विकासासाठी, एकत्रित नेतृत्व</h1>
-
-              <p className="admin-hero-copy">
-                ग्रामपंचायतीचे प्रशासन म्हणजे नागरिकांचे प्रश्न समजून
-                घेणे, स्थानिक गरजांना प्राधान्य देणे आणि गावाच्या
-                सर्वांगीण विकासासाठी एकत्र काम करणे.
-              </p>
+              <h1>{t.heroTitle}</h1>
+              <p className="admin-hero-copy">{t.heroDescription}</p>
 
               <div className="admin-hero-bottom">
                 <Landmark size={18} strokeWidth={1.7} />
-                <span>स्थानिक प्रशासन · लोकसहभाग · विकास</span>
+                <span>{t.heroBottom}</span>
               </div>
             </div>
 
@@ -707,15 +614,15 @@ export default function Administration() {
               <img
                 className="admin-hero-image"
                 src="https://tse2.mm.bing.net/th/id/OIP.PcBFF6mYNTWo4pOLDBnbGAHaFj?r=0&pid=Api&h=220&P=0"
-                alt="समुदायातील लोक एकत्र येऊन सहभाग घेताना"
+                alt={t.imageAlt}
                 onError={(event) => {
                   event.currentTarget.style.display = "none";
                 }}
               />
 
               <div className="admin-image-caption">
-                <span>OUR VILLAGE · OUR VOICE</span>
-                <strong>नागरिकांचा सहभाग, गावाचा विकास</strong>
+                <span>{t.ourVoice}</span>
+                <strong>{t.imageCaption}</strong>
               </div>
             </div>
           </div>
@@ -725,59 +632,37 @@ export default function Administration() {
           <section aria-labelledby="admin-main-title">
             <div className="admin-section-heading">
               <div>
-                <span>०१ / स्थानिक प्रशासन</span>
-                <h2 id="admin-main-title">प्रमुख पदाधिकारी</h2>
+                <span>{t.sectionOne}</span>
+                <h2 id="admin-main-title">{t.mainTitle}</h2>
               </div>
-
-              <p>
-                ग्रामपंचायतीतील प्रमुख पदांची माहिती. अधिकृत नावे व
-                संबंधित छायाचित्रे उपलब्ध झाल्यावर ती येथे समाविष्ट
-                केली जातील.
-              </p>
+              <p>{t.mainDescription}</p>
             </div>
 
             <div className="admin-main-grid">
               {mainMembers.map((member) => (
                 <article className="admin-main-card" key={member.number}>
                   <div className="admin-photo">
-                    <img
-                      src={member.image}
-                      alt={`${member.role} — `}
-                      loading="lazy"
-                      onError={(event) => {
-                        event.currentTarget.style.display = "none";
-                        const placeholder =
-                          event.currentTarget.nextElementSibling;
-                        if (placeholder) {
-                          placeholder.style.display = "flex";
-                        }
-                      }}
-                    />
-
-                    <div className="admin-photo">
-  {member.image ? (
-    <img
-      src={member.image}
-      alt={member.role}
-      loading="lazy"
-    />
-  ) : (
-    <div className="admin-photo-placeholder">
-      <UserRound size={42} strokeWidth={1.2} />
-      <span>छायाचित्र उपलब्ध नाही</span>
-    </div>
-  )}
-</div>
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={t[member.roleKey]}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="admin-photo-placeholder">
+                        <UserRound size={42} strokeWidth={1.2} />
+                        <span>{t.photoUnavailable}</span>
+                      </div>
+                    )}
                   </div>
 
-                  
-
-                  <h3>{member.role}</h3>
-                  <p>{member.description}</p>
+                  <div className="admin-member-number">{member.number}</div>
+                  <h3>{t[member.roleKey]}</h3>
+                  <p>{t[member.descriptionKey]}</p>
 
                   <span className="admin-info-status">
                     <ShieldCheck size={14} />
-                    अधिकृत माहिती अद्ययावत करणे बाकी
+                    {t.infoPending}
                   </span>
                 </article>
               ))}
@@ -790,12 +675,12 @@ export default function Administration() {
           >
             <div className="admin-members-heading">
               <div>
-                <span>०२ / लोकप्रतिनिधी</span>
-                <h3 id="admin-members-title">ग्रामपंचायत सदस्य</h3>
+                <span>{t.sectionTwo}</span>
+                <h3 id="admin-members-title">{t.membersTitle}</h3>
               </div>
 
               <span className="admin-count">
-                <strong>०६</strong> सदस्य नोंदी
+                <strong>06</strong> {t.memberRecords}
               </span>
             </div>
 
@@ -808,14 +693,14 @@ export default function Administration() {
 
                   <div className="admin-small-details">
                     <span className="admin-small-number">
-                      सदस्य {member.number}
+                      {t.membersTitle} {member.number}
                     </span>
 
-                    <h4>नाव अद्याप उपलब्ध नाही</h4>
+                    <h4>{t.namePending}</h4>
 
                     <p>
                       <MapPin size={13} />
-                      प्रभाग क्रमांक {member.ward}
+                      {t.ward} {member.ward}
                     </p>
                   </div>
                 </article>
@@ -828,17 +713,13 @@ export default function Administration() {
               </div>
 
               <p>
-                <strong>अधिकृत माहितीबाबत सूचना</strong>
-                पदाधिकारी आणि सदस्यांची अधिकृत नावे, छायाचित्रे व
-                प्रभाग क्रमांक ग्रामपंचायतीकडून पुष्टी झाल्यानंतर
-                अद्ययावत केले जातील.
+                <strong>{t.noteTitle}</strong>
+                {t.note}
               </p>
             </div>
           </section>
 
-          <div className="admin-bottom-line">
-            BOKHARA GRAM PANCHAYAT · ADMINISTRATION
-          </div>
+          <div className="admin-bottom-line">{t.footer}</div>
         </div>
       </main>
     </>
